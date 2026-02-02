@@ -3,6 +3,7 @@ outputs/
 governance/run_ledger.jsonl
 *.env
 *.zip
+*.sha256
 .env
 .env.*
 __pycache__/
@@ -14,6 +15,9 @@ __pycache__/
 .ruff_cache/
 *.log
 *.tmp
+tmp/
+run_diff_*.json
+run_diff_*.md
 
 # Common Hygiene (Restored)
 .venv/
