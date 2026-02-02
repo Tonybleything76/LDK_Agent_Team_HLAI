@@ -1,0 +1,9 @@
+[
+  "What specific AI dashboard platform or tool are the managers expected to use? (Needed for realistic screenshots and scenario fidelity)",
+  "Are there quantitative baseline metrics available for current dashboard usage rates, average decision-making time, or production inefficiency rates? (Needed to set measurable post-training targets)",
+  "Are there additional real-world scenarios beyond the machine-failure throughput example that should be included? (Needed for scenario variety in assessment design)",
+  "Is there an existing onboarding or standard operating procedure that this training should integrate with or reference?",
+  "Will managers have access to the AI dashboard during the training (live environment or sandbox), or will the course use simulated/static dashboard representations?",
+  "Who are the key stakeholders for sign-off on this learning strategy (e.g., plant director, L&D lead, IT)?",
+  "Are there any accessibility requirements beyond responsive desktop/tablet design (e.g., WCAG compliance level, language localization)?"
+]

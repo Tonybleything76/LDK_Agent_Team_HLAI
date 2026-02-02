@@ -1,0 +1,37 @@
+{
+    "files_changed": [
+        {
+            "path": "VERSION",
+            "summary": "Created new version file with semantic version 0.4.0."
+        },
+        {
+            "path": "orchestrator/root_agent.py",
+            "summary": "Added get_system_version() helper and integrated it into run_manifest initialization."
+        },
+        {
+            "path": "orchestrator/audit.py",
+            "summary": "Updated generate_audit_summary to include system_version in run_metadata, falling back to VERSION file if manifest missing."
+        },
+        {
+            "path": "scripts/run_report.py",
+            "summary": "Updated report generation to display system_version in console header, JSON output, and Markdown format."
+        }
+    ],
+    "behavior_verified": [
+        "Run manifest includes system_version populated from VERSION file.",
+        "Audit summary run_metadata includes system_version.",
+        "Run report displays System Version in header.",
+        "Pipeline execution remains deterministic (no LLM calls for versioning).",
+        "Backward compatibility maintained with 'unknown' fallback."
+    ],
+    "evidence": {
+        "manifest_snippet": "\"system_version\": \"0.4.0\",\\n  \"run_id\": \"20260202_195841\",",
+        "audit_snippet": "\"run_metadata\": {\\n    \"system_version\": \"0.4.0\",\\n    \"run_id\": \"20260202_195841\",",
+        "report_snippet": "=== RUN REPORT ===\\nSystem Version:    0.4.0\\nRun ID:            20260202_195841"
+    },
+    "tests_run": [
+        "python3 scripts/run_pipeline.py --dry_run --governance_profile dev --yes",
+        "python3 scripts/run_report.py --latest"
+    ],
+    "open_questions": []
+}

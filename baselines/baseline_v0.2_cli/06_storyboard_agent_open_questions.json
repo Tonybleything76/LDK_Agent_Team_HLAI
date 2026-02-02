@@ -1,0 +1,7 @@
+[
+  "What specific branding guidelines (logo, corporate colors, fonts) should override the proposed design system? The business brief does not specify brand standards.",
+  "Should the dashboard screenshots/simulations use real production data visuals (anonymized) or fully fictional illustrative data? Compliance notes prohibit data export but do not clarify use of realistic screenshots in training.",
+  "Is there a preferred interaction library or LMS platform that constrains which interaction types (drag-and-drop, Lottie animation) are technically feasible?",
+  "Should the completion badge and certificate be integrated with an existing LMS credentialing system, or is this a standalone visual?",
+  "Are there any existing production line sensor dashboard screenshots or UI mockups available to use as reference for the simulated dashboard visuals, or should all visuals be created from scratch?"
+]

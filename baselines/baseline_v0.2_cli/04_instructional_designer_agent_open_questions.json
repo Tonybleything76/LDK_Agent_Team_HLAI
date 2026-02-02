@@ -1,0 +1,9 @@
+[
+  "What specific AI dashboard software or platform is used? Screen layouts and interaction designs may need adjustment based on actual dashboard UI.",
+  "Are there established escalation paths and contact roles (e.g., shift supervisor, maintenance lead, plant manager) that should be named in escalation guidance?",
+  "Should the capstone assessment allow retry attempts, and if so, how many before requiring manager or facilitator intervention?",
+  "Are there specific production line naming conventions or realistic line numbers preferred for scenario realism?",
+  "Does the organization have existing shift documentation templates or systems where the 'Document' step should be integrated?",
+  "Are there accessibility requirements beyond desktop and tablet compatibility (e.g., screen reader support, color-blind-safe palette for dashboard color coding)?",
+  "What is the passing score policy \u2014 does 80% apply per module or only to the capstone? Should learners be locked out of subsequent modules if they fail a formative check?"
+]

@@ -1,0 +1,712 @@
+================================================================================
+AGENT: instructional_designer_agent
+================================================================================
+
+SYSTEM PROMPT:
+You are operating inside a strict automated pipeline.
+
+CRITICAL OUTPUT RULES:
+- You MUST return ONLY a single valid JSON object.
+- Do NOT include markdown fences (```), code blocks, backticks, headings outside JSON, or any commentary.
+- Do NOT wrap JSON in additional text.
+- All strings must use double quotes.
+- No trailing commas.
+- The JSON must parse successfully with a standard JSON parser.
+
+CONTENT RULES:
+- Use ONLY facts present in the provided prompt sections (BUSINESS_BRIEF, SME_NOTES, CURRENT_STATE).
+- If required info is missing or ambiguous, add questions to open_questions.
+- Do NOT invent, assume, or hallucinate details.
+- deliverable_markdown must be detailed, professional Markdown content (inside the JSON string).
+- updated_state must be consistent with deliverable_markdown.
+- open_questions must be an array of strings.
+
+QUALITY BAR:
+- Write at senior industry benchmark level.
+- Make outputs precise, measurable, and execution-ready.
+
+Before responding:
+1. Validate your output is valid JSON.
+2. Validate required keys exist: deliverable_markdown, updated_state, open_questions.
+3. Output ONLY the JSON object.
+# Instructional Designer Agent
+
+## Role
+You are the Instructional Designer.
+Your job is to draft the actual content and flow for each lesson defined by the Learning Architect.
+You translate the "outline" into a "script" or detailed storyboard-ready text.
+
+## Inputs you will receive
+- BUSINESS_BRIEF (markdown)
+- SME_NOTES (markdown)
+- CURRENT_STATE (json) - contains `module_designs` (the outline).
+
+## What you must produce
+1) A "Content Script" (markdown).
+2) Updates to `storyboards` (preliminary) in `updated_state`.
+
+## ID tasks
+1) Select one Module to focus on (or all, depending on scope).
+2) For each Lesson in the module:
+   - Write the voiceover script or text content.
+   - Describe the visual suggestion (what is on screen?).
+   - Write the interaction details (if it's a quiz or click-and-reveal).
+   - Ensure the tone matches the Learner Persona.
+
+## Output format rules
+Return ONLY valid JSON.
+Match this structure:
+
+{
+  "deliverable_markdown": "string",
+  "updated_state": { },
+  "open_questions": [ ]
+}
+
+## Required updated_state fields
+In `updated_state`:
+
+{
+  "storyboards": [
+    {
+      "lesson_id": "...",
+      "screen_id": "...",
+      "screen_title": "...",
+      "text_content": "...",
+      "visual_notes": "...",
+      "interaction_type": "..."
+    }
+  ]
+}
+
+
+CURRENT_STATE (JSON):
+{
+  "inputs": {
+    "business_brief": "# Business Brief\n\n## Program name\nAI Adoption for Operations Managers\n\n## Who is this for? (Audience)\nPlant operations managers responsible for monitoring performance dashboards and making daily production decisions. Most have limited experience using AI tools.\n\n## What is the performance problem?\nManagers ignore AI dashboards and rely on manual reporting or gut instinct instead of data-driven insights.\n\n## What does success look like?\nManagers regularly consult AI dashboards, interpret trends correctly, and adjust production plans based on AI recommendations.\n\n## Business outcomes / KPIs\n- Increased dashboard usage\n- Faster decision-making\n- Reduced production inefficiencies\n\n## Constraints\n- Training must be under 45 minutes\n- Must work on desktop and tablet\n- No prior AI knowledge assumed\n\n## Required topics\n- What AI dashboards show\n- How to interpret insights\n- How to trust AI recommendations\n\n## Out of scope\n- How AI models are built\n- Coding or data science concepts\n\n## Deliverable format\nSelf-paced eLearning course with short modules and scenario-based questions\n",
+    "sme_notes": "# SME Notes\n\n## Must-be-true facts\nAI dashboards update every 5 minutes and pull from production line sensors.\n\n## Terminology\nAI dashboard, predictive alert, performance trend.\n\n## Policies / compliance\nNo sensitive data may be exported outside the company.\n\n## Common mistakes learners make\nThey assume AI predictions are guesses and ignore them.\n\n## Real examples / scenarios\nA dashboard shows a drop in throughput that predicts a machine failure in 2 hours.\n"
+  },
+  "strategy": {
+    "status": "complete",
+    "program_name": "AI Adoption for Operations Managers",
+    "program_purpose": "Equip plant operations managers to routinely consult AI dashboards, accurately interpret production insights, and take timely data-driven action \u2014 replacing reliance on manual reporting and gut instinct.",
+    "target_audience": {
+      "primary_role": "Plant operations managers",
+      "work_context": "Manufacturing / production floor; time-pressured daily decisions",
+      "learning_environment": "Self-paced eLearning on desktop and tablet",
+      "max_training_time_minutes": 45,
+      "devices": [
+        "desktop",
+        "tablet"
+      ],
+      "prior_ai_knowledge": "none",
+      "motivation_factors": [
+        "faster decisions",
+        "peer adoption",
+        "management expectation"
+      ],
+      "resistance_risks": [
+        "distrust of AI predictions",
+        "comfort with manual processes",
+        "fear of technology replacing judgment",
+        "time pressure"
+      ]
+    },
+    "performance_problem": {
+      "current_behaviors": [
+        "Managers bypass AI dashboards or check them infrequently",
+        "Decisions based on manual reports, historical patterns, or intuition",
+        "Predictive alerts dismissed or ignored",
+        "Dashboard insights misinterpreted or not acted upon"
+      ],
+      "root_causes": [
+        "Lack of understanding of dashboard content and data sources",
+        "Distrust of AI predictions \u2014 perceived as unreliable guesses",
+        "No established workflow integrating dashboard consultation",
+        "Insufficient skills to interpret trends, alerts, and recommendations",
+        "Comfort with legacy manual reporting"
+      ],
+      "business_impact": [
+        "Delayed response to production anomalies",
+        "Increased downtime and inefficiency",
+        "Underutilization of AI technology investment",
+        "Slower decision-making cycles"
+      ]
+    },
+    "desired_performance": {
+      "observable_behaviors": [
+        "Consult AI dashboard at start of each shift and before production adjustments",
+        "Correctly identify and describe key dashboard indicators",
+        "Distinguish routine fluctuations from actionable predictive alerts",
+        "Adjust production plans based on AI recommendations with documented rationale",
+        "Escalate high-severity predictive alerts appropriately"
+      ],
+      "performance_standards": [
+        "Dashboard consulted minimum once per shift",
+        "Action taken within decision window indicated by alert",
+        "80% interpretation accuracy on assessment scenarios"
+      ]
+    },
+    "learning_outcomes": [
+      {
+        "id": "LO1",
+        "outcome": "Describe what the AI dashboard displays and where its data originates",
+        "rationale": "Managers understand they are viewing real-time sensor data, not speculative outputs"
+      },
+      {
+        "id": "LO2",
+        "outcome": "Identify and differentiate the three key dashboard elements: performance trends, predictive alerts, and throughput indicators",
+        "rationale": "Managers can read the dashboard without confusion"
+      },
+      {
+        "id": "LO3",
+        "outcome": "Interpret a predictive alert by explaining what it predicts, the confidence basis, and the recommended action window",
+        "rationale": "Managers treat alerts as actionable intelligence rather than guesses"
+      },
+      {
+        "id": "LO4",
+        "outcome": "Evaluate an AI recommendation against current operational context to decide whether to act, modify, or escalate",
+        "rationale": "Managers integrate AI insights with operational expertise"
+      },
+      {
+        "id": "LO5",
+        "outcome": "Demonstrate a complete decision workflow: consult dashboard, interpret signals, decide on action, and document rationale",
+        "rationale": "Dashboard-informed decision-making becomes a repeatable habit"
+      }
+    ],
+    "program_structure": {
+      "format": "Self-paced eLearning with short modules and scenario-based questions",
+      "total_duration_minutes": 45,
+      "modules": [
+        {
+          "module_number": 1,
+          "title": "Understanding Your AI Dashboard",
+          "focus": "What the dashboard shows; data sources; update frequency",
+          "estimated_duration_minutes": 10,
+          "outcomes_addressed": [
+            "LO1"
+          ]
+        },
+        {
+          "module_number": 2,
+          "title": "Reading the Signals",
+          "focus": "Key elements \u2014 trends, alerts, indicators; how to differentiate them",
+          "estimated_duration_minutes": 10,
+          "outcomes_addressed": [
+            "LO2"
+          ]
+        },
+        {
+          "module_number": 3,
+          "title": "Interpreting Predictive Alerts",
+          "focus": "What predictions mean; sensor-data basis; action windows",
+          "estimated_duration_minutes": 10,
+          "outcomes_addressed": [
+            "LO3"
+          ]
+        },
+        {
+          "module_number": 4,
+          "title": "Making Data-Driven Decisions",
+          "focus": "Evaluating recommendations; integrating with operational judgment; when to escalate",
+          "estimated_duration_minutes": 15,
+          "outcomes_addressed": [
+            "LO4",
+            "LO5"
+          ]
+        }
+      ]
+    },
+    "assessment_strategy": {
+      "formative": "Scenario-based check questions embedded within each module",
+      "summative": "Capstone scenario requiring dashboard consultation, signal interpretation, decision-making, and rationale justification",
+      "success_threshold": "80% accuracy on scenario-based assessments"
+    },
+    "kpi_alignment": {
+      "increased_dashboard_usage": "Outcomes LO1 and LO5 build understanding and habit; Module 4 integrates dashboard into decision workflow",
+      "faster_decision_making": "Outcomes LO3 and LO4 teach efficient interpretation and action; scenario practice builds fluency",
+      "reduced_production_inefficiencies": "Outcome LO4 ensures AI recommendations are evaluated and acted upon within appropriate time windows"
+    },
+    "design_principles": [
+      "Performance-first: every module connects to an on-the-job behavior",
+      "Scenario-based: realistic production scenarios as primary instructional vehicle",
+      "Trust-building: explicitly address misconception that AI predictions are guesses",
+      "Constraint-aware: desktop and tablet compatible; no data export",
+      "Modular: self-contained modules for flexible completion across shifts"
+    ],
+    "terminology": [
+      "AI dashboard",
+      "predictive alert",
+      "performance trend"
+    ],
+    "compliance_notes": [
+      "No sensitive data may be exported outside the company"
+    ],
+    "out_of_scope": [
+      "How AI models are built",
+      "Coding or data science concepts"
+    ]
+  },
+  "research": {
+    "status": "complete",
+    "personas": [
+      {
+        "id": "persona_a",
+        "name": "The Veteran Floor Manager",
+        "role": "Senior operations manager",
+        "experience_years": "15+",
+        "experience_level": "Deep operational expertise; minimal digital tool fluency",
+        "confidence_profile": "High confidence in own judgment; low confidence with AI tools",
+        "learning_maturity": "Prefers learning by doing; skeptical of abstract training; values proof through real examples",
+        "primary_risk": "Distrust and identity threat \u2014 sees AI as diminishing the value of experience"
+      },
+      {
+        "id": "persona_b",
+        "name": "The Mid-Career Pragmatist",
+        "role": "Operations manager",
+        "experience_years": "5\u201310",
+        "experience_level": "Moderate operational expertise; some digital tool comfort",
+        "confidence_profile": "Moderate; open to new tools if value demonstrated quickly",
+        "learning_maturity": "Willing to engage if content is concise and directly applicable; disengages from padded content",
+        "primary_risk": "Will mentally disengage if value proposition is not clear within first minutes"
+      },
+      {
+        "id": "persona_c",
+        "name": "The Early-Career Adopter",
+        "role": "Newer operations manager",
+        "experience_years": "1\u20134",
+        "experience_level": "Lower operational expertise; higher technology comfort",
+        "confidence_profile": "High technology confidence; lower operational judgment confidence",
+        "learning_maturity": "Comfortable with eLearning; may skim without deep reflection",
+        "primary_risk": "Over-reliance on AI without critical evaluation of recommendations"
+      }
+    ],
+    "motivations": {
+      "intrinsic": [
+        "Professional competence and effective decision-making self-image",
+        "Reduced uncertainty in high-stakes production decisions",
+        "Problem-solving satisfaction from interpreting data signals"
+      ],
+      "extrinsic": [
+        "Management expectation of AI dashboard adoption",
+        "Peer adoption pressure",
+        "Performance metrics tied to dashboard usage and decision speed",
+        "Time savings from reduced manual data gathering"
+      ]
+    },
+    "barriers": {
+      "cognitive": [
+        {
+          "barrier": "AI literacy gap",
+          "detail": "No prior AI knowledge; learners lack mental models for AI-generated insights",
+          "severity": "high"
+        },
+        {
+          "barrier": "Interpretation overload",
+          "detail": "Dashboard presents multiple data types simultaneously",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Misconception that AI predictions are guesses",
+          "detail": "SME-confirmed; blocks engagement entirely",
+          "severity": "high"
+        },
+        {
+          "barrier": "Difficulty distinguishing signal from noise",
+          "detail": "Cannot differentiate routine fluctuations from actionable alerts without practice",
+          "severity": "medium"
+        }
+      ],
+      "emotional_behavioral": [
+        {
+          "barrier": "Distrust of AI",
+          "detail": "Deep skepticism that AI can outperform human judgment",
+          "severity": "high"
+        },
+        {
+          "barrier": "Fear of technology replacing judgment",
+          "detail": "Concern that AI adoption diminishes professional value",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Fear of visible failure",
+          "detail": "AI-informed decisions create documented decision trail",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Change fatigue",
+          "detail": "Possible prior exposure to failed technology rollouts",
+          "severity": "medium"
+        }
+      ],
+      "environmental": [
+        {
+          "barrier": "Time pressure",
+          "detail": "Shift-based constraints; training competes with operational duties",
+          "severity": "high"
+        },
+        {
+          "barrier": "Interruption-prone environment",
+          "detail": "Production floor context means training may be started and stopped",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Device variability",
+          "detail": "Desktop and tablet; inconsistent screen real estate",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Legacy workflow habits",
+          "detail": "Manual reporting routines deeply ingrained and reinforced by team norms",
+          "severity": "high"
+        }
+      ]
+    },
+    "application_context": {
+      "when_applied": [
+        "Shift start \u2014 assess production line status",
+        "During production \u2014 respond to predictive alerts",
+        "Decision points \u2014 before adjusting schedules or escalating",
+        "Post-incident review \u2014 evaluate whether AI signals were acted on"
+      ],
+      "pressure_conditions": [
+        "Decisions needed within minutes",
+        "Consequences of inaction include equipment damage and downtime",
+        "Consequences of wrong action include lost output and peer scrutiny",
+        "Multiple competing priorities during any shift"
+      ],
+      "tools_available": [
+        "AI dashboard (updates every 5 minutes from production line sensors)",
+        "Desktop or tablet access",
+        "Existing manual reporting systems"
+      ]
+    },
+    "engagement_implications": {
+      "adoption_enablers": [
+        "Open with recognizable production scenario, not abstract AI concepts",
+        "Explain sensor-data sourcing early to establish credibility",
+        "Maintain short modular structure aligned with shift constraints",
+        "Use realistic decision scenarios as primary learning vehicle",
+        "Explicitly address AI-as-guesses misconception",
+        "Frame manager as decision-maker; dashboard as input",
+        "Deliver quick wins in early modules"
+      ],
+      "dropout_risks": [
+        "Abstract or theoretical content",
+        "Perceived excessive length or padding",
+        "Unrealistic or oversimplified scenarios",
+        "Condescending tone toward experienced managers",
+        "No perceived benefit in first module",
+        "Poor tablet rendering or slow-loading simulations"
+      ]
+    },
+    "design_recommendations": [
+      "Lead with a real scenario, not a definition",
+      "Address AI distrust explicitly and early with sensor-data explanation",
+      "Frame AI as augmentation, not replacement",
+      "Design for interruption with progress saving",
+      "Differentiate instruction for over-trust and under-trust",
+      "Keep tone respectful of operational expertise",
+      "Ensure tablet parity for dashboard simulations"
+    ]
+  },
+  "curriculum": {
+    "total_modules": 4,
+    "total_lessons": 13,
+    "estimated_duration": "~45 minutes",
+    "format": "Self-paced eLearning with short modules and scenario-based questions",
+    "assessment_model": "Formative scenario checks per module + summative capstone scenario in Module 4",
+    "success_threshold": "80% accuracy on scenario-based assessments"
+  },
+  "module_designs": [
+    {
+      "module_id": "m1",
+      "title": "Understanding Your AI Dashboard",
+      "goal": "Establish what the AI dashboard is, where its data comes from, and why it is a reliable source of production information.",
+      "estimated_duration_minutes": 10,
+      "outcomes_addressed": [
+        "LO1"
+      ],
+      "hook": "It's 6:02 AM. You walk onto the floor, coffee in hand. Before you check in with your team, there's a screen showing you exactly what happened overnight \u2014 and what's about to happen next. But only if you know how to read it.",
+      "lessons": [
+        {
+          "lesson_id": "m1.1",
+          "title": "What You're Looking At",
+          "type": "Interactive annotated screenshot",
+          "objective": "Identify the main components visible on the AI dashboard home screen.",
+          "content_outline": [
+            "The AI dashboard consolidates production line data into a single view",
+            "Three primary areas: performance trends panel, predictive alerts panel, throughput indicators panel",
+            "Each area answers a different operational question"
+          ],
+          "practice_activity": "Label-the-dashboard drag-and-drop exercise"
+        },
+        {
+          "lesson_id": "m1.2",
+          "title": "Where the Data Comes From",
+          "type": "Short animated explainer + text summary",
+          "objective": "Explain that dashboard data originates from production line sensors and updates every 5 minutes.",
+          "content_outline": [
+            "Data pulled directly from production line sensors \u2014 not manually entered, not estimated",
+            "Dashboard refreshes every 5 minutes with latest sensor readings",
+            "Numbers reflect actual machine and line conditions",
+            "Explicitly address misconception: sensor data, not a guess"
+          ],
+          "practice_activity": "Scenario check question addressing the 'AI is guessing' misconception"
+        },
+        {
+          "lesson_id": "m1.3",
+          "title": "Why This Matters to Your Shift",
+          "type": "Text + brief scenario vignette",
+          "objective": "Describe one specific way dashboard data can inform a shift-start decision.",
+          "content_outline": [
+            "Before the dashboard: manual reports, verbal handoffs, walking the floor",
+            "With the dashboard: current state of every line in one view before first call",
+            "Dashboard does not replace judgment \u2014 gives judgment better inputs",
+            "Quick-win example: checking overnight throughput trend at shift start"
+          ],
+          "practice_activity": "Reflection prompt on first shift decision and relevant data point"
+        }
+      ]
+    },
+    {
+      "module_id": "m2",
+      "title": "Reading the Signals",
+      "goal": "Enable learners to identify and differentiate the three key dashboard elements \u2014 performance trends, predictive alerts, and throughput indicators.",
+      "estimated_duration_minutes": 10,
+      "outcomes_addressed": [
+        "LO2"
+      ],
+      "hook": "You check the dashboard. There's a green line trending upward, a yellow alert box, and a throughput number in red. Are any of these urgent? All of them? None? Let's make sure you know.",
+      "lessons": [
+        {
+          "lesson_id": "m2.1",
+          "title": "Performance Trends \u2014 The Big Picture",
+          "type": "Interactive visual with annotated trend graph",
+          "objective": "Interpret a performance trend line to determine whether production output is stable, improving, or declining.",
+          "content_outline": [
+            "Performance trends show output over time (last 8 hours, last shift, last 24 hours)",
+            "Upward = increasing; downward = declining; flat = stable",
+            "Trends combine historical and real-time data",
+            "Key skill: recognizing normal range vs. deviation"
+          ],
+          "practice_activity": "Read-the-graph exercise classifying three trend lines"
+        },
+        {
+          "lesson_id": "m2.2",
+          "title": "Predictive Alerts \u2014 What's Coming",
+          "type": "Text + side-by-side comparison visual",
+          "objective": "Distinguish a predictive alert from a performance trend by identifying its forward-looking nature and action window.",
+          "content_outline": [
+            "Predictive alerts are forward-looking \u2014 they tell you what data suggests will happen",
+            "Each alert includes: prediction, basis (sensor pattern), action window",
+            "Alerts are evidence-based, not speculative",
+            "Terminology reinforcement: predictive alert = forward-looking, sensor-based signal"
+          ],
+          "practice_activity": "Sort exercise \u2014 categorize dashboard messages as trend or alert"
+        },
+        {
+          "lesson_id": "m2.3",
+          "title": "Throughput Indicators \u2014 The Numbers Right Now",
+          "type": "Interactive dashboard snippet with guided walkthrough",
+          "objective": "Read a throughput indicator and state whether current output is above, at, or below target.",
+          "content_outline": [
+            "Throughput indicators show real-time output rates against target",
+            "Color coding: green = at/above target; yellow = approaching threshold; red = below target",
+            "Updates every 5 minutes with sensor refresh",
+            "Throughput = current state; complements trends (direction) and alerts (future)"
+          ],
+          "practice_activity": "Scenario check integrating trend, alert, and throughput reading"
+        }
+      ]
+    },
+    {
+      "module_id": "m3",
+      "title": "Interpreting Predictive Alerts",
+      "goal": "Build the skill and confidence to interpret a predictive alert accurately \u2014 understanding what it predicts, why it should be trusted, and when to act.",
+      "estimated_duration_minutes": 10,
+      "outcomes_addressed": [
+        "LO3"
+      ],
+      "hook": "The dashboard just flagged a predictive alert: 'Throughput drop detected on Line 2. Predicted machine fault within 2 hours.' Your first instinct might be to dismiss it. Before you do \u2014 let's look at what's actually behind that alert.",
+      "lessons": [
+        {
+          "lesson_id": "m3.1",
+          "title": "Anatomy of a Predictive Alert",
+          "type": "Annotated alert example with interactive callouts",
+          "objective": "Identify the three components of a predictive alert: prediction, confidence basis, and recommended action window.",
+          "content_outline": [
+            "Three parts of every alert: prediction, confidence basis, action window",
+            "The Prediction: what the system expects (e.g., machine fault, throughput drop)",
+            "The Confidence Basis: sensor data pattern that triggered the alert",
+            "The Action Window: time available to respond",
+            "Worked example using SME scenario: throughput drop \u2192 machine failure \u2192 2-hour window"
+          ],
+          "practice_activity": "Deconstruct-the-alert exercise identifying three components in a new alert"
+        },
+        {
+          "lesson_id": "m3.2",
+          "title": "Why This Isn't a Guess",
+          "type": "Short explainer text + comparison table",
+          "objective": "Explain why a predictive alert is based on sensor evidence rather than speculation.",
+          "content_outline": [
+            "Address misconception directly: 'The AI is just guessing' (from SME notes)",
+            "Alerts triggered by specific sensor data patterns (vibration, temperature, pressure)",
+            "Analogy: check-engine light \u2014 sensor reading triggering known pattern",
+            "Comparison table: Guess vs. Sensor-Based Prediction",
+            "Frame: not perfect, but evidence-based and faster than waiting for breakdown"
+          ],
+          "practice_activity": "Scenario check \u2014 respond to colleague dismissing alerts as guesses"
+        },
+        {
+          "lesson_id": "m3.3",
+          "title": "Acting Within the Window",
+          "type": "Decision scenario (branching)",
+          "objective": "Determine the appropriate urgency of response based on an alert's action window.",
+          "content_outline": [
+            "Action window determines urgency of response",
+            "Short window (< 1 hour): immediate attention",
+            "Medium window (1\u20134 hours): plan response within shift",
+            "Long window (> 4 hours): monitor and include in handoff",
+            "Ignoring the window reduces response options"
+          ],
+          "practice_activity": "Triage exercise ranking three alerts by response urgency"
+        }
+      ]
+    },
+    {
+      "module_id": "m4",
+      "title": "Making Data-Driven Decisions",
+      "goal": "Integrate all prior skills into a complete decision workflow \u2014 consult, interpret, decide, document \u2014 so dashboard-informed decision-making becomes a repeatable practice.",
+      "estimated_duration_minutes": 15,
+      "outcomes_addressed": [
+        "LO4",
+        "LO5"
+      ],
+      "hook": "You've learned to read the dashboard and interpret its alerts. Now the question that matters most: What do you actually do with this information? This module puts you in the driver's seat.",
+      "lessons": [
+        {
+          "lesson_id": "m4.1",
+          "title": "Evaluating AI Recommendations",
+          "type": "Text + guided framework + worked example",
+          "objective": "Apply a three-step evaluation to an AI recommendation: assess the data, consider the operational context, and choose to act, modify, or escalate.",
+          "content_outline": [
+            "AI gives recommendations \u2014 you make decisions",
+            "Three-step evaluation: assess the data, consider the context, decide (act/modify/escalate)",
+            "Worked example using SME scenario with operational context",
+            "Caution for over-trust: evaluate, don't follow blindly"
+          ],
+          "practice_activity": "Evaluation exercise walking through three-step framework with decision and rationale"
+        },
+        {
+          "lesson_id": "m4.2",
+          "title": "When to Escalate",
+          "type": "Decision table + scenario",
+          "objective": "Identify conditions under which an AI alert should be escalated rather than acted on independently.",
+          "content_outline": [
+            "Escalation criteria: safety risk, exceeds authority, converging alerts, insufficient time",
+            "Escalation is a valid professional decision, not a failure",
+            "Who to escalate to and what information to include"
+          ],
+          "practice_activity": "Escalation judgment call \u2014 two scenarios, decide act or escalate with rationale"
+        },
+        {
+          "lesson_id": "m4.3",
+          "title": "The Complete Decision Workflow",
+          "type": "Interactive walkthrough + workflow summary graphic",
+          "objective": "Execute a four-step dashboard-informed decision workflow: consult, interpret, decide, document.",
+          "content_outline": [
+            "Four-step workflow: consult, interpret, decide, document",
+            "When to use: shift start, before adjustments, when alerts appear, post-incident",
+            "Documentation protects you and helps the next shift",
+            "Habit formation: repetition makes the workflow natural"
+          ],
+          "practice_activity": "None \u2014 flows directly into capstone"
+        },
+        {
+          "lesson_id": "m4.4",
+          "title": "Capstone \u2014 Your Shift, Your Call",
+          "type": "Summative scenario-based assessment (interactive simulation)",
+          "objective": "Demonstrate the complete decision workflow by consulting a simulated dashboard, interpreting signals, making a decision, and documenting rationale.",
+          "content_outline": [
+            "Scenario: shift start with declining throughput on Line 4, motor overheating alert (90-min window), throughput at 78% (red)",
+            "Learner identifies most critical signal",
+            "Learner interprets predictive alert (prediction, basis, window)",
+            "Learner evaluates recommendation against provided context",
+            "Learner chooses act/modify/escalate and justifies decision",
+            "Passing threshold: 80% accuracy"
+          ],
+          "practice_activity": "This IS the summative assessment \u2014 scored with step-by-step feedback"
+        }
+      ]
+    }
+  ],
+  "assessments": [],
+  "storyboards": [],
+  "qa": {},
+  "change_plan": {},
+  "ops_metadata": {}
+}
+
+BUSINESS_BRIEF (markdown):
+# Business Brief
+
+## Program name
+AI Adoption for Operations Managers
+
+## Who is this for? (Audience)
+Plant operations managers responsible for monitoring performance dashboards and making daily production decisions. Most have limited experience using AI tools.
+
+## What is the performance problem?
+Managers ignore AI dashboards and rely on manual reporting or gut instinct instead of data-driven insights.
+
+## What does success look like?
+Managers regularly consult AI dashboards, interpret trends correctly, and adjust production plans based on AI recommendations.
+
+## Business outcomes / KPIs
+- Increased dashboard usage
+- Faster decision-making
+- Reduced production inefficiencies
+
+## Constraints
+- Training must be under 45 minutes
+- Must work on desktop and tablet
+- No prior AI knowledge assumed
+
+## Required topics
+- What AI dashboards show
+- How to interpret insights
+- How to trust AI recommendations
+
+## Out of scope
+- How AI models are built
+- Coding or data science concepts
+
+## Deliverable format
+Self-paced eLearning course with short modules and scenario-based questions
+
+
+SME_NOTES (markdown):
+# SME Notes
+
+## Must-be-true facts
+AI dashboards update every 5 minutes and pull from production line sensors.
+
+## Terminology
+AI dashboard, predictive alert, performance trend.
+
+## Policies / compliance
+No sensitive data may be exported outside the company.
+
+## Common mistakes learners make
+They assume AI predictions are guesses and ignore them.
+
+## Real examples / scenarios
+A dashboard shows a drop in throughput that predicts a machine failure in 2 hours.
+
+
+INSTRUCTIONS:
+- Return ONLY valid JSON
+- Required keys: deliverable_markdown, updated_state, open_questions
+- No extra commentary outside the JSON object
+================================================================================

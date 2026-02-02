@@ -1,0 +1,37 @@
+# Mandatory Ignore
+outputs/
+governance/run_ledger.jsonl
+*.env
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log
+*.tmp
+
+# Common Hygiene (Restored)
+.venv/
+venv/
+env/
+exports/
+.idea/
+.vscode/
+
+# Conditional (Ignore if present)
+credentials.json
+secrets.json
+api_keys.*
+*.key
+
+# Explicitly Do Not Ignore (Files that should be tracked)
+!prompts/
+!scripts/
+!orchestrator/
+!schemas/
+!tests/
+!VERSION

@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11' 
+        # Fallback will effectively be if 3.11 fails, user would need to adjust, 
+        # but 3.11 is a safe modern default as requested.
+        # "setup python (use repo’s supported version, e.g., 3.11 if present; otherwise 3.10)"
+        # Since I don't see a runtime.txt or similar, I'll stick to 3.11 but I could use a matrix if I wanted to be fancy.
+        # Requirement said: "use repo’s supported version, e.g., 3.11 if present". 
+        # I checked python version locally it was 3.9, but most new code should be 3.10+. 
+        # I'll stick to 3.11 as primary as per prompt suggestion.
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Run Preflight Check
+      run: python3 scripts/preflight_check.py
+
+    - name: Run Golden Run Verification
+      run: python3 scripts/verify_golden_run.py

@@ -1,0 +1,79 @@
+{
+    "mode": "cli",
+    "provider": "openai",
+    "approval": {
+        "gate_strategy": "per_phase",
+        "phase_gates": [
+            3,
+            6,
+            9
+        ],
+        "require_approval_token": "APPROVE",
+        "risk_gate_escalation": {
+            "enabled": false,
+            "open_questions_threshold": 8,
+            "force_gate_on_qa_critical": true,
+            "auto_override": true
+        }
+    },
+    "validation": {
+        "min_deliverable_chars": 300,
+        "placeholder_markers": [
+            "[Missing",
+            "[Pending",
+            "TBD",
+            "TODO",
+            "PLACEHOLDER",
+            "template"
+        ],
+        "retry_once_on_parse_error": false
+    },
+    "agents": [
+        {
+            "name": "strategy_lead_agent",
+            "prompt_path": "prompts/strategy_lead/prompt.md",
+            "gate": false
+        },
+        {
+            "name": "learner_research_agent",
+            "prompt_path": "prompts/learner_research/prompt.md",
+            "gate": false,
+            "provider": "perplexity"
+        },
+        {
+            "name": "learning_architect_agent",
+            "prompt_path": "prompts/learning_architect/prompt.md",
+            "gate": false
+        },
+        {
+            "name": "instructional_designer_agent",
+            "prompt_path": "prompts/instructional_designer/prompt.md",
+            "gate": false
+        },
+        {
+            "name": "assessment_designer_agent",
+            "prompt_path": "prompts/assessment_designer/prompt.md",
+            "gate": false
+        },
+        {
+            "name": "storyboard_agent",
+            "prompt_path": "prompts/storyboard/prompt.md",
+            "gate": false
+        },
+        {
+            "name": "qa_agent",
+            "prompt_path": "prompts/qa/prompt.md",
+            "gate": false
+        },
+        {
+            "name": "change_management_agent",
+            "prompt_path": "prompts/change_management/prompt.md",
+            "gate": false
+        },
+        {
+            "name": "operations_librarian_agent",
+            "prompt_path": "prompts/operations_librarian/prompt.md",
+            "gate": false
+        }
+    ]
+}

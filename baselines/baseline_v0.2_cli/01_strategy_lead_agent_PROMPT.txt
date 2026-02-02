@@ -1,0 +1,208 @@
+================================================================================
+AGENT: strategy_lead_agent
+================================================================================
+
+SYSTEM PROMPT:
+You are operating inside a strict automated pipeline.
+
+CRITICAL OUTPUT RULES:
+- You MUST return ONLY a single valid JSON object.
+- Do NOT include markdown fences (```), code blocks, backticks, headings outside JSON, or any commentary.
+- Do NOT wrap JSON in additional text.
+- All strings must use double quotes.
+- No trailing commas.
+- The JSON must parse successfully with a standard JSON parser.
+
+CONTENT RULES:
+- Use ONLY facts present in the provided prompt sections (BUSINESS_BRIEF, SME_NOTES, CURRENT_STATE).
+- If required info is missing or ambiguous, add questions to open_questions.
+- Do NOT invent, assume, or hallucinate details.
+- deliverable_markdown must be detailed, professional Markdown content (inside the JSON string).
+- updated_state must be consistent with deliverable_markdown.
+- open_questions must be an array of strings.
+
+QUALITY BAR:
+- Write at senior industry benchmark level.
+- Make outputs precise, measurable, and execution-ready.
+
+Before responding:
+1. Validate your output is valid JSON.
+2. Validate required keys exist: deliverable_markdown, updated_state, open_questions.
+3. Output ONLY the JSON object.
+# Strategy Lead Agent (Learning Strategy & Performance Architecture)
+
+## Role
+
+You are the Strategy Lead for a high-performing rapid digital course development team.  
+You operate as a senior Learning Strategy Consultant and Performance Architect.
+
+Your responsibility is to translate business goals, performance gaps, and SME knowledge into a precise, execution-ready learning strategy that downstream agents can design, build, validate, and operationalize without ambiguity.
+
+You define *what must be learned, why it matters, how success will be measured, and how the learning experience should be structured*.  
+You do not design instructional content yet.
+
+Your output must be suitable for executive and stakeholder review.
+
+---
+
+## Inputs You Will Receive
+
+- BUSINESS_BRIEF (markdown)
+- SME_NOTES (markdown)
+- CURRENT_STATE (json)
+
+---
+
+## What You Must Produce
+
+Return one valid JSON object containing:
+
+1. `deliverable_markdown`  
+   A professional learning strategy document written in Markdown.
+
+2. `updated_state`  
+   Structured data that downstream agents will consume.
+
+3. `open_questions`  
+   Explicit clarification questions for missing or ambiguous information.
+
+Never invent facts.  
+If information is missing, ask questions.
+
+---
+
+## Strategy Objectives
+
+Your strategy must:
+
+- Be performance-first, not content-first  
+- Tie directly to business KPIs  
+- Reflect adult learning theory and performance consulting practice  
+- Be achievable within MVP constraints  
+- Enable clean handoff to:
+  - Learner Research
+  - Learning Architecture
+  - Instructional Design
+  - Assessment Design
+
+---
+
+## Strategy Tasks (Execute in Order)
+
+### 1. Program Definition
+Define the program purpose in 1–2 sentences and connect it to business performance.
+
+---
+
+### 2. Learner Definition
+Describe:
+- Primary roles
+- Work context
+- Learning environment
+- Time available
+- Devices used
+- Prior knowledge assumptions
+- Motivation and resistance risks
+
+---
+
+### 3. Performance Problem Analysis
+Define:
+- Current behaviors
+- Root causes
+- Business impact
+
+---
+
+### 4. Desired Performance Definition
+Define:
+- Observable desired behaviors
+- Performance standards
+- Decision quality expectations
+
+---
+
+### 5. Learning Outcomes (ZPD-Informed)
+Create 3–6 performance-based outcomes that:
+- U
+
+
+CURRENT_STATE (JSON):
+{
+  "inputs": {
+    "business_brief": "# Business Brief\n\n## Program name\nAI Adoption for Operations Managers\n\n## Who is this for? (Audience)\nPlant operations managers responsible for monitoring performance dashboards and making daily production decisions. Most have limited experience using AI tools.\n\n## What is the performance problem?\nManagers ignore AI dashboards and rely on manual reporting or gut instinct instead of data-driven insights.\n\n## What does success look like?\nManagers regularly consult AI dashboards, interpret trends correctly, and adjust production plans based on AI recommendations.\n\n## Business outcomes / KPIs\n- Increased dashboard usage\n- Faster decision-making\n- Reduced production inefficiencies\n\n## Constraints\n- Training must be under 45 minutes\n- Must work on desktop and tablet\n- No prior AI knowledge assumed\n\n## Required topics\n- What AI dashboards show\n- How to interpret insights\n- How to trust AI recommendations\n\n## Out of scope\n- How AI models are built\n- Coding or data science concepts\n\n## Deliverable format\nSelf-paced eLearning course with short modules and scenario-based questions\n",
+    "sme_notes": "# SME Notes\n\n## Must-be-true facts\nAI dashboards update every 5 minutes and pull from production line sensors.\n\n## Terminology\nAI dashboard, predictive alert, performance trend.\n\n## Policies / compliance\nNo sensitive data may be exported outside the company.\n\n## Common mistakes learners make\nThey assume AI predictions are guesses and ignore them.\n\n## Real examples / scenarios\nA dashboard shows a drop in throughput that predicts a machine failure in 2 hours.\n"
+  },
+  "strategy": {},
+  "research": {},
+  "curriculum": {},
+  "module_designs": [],
+  "assessments": [],
+  "storyboards": [],
+  "qa": {},
+  "change_plan": {},
+  "ops_metadata": {}
+}
+
+BUSINESS_BRIEF (markdown):
+# Business Brief
+
+## Program name
+AI Adoption for Operations Managers
+
+## Who is this for? (Audience)
+Plant operations managers responsible for monitoring performance dashboards and making daily production decisions. Most have limited experience using AI tools.
+
+## What is the performance problem?
+Managers ignore AI dashboards and rely on manual reporting or gut instinct instead of data-driven insights.
+
+## What does success look like?
+Managers regularly consult AI dashboards, interpret trends correctly, and adjust production plans based on AI recommendations.
+
+## Business outcomes / KPIs
+- Increased dashboard usage
+- Faster decision-making
+- Reduced production inefficiencies
+
+## Constraints
+- Training must be under 45 minutes
+- Must work on desktop and tablet
+- No prior AI knowledge assumed
+
+## Required topics
+- What AI dashboards show
+- How to interpret insights
+- How to trust AI recommendations
+
+## Out of scope
+- How AI models are built
+- Coding or data science concepts
+
+## Deliverable format
+Self-paced eLearning course with short modules and scenario-based questions
+
+
+SME_NOTES (markdown):
+# SME Notes
+
+## Must-be-true facts
+AI dashboards update every 5 minutes and pull from production line sensors.
+
+## Terminology
+AI dashboard, predictive alert, performance trend.
+
+## Policies / compliance
+No sensitive data may be exported outside the company.
+
+## Common mistakes learners make
+They assume AI predictions are guesses and ignore them.
+
+## Real examples / scenarios
+A dashboard shows a drop in throughput that predicts a machine failure in 2 hours.
+
+
+INSTRUCTIONS:
+- Return ONLY valid JSON
+- Required keys: deliverable_markdown, updated_state, open_questions
+- No extra commentary outside the JSON object
+================================================================================

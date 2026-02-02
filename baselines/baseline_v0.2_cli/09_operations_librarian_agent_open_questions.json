@@ -1,0 +1,8 @@
+[
+  "The term 'throughput indicator' is used extensively across modules, assessments, and storyboards but is not listed in the SME-provided terminology (AI dashboard, predictive alert, performance trend). Should this term be validated with the SME before build, or is an alternative term preferred?",
+  "The capstone assessment has four scored questions (S1\u2013S4) with an 80% pass threshold. What is the point allocation per question, and is partial credit available on multi-part questions (S3, S4)?",
+  "Is WCAG 2.1 AA compliance a firm build requirement? If so, colorblind-safe alternatives (icons, patterns, text labels) must be specified for all red/yellow/green color coding in storyboard assets.",
+  "Should progress saving and bookmarking be implemented given the interruption-prone production floor environment identified in research?",
+  "Is a downloadable or printable post-training quick-reference card (dashboard cheat sheet) in scope for LMS delivery, or will it be produced separately as a change management asset only?",
+  "What is the target tablet hardware profile and minimum performance budget for animations (Lottie, CSS blur, parallax)? Are there known older tablet models in use at plant facilities?"
+]

@@ -1,0 +1,27 @@
+{
+    "contract_name": "agent_output_contract_v1",
+    "description": "All agents must output a single JSON object with these required keys.",
+    "required_keys": [
+        "deliverable_markdown",
+        "updated_state",
+        "open_questions"
+    ],
+    "types": {
+        "deliverable_markdown": "string",
+        "updated_state": "object",
+        "open_questions": "array_of_strings"
+    },
+    "rules": [
+        "Return ONLY valid JSON. No markdown fences. No extra commentary.",
+        "Use double quotes for all JSON keys and string values.",
+        "deliverable_markdown must be a string (can contain markdown).",
+        "updated_state must be an object ({} if no updates).",
+        "open_questions must be an array ([] if none).",
+        "If information is missing, add a question to open_questions instead of inventing facts."
+    ],
+    "example_minimal_valid_output": {
+        "deliverable_markdown": "",
+        "updated_state": {},
+        "open_questions": []
+    }
+}

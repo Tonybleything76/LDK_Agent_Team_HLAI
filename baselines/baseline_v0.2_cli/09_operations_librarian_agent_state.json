@@ -1,0 +1,1170 @@
+{
+  "inputs": {
+    "business_brief": "# Business Brief\n\n## Program name\nAI Adoption for Operations Managers\n\n## Who is this for? (Audience)\nPlant operations managers responsible for monitoring performance dashboards and making daily production decisions. Most have limited experience using AI tools.\n\n## What is the performance problem?\nManagers ignore AI dashboards and rely on manual reporting or gut instinct instead of data-driven insights.\n\n## What does success look like?\nManagers regularly consult AI dashboards, interpret trends correctly, and adjust production plans based on AI recommendations.\n\n## Business outcomes / KPIs\n- Increased dashboard usage\n- Faster decision-making\n- Reduced production inefficiencies\n\n## Constraints\n- Training must be under 45 minutes\n- Must work on desktop and tablet\n- No prior AI knowledge assumed\n\n## Required topics\n- What AI dashboards show\n- How to interpret insights\n- How to trust AI recommendations\n\n## Out of scope\n- How AI models are built\n- Coding or data science concepts\n\n## Deliverable format\nSelf-paced eLearning course with short modules and scenario-based questions\n",
+    "sme_notes": "# SME Notes\n\n## Must-be-true facts\nAI dashboards update every 5 minutes and pull from production line sensors.\n\n## Terminology\nAI dashboard, predictive alert, performance trend.\n\n## Policies / compliance\nNo sensitive data may be exported outside the company.\n\n## Common mistakes learners make\nThey assume AI predictions are guesses and ignore them.\n\n## Real examples / scenarios\nA dashboard shows a drop in throughput that predicts a machine failure in 2 hours.\n"
+  },
+  "strategy": {
+    "status": "complete",
+    "program_name": "AI Adoption for Operations Managers",
+    "program_purpose": "Equip plant operations managers to routinely consult AI dashboards, accurately interpret production insights, and take timely data-driven action \u2014 replacing reliance on manual reporting and gut instinct.",
+    "target_audience": {
+      "primary_role": "Plant operations managers",
+      "work_context": "Manufacturing / production floor; time-pressured daily decisions",
+      "learning_environment": "Self-paced eLearning on desktop and tablet",
+      "max_training_time_minutes": 45,
+      "devices": [
+        "desktop",
+        "tablet"
+      ],
+      "prior_ai_knowledge": "none",
+      "motivation_factors": [
+        "faster decisions",
+        "peer adoption",
+        "management expectation"
+      ],
+      "resistance_risks": [
+        "distrust of AI predictions",
+        "comfort with manual processes",
+        "fear of technology replacing judgment",
+        "time pressure"
+      ]
+    },
+    "performance_problem": {
+      "current_behaviors": [
+        "Managers bypass AI dashboards or check them infrequently",
+        "Decisions based on manual reports, historical patterns, or intuition",
+        "Predictive alerts dismissed or ignored",
+        "Dashboard insights misinterpreted or not acted upon"
+      ],
+      "root_causes": [
+        "Lack of understanding of dashboard content and data sources",
+        "Distrust of AI predictions \u2014 perceived as unreliable guesses",
+        "No established workflow integrating dashboard consultation",
+        "Insufficient skills to interpret trends, alerts, and recommendations",
+        "Comfort with legacy manual reporting"
+      ],
+      "business_impact": [
+        "Delayed response to production anomalies",
+        "Increased downtime and inefficiency",
+        "Underutilization of AI technology investment",
+        "Slower decision-making cycles"
+      ]
+    },
+    "desired_performance": {
+      "observable_behaviors": [
+        "Consult AI dashboard at start of each shift and before production adjustments",
+        "Correctly identify and describe key dashboard indicators",
+        "Distinguish routine fluctuations from actionable predictive alerts",
+        "Adjust production plans based on AI recommendations with documented rationale",
+        "Escalate high-severity predictive alerts appropriately"
+      ],
+      "performance_standards": [
+        "Dashboard consulted minimum once per shift",
+        "Action taken within decision window indicated by alert",
+        "80% interpretation accuracy on assessment scenarios"
+      ]
+    },
+    "learning_outcomes": [
+      {
+        "id": "LO1",
+        "outcome": "Describe what the AI dashboard displays and where its data originates",
+        "rationale": "Managers understand they are viewing real-time sensor data, not speculative outputs"
+      },
+      {
+        "id": "LO2",
+        "outcome": "Identify and differentiate the three key dashboard elements: performance trends, predictive alerts, and throughput indicators",
+        "rationale": "Managers can read the dashboard without confusion"
+      },
+      {
+        "id": "LO3",
+        "outcome": "Interpret a predictive alert by explaining what it predicts, the confidence basis, and the recommended action window",
+        "rationale": "Managers treat alerts as actionable intelligence rather than guesses"
+      },
+      {
+        "id": "LO4",
+        "outcome": "Evaluate an AI recommendation against current operational context to decide whether to act, modify, or escalate",
+        "rationale": "Managers integrate AI insights with operational expertise"
+      },
+      {
+        "id": "LO5",
+        "outcome": "Demonstrate a complete decision workflow: consult dashboard, interpret signals, decide on action, and document rationale",
+        "rationale": "Dashboard-informed decision-making becomes a repeatable habit"
+      }
+    ],
+    "program_structure": {
+      "format": "Self-paced eLearning with short modules and scenario-based questions",
+      "total_duration_minutes": 45,
+      "modules": [
+        {
+          "module_number": 1,
+          "title": "Understanding Your AI Dashboard",
+          "focus": "What the dashboard shows; data sources; update frequency",
+          "estimated_duration_minutes": 10,
+          "outcomes_addressed": [
+            "LO1"
+          ]
+        },
+        {
+          "module_number": 2,
+          "title": "Reading the Signals",
+          "focus": "Key elements \u2014 trends, alerts, indicators; how to differentiate them",
+          "estimated_duration_minutes": 10,
+          "outcomes_addressed": [
+            "LO2"
+          ]
+        },
+        {
+          "module_number": 3,
+          "title": "Interpreting Predictive Alerts",
+          "focus": "What predictions mean; sensor-data basis; action windows",
+          "estimated_duration_minutes": 10,
+          "outcomes_addressed": [
+            "LO3"
+          ]
+        },
+        {
+          "module_number": 4,
+          "title": "Making Data-Driven Decisions",
+          "focus": "Evaluating recommendations; integrating with operational judgment; when to escalate",
+          "estimated_duration_minutes": 15,
+          "outcomes_addressed": [
+            "LO4",
+            "LO5"
+          ]
+        }
+      ]
+    },
+    "assessment_strategy": {
+      "formative": "Scenario-based check questions embedded within each module",
+      "summative": "Capstone scenario requiring dashboard consultation, signal interpretation, decision-making, and rationale justification",
+      "success_threshold": "80% accuracy on scenario-based assessments"
+    },
+    "kpi_alignment": {
+      "increased_dashboard_usage": "Outcomes LO1 and LO5 build understanding and habit; Module 4 integrates dashboard into decision workflow",
+      "faster_decision_making": "Outcomes LO3 and LO4 teach efficient interpretation and action; scenario practice builds fluency",
+      "reduced_production_inefficiencies": "Outcome LO4 ensures AI recommendations are evaluated and acted upon within appropriate time windows"
+    },
+    "design_principles": [
+      "Performance-first: every module connects to an on-the-job behavior",
+      "Scenario-based: realistic production scenarios as primary instructional vehicle",
+      "Trust-building: explicitly address misconception that AI predictions are guesses",
+      "Constraint-aware: desktop and tablet compatible; no data export",
+      "Modular: self-contained modules for flexible completion across shifts"
+    ],
+    "terminology": [
+      "AI dashboard",
+      "predictive alert",
+      "performance trend"
+    ],
+    "compliance_notes": [
+      "No sensitive data may be exported outside the company"
+    ],
+    "out_of_scope": [
+      "How AI models are built",
+      "Coding or data science concepts"
+    ]
+  },
+  "research": {
+    "status": "complete",
+    "personas": [
+      {
+        "id": "persona_a",
+        "name": "The Veteran Floor Manager",
+        "role": "Senior operations manager",
+        "experience_years": "15+",
+        "experience_level": "Deep operational expertise; minimal digital tool fluency",
+        "confidence_profile": "High confidence in own judgment; low confidence with AI tools",
+        "learning_maturity": "Prefers learning by doing; skeptical of abstract training; values proof through real examples",
+        "primary_risk": "Distrust and identity threat \u2014 sees AI as diminishing the value of experience"
+      },
+      {
+        "id": "persona_b",
+        "name": "The Mid-Career Pragmatist",
+        "role": "Operations manager",
+        "experience_years": "5\u201310",
+        "experience_level": "Moderate operational expertise; some digital tool comfort",
+        "confidence_profile": "Moderate; open to new tools if value demonstrated quickly",
+        "learning_maturity": "Willing to engage if content is concise and directly applicable; disengages from padded content",
+        "primary_risk": "Will mentally disengage if value proposition is not clear within first minutes"
+      },
+      {
+        "id": "persona_c",
+        "name": "The Early-Career Adopter",
+        "role": "Newer operations manager",
+        "experience_years": "1\u20134",
+        "experience_level": "Lower operational expertise; higher technology comfort",
+        "confidence_profile": "High technology confidence; lower operational judgment confidence",
+        "learning_maturity": "Comfortable with eLearning; may skim without deep reflection",
+        "primary_risk": "Over-reliance on AI without critical evaluation of recommendations"
+      }
+    ],
+    "motivations": {
+      "intrinsic": [
+        "Professional competence and effective decision-making self-image",
+        "Reduced uncertainty in high-stakes production decisions",
+        "Problem-solving satisfaction from interpreting data signals"
+      ],
+      "extrinsic": [
+        "Management expectation of AI dashboard adoption",
+        "Peer adoption pressure",
+        "Performance metrics tied to dashboard usage and decision speed",
+        "Time savings from reduced manual data gathering"
+      ]
+    },
+    "barriers": {
+      "cognitive": [
+        {
+          "barrier": "AI literacy gap",
+          "detail": "No prior AI knowledge; learners lack mental models for AI-generated insights",
+          "severity": "high"
+        },
+        {
+          "barrier": "Interpretation overload",
+          "detail": "Dashboard presents multiple data types simultaneously",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Misconception that AI predictions are guesses",
+          "detail": "SME-confirmed; blocks engagement entirely",
+          "severity": "high"
+        },
+        {
+          "barrier": "Difficulty distinguishing signal from noise",
+          "detail": "Cannot differentiate routine fluctuations from actionable alerts without practice",
+          "severity": "medium"
+        }
+      ],
+      "emotional_behavioral": [
+        {
+          "barrier": "Distrust of AI",
+          "detail": "Deep skepticism that AI can outperform human judgment",
+          "severity": "high"
+        },
+        {
+          "barrier": "Fear of technology replacing judgment",
+          "detail": "Concern that AI adoption diminishes professional value",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Fear of visible failure",
+          "detail": "AI-informed decisions create documented decision trail",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Change fatigue",
+          "detail": "Possible prior exposure to failed technology rollouts",
+          "severity": "medium"
+        }
+      ],
+      "environmental": [
+        {
+          "barrier": "Time pressure",
+          "detail": "Shift-based constraints; training competes with operational duties",
+          "severity": "high"
+        },
+        {
+          "barrier": "Interruption-prone environment",
+          "detail": "Production floor context means training may be started and stopped",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Device variability",
+          "detail": "Desktop and tablet; inconsistent screen real estate",
+          "severity": "medium"
+        },
+        {
+          "barrier": "Legacy workflow habits",
+          "detail": "Manual reporting routines deeply ingrained and reinforced by team norms",
+          "severity": "high"
+        }
+      ]
+    },
+    "application_context": {
+      "when_applied": [
+        "Shift start \u2014 assess production line status",
+        "During production \u2014 respond to predictive alerts",
+        "Decision points \u2014 before adjusting schedules or escalating",
+        "Post-incident review \u2014 evaluate whether AI signals were acted on"
+      ],
+      "pressure_conditions": [
+        "Decisions needed within minutes",
+        "Consequences of inaction include equipment damage and downtime",
+        "Consequences of wrong action include lost output and peer scrutiny",
+        "Multiple competing priorities during any shift"
+      ],
+      "tools_available": [
+        "AI dashboard (updates every 5 minutes from production line sensors)",
+        "Desktop or tablet access",
+        "Existing manual reporting systems"
+      ]
+    },
+    "engagement_implications": {
+      "adoption_enablers": [
+        "Open with recognizable production scenario, not abstract AI concepts",
+        "Explain sensor-data sourcing early to establish credibility",
+        "Maintain short modular structure aligned with shift constraints",
+        "Use realistic decision scenarios as primary learning vehicle",
+        "Explicitly address AI-as-guesses misconception",
+        "Frame manager as decision-maker; dashboard as input",
+        "Deliver quick wins in early modules"
+      ],
+      "dropout_risks": [
+        "Abstract or theoretical content",
+        "Perceived excessive length or padding",
+        "Unrealistic or oversimplified scenarios",
+        "Condescending tone toward experienced managers",
+        "No perceived benefit in first module",
+        "Poor tablet rendering or slow-loading simulations"
+      ]
+    },
+    "design_recommendations": [
+      "Lead with a real scenario, not a definition",
+      "Address AI distrust explicitly and early with sensor-data explanation",
+      "Frame AI as augmentation, not replacement",
+      "Design for interruption with progress saving",
+      "Differentiate instruction for over-trust and under-trust",
+      "Keep tone respectful of operational expertise",
+      "Ensure tablet parity for dashboard simulations"
+    ]
+  },
+  "curriculum": {
+    "total_modules": 4,
+    "total_lessons": 13,
+    "estimated_duration": "~45 minutes",
+    "format": "Self-paced eLearning with short modules and scenario-based questions",
+    "assessment_model": "Formative scenario checks per module + summative capstone scenario in Module 4",
+    "success_threshold": "80% accuracy on scenario-based assessments"
+  },
+  "module_designs": [
+    {
+      "module_id": "m1",
+      "title": "Understanding Your AI Dashboard",
+      "goal": "Establish what the AI dashboard is, where its data comes from, and why it is a reliable source of production information.",
+      "estimated_duration_minutes": 10,
+      "outcomes_addressed": [
+        "LO1"
+      ],
+      "hook": "It's 6:02 AM. You walk onto the floor, coffee in hand. Before you check in with your team, there's a screen showing you exactly what happened overnight \u2014 and what's about to happen next. But only if you know how to read it.",
+      "lessons": [
+        {
+          "lesson_id": "m1.1",
+          "title": "What You're Looking At",
+          "type": "Interactive annotated screenshot",
+          "objective": "Identify the main components visible on the AI dashboard home screen.",
+          "content_outline": [
+            "The AI dashboard consolidates production line data into a single view",
+            "Three primary areas: performance trends panel, predictive alerts panel, throughput indicators panel",
+            "Each area answers a different operational question"
+          ],
+          "practice_activity": "Label-the-dashboard drag-and-drop exercise"
+        },
+        {
+          "lesson_id": "m1.2",
+          "title": "Where the Data Comes From",
+          "type": "Short animated explainer + text summary",
+          "objective": "Explain that dashboard data originates from production line sensors and updates every 5 minutes.",
+          "content_outline": [
+            "Data pulled directly from production line sensors \u2014 not manually entered, not estimated",
+            "Dashboard refreshes every 5 minutes with latest sensor readings",
+            "Numbers reflect actual machine and line conditions",
+            "Explicitly address misconception: sensor data, not a guess"
+          ],
+          "practice_activity": "Scenario check question addressing the 'AI is guessing' misconception"
+        },
+        {
+          "lesson_id": "m1.3",
+          "title": "Why This Matters to Your Shift",
+          "type": "Text + brief scenario vignette",
+          "objective": "Describe one specific way dashboard data can inform a shift-start decision.",
+          "content_outline": [
+            "Before the dashboard: manual reports, verbal handoffs, walking the floor",
+            "With the dashboard: current state of every line in one view before first call",
+            "Dashboard does not replace judgment \u2014 gives judgment better inputs",
+            "Quick-win example: checking overnight throughput trend at shift start"
+          ],
+          "practice_activity": "Reflection prompt on first shift decision and relevant data point"
+        }
+      ]
+    },
+    {
+      "module_id": "m2",
+      "title": "Reading the Signals",
+      "goal": "Enable learners to identify and differentiate the three key dashboard elements \u2014 performance trends, predictive alerts, and throughput indicators.",
+      "estimated_duration_minutes": 10,
+      "outcomes_addressed": [
+        "LO2"
+      ],
+      "hook": "You check the dashboard. There's a green line trending upward, a yellow alert box, and a throughput number in red. Are any of these urgent? All of them? None? Let's make sure you know.",
+      "lessons": [
+        {
+          "lesson_id": "m2.1",
+          "title": "Performance Trends \u2014 The Big Picture",
+          "type": "Interactive visual with annotated trend graph",
+          "objective": "Interpret a performance trend line to determine whether production output is stable, improving, or declining.",
+          "content_outline": [
+            "Performance trends show output over time (last 8 hours, last shift, last 24 hours)",
+            "Upward = increasing; downward = declining; flat = stable",
+            "Trends combine historical and real-time data",
+            "Key skill: recognizing normal range vs. deviation"
+          ],
+          "practice_activity": "Read-the-graph exercise classifying three trend lines"
+        },
+        {
+          "lesson_id": "m2.2",
+          "title": "Predictive Alerts \u2014 What's Coming",
+          "type": "Text + side-by-side comparison visual",
+          "objective": "Distinguish a predictive alert from a performance trend by identifying its forward-looking nature and action window.",
+          "content_outline": [
+            "Predictive alerts are forward-looking \u2014 they tell you what data suggests will happen",
+            "Each alert includes: prediction, basis (sensor pattern), action window",
+            "Alerts are evidence-based, not speculative",
+            "Terminology reinforcement: predictive alert = forward-looking, sensor-based signal"
+          ],
+          "practice_activity": "Sort exercise \u2014 categorize dashboard messages as trend or alert"
+        },
+        {
+          "lesson_id": "m2.3",
+          "title": "Throughput Indicators \u2014 The Numbers Right Now",
+          "type": "Interactive dashboard snippet with guided walkthrough",
+          "objective": "Read a throughput indicator and state whether current output is above, at, or below target.",
+          "content_outline": [
+            "Throughput indicators show real-time output rates against target",
+            "Color coding: green = at/above target; yellow = approaching threshold; red = below target",
+            "Updates every 5 minutes with sensor refresh",
+            "Throughput = current state; complements trends (direction) and alerts (future)"
+          ],
+          "practice_activity": "Scenario check integrating trend, alert, and throughput reading"
+        }
+      ]
+    },
+    {
+      "module_id": "m3",
+      "title": "Interpreting Predictive Alerts",
+      "goal": "Build the skill and confidence to interpret a predictive alert accurately \u2014 understanding what it predicts, why it should be trusted, and when to act.",
+      "estimated_duration_minutes": 10,
+      "outcomes_addressed": [
+        "LO3"
+      ],
+      "hook": "The dashboard just flagged a predictive alert: 'Throughput drop detected on Line 2. Predicted machine fault within 2 hours.' Your first instinct might be to dismiss it. Before you do \u2014 let's look at what's actually behind that alert.",
+      "lessons": [
+        {
+          "lesson_id": "m3.1",
+          "title": "Anatomy of a Predictive Alert",
+          "type": "Annotated alert example with interactive callouts",
+          "objective": "Identify the three components of a predictive alert: prediction, confidence basis, and recommended action window.",
+          "content_outline": [
+            "Three parts of every alert: prediction, confidence basis, action window",
+            "The Prediction: what the system expects (e.g., machine fault, throughput drop)",
+            "The Confidence Basis: sensor data pattern that triggered the alert",
+            "The Action Window: time available to respond",
+            "Worked example using SME scenario: throughput drop \u2192 machine failure \u2192 2-hour window"
+          ],
+          "practice_activity": "Deconstruct-the-alert exercise identifying three components in a new alert"
+        },
+        {
+          "lesson_id": "m3.2",
+          "title": "Why This Isn't a Guess",
+          "type": "Short explainer text + comparison table",
+          "objective": "Explain why a predictive alert is based on sensor evidence rather than speculation.",
+          "content_outline": [
+            "Address misconception directly: 'The AI is just guessing' (from SME notes)",
+            "Alerts triggered by specific sensor data patterns (vibration, temperature, pressure)",
+            "Analogy: check-engine light \u2014 sensor reading triggering known pattern",
+            "Comparison table: Guess vs. Sensor-Based Prediction",
+            "Frame: not perfect, but evidence-based and faster than waiting for breakdown"
+          ],
+          "practice_activity": "Scenario check \u2014 respond to colleague dismissing alerts as guesses"
+        },
+        {
+          "lesson_id": "m3.3",
+          "title": "Acting Within the Window",
+          "type": "Decision scenario (branching)",
+          "objective": "Determine the appropriate urgency of response based on an alert's action window.",
+          "content_outline": [
+            "Action window determines urgency of response",
+            "Short window (< 1 hour): immediate attention",
+            "Medium window (1\u20134 hours): plan response within shift",
+            "Long window (> 4 hours): monitor and include in handoff",
+            "Ignoring the window reduces response options"
+          ],
+          "practice_activity": "Triage exercise ranking three alerts by response urgency"
+        }
+      ]
+    },
+    {
+      "module_id": "m4",
+      "title": "Making Data-Driven Decisions",
+      "goal": "Integrate all prior skills into a complete decision workflow \u2014 consult, interpret, decide, document \u2014 so dashboard-informed decision-making becomes a repeatable practice.",
+      "estimated_duration_minutes": 15,
+      "outcomes_addressed": [
+        "LO4",
+        "LO5"
+      ],
+      "hook": "You've learned to read the dashboard and interpret its alerts. Now the question that matters most: What do you actually do with this information? This module puts you in the driver's seat.",
+      "lessons": [
+        {
+          "lesson_id": "m4.1",
+          "title": "Evaluating AI Recommendations",
+          "type": "Text + guided framework + worked example",
+          "objective": "Apply a three-step evaluation to an AI recommendation: assess the data, consider the operational context, and choose to act, modify, or escalate.",
+          "content_outline": [
+            "AI gives recommendations \u2014 you make decisions",
+            "Three-step evaluation: assess the data, consider the context, decide (act/modify/escalate)",
+            "Worked example using SME scenario with operational context",
+            "Caution for over-trust: evaluate, don't follow blindly"
+          ],
+          "practice_activity": "Evaluation exercise walking through three-step framework with decision and rationale"
+        },
+        {
+          "lesson_id": "m4.2",
+          "title": "When to Escalate",
+          "type": "Decision table + scenario",
+          "objective": "Identify conditions under which an AI alert should be escalated rather than acted on independently.",
+          "content_outline": [
+            "Escalation criteria: safety risk, exceeds authority, converging alerts, insufficient time",
+            "Escalation is a valid professional decision, not a failure",
+            "Who to escalate to and what information to include"
+          ],
+          "practice_activity": "Escalation judgment call \u2014 two scenarios, decide act or escalate with rationale"
+        },
+        {
+          "lesson_id": "m4.3",
+          "title": "The Complete Decision Workflow",
+          "type": "Interactive walkthrough + workflow summary graphic",
+          "objective": "Execute a four-step dashboard-informed decision workflow: consult, interpret, decide, document.",
+          "content_outline": [
+            "Four-step workflow: consult, interpret, decide, document",
+            "When to use: shift start, before adjustments, when alerts appear, post-incident",
+            "Documentation protects you and helps the next shift",
+            "Habit formation: repetition makes the workflow natural"
+          ],
+          "practice_activity": "None \u2014 flows directly into capstone"
+        },
+        {
+          "lesson_id": "m4.4",
+          "title": "Capstone \u2014 Your Shift, Your Call",
+          "type": "Summative scenario-based assessment (interactive simulation)",
+          "objective": "Demonstrate the complete decision workflow by consulting a simulated dashboard, interpreting signals, making a decision, and documenting rationale.",
+          "content_outline": [
+            "Scenario: shift start with declining throughput on Line 4, motor overheating alert (90-min window), throughput at 78% (red)",
+            "Learner identifies most critical signal",
+            "Learner interprets predictive alert (prediction, basis, window)",
+            "Learner evaluates recommendation against provided context",
+            "Learner chooses act/modify/escalate and justifies decision",
+            "Passing threshold: 80% accuracy"
+          ],
+          "practice_activity": "This IS the summative assessment \u2014 scored with step-by-step feedback"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "question_id": "F1.1",
+      "type": "multiple_choice",
+      "stem": "A colleague says: \"I don't trust the AI dashboard \u2014 the numbers are just the computer's best guess.\" Which response is most accurate?",
+      "options": [
+        "A) \"You're right \u2014 the AI generates estimates based on historical averages.\"",
+        "B) \"The dashboard displays sensor data collected directly from production line equipment and refreshed every 5 minutes.\"",
+        "C) \"The data is entered manually by the night shift supervisor.\"",
+        "D) \"The AI uses industry benchmarks, not our actual production data.\""
+      ],
+      "correct_answer": "B",
+      "feedback": "Correct: The AI dashboard pulls data directly from production line sensors and updates every 5 minutes \u2014 not estimates or guesses. Incorrect: The data is not guessed, manually entered, or sourced from external benchmarks. It comes directly from production line sensors reflecting actual machine conditions.",
+      "lo_alignment": "LO1"
+    },
+    {
+      "question_id": "F1.2",
+      "type": "multiple_choice",
+      "stem": "How frequently does the AI dashboard update, and where does its data come from?",
+      "options": [
+        "A) Every hour, from manually entered shift reports",
+        "B) Every 5 minutes, from production line sensors",
+        "C) Once per shift, from quality control inspections",
+        "D) In real-time, from external industry databases"
+      ],
+      "correct_answer": "B",
+      "feedback": "Correct: The dashboard refreshes every 5 minutes using data from production line sensors (temperature, vibration, pressure, speed). Incorrect: Updates occur every 5 minutes from production line sensors \u2014 not hourly, not once per shift, and not from external databases.",
+      "lo_alignment": "LO1"
+    },
+    {
+      "question_id": "F2.1",
+      "type": "multiple_choice",
+      "stem": "You see three items on the dashboard: a line graph showing output over the past 8 hours, a yellow box stating \"Conveyor jam predicted within 1 hour,\" and a number reading \"91%\" in yellow. Which correctly identifies all three?",
+      "options": [
+        "A) Predictive alert, throughput indicator, performance trend",
+        "B) Performance trend, predictive alert, throughput indicator",
+        "C) Throughput indicator, performance trend, predictive alert",
+        "D) Performance trend, throughput indicator, predictive alert"
+      ],
+      "correct_answer": "B",
+      "feedback": "Correct: Line graph over time = performance trend; yellow prediction box = predictive alert; percentage against target = throughput indicator. Incorrect: Performance trends show output over time (graphs). Predictive alerts are forward-looking warnings. Throughput indicators show current output rate vs. target.",
+      "lo_alignment": "LO2"
+    },
+    {
+      "question_id": "F2.2",
+      "type": "multiple_choice",
+      "stem": "Line 3 shows a throughput indicator of 78% in red. What does this tell you?",
+      "options": [
+        "A) Line 3 is operating above target",
+        "B) Line 3 is approaching its target threshold",
+        "C) Line 3 is currently operating below its production target",
+        "D) Line 3 has been shut down for maintenance"
+      ],
+      "correct_answer": "C",
+      "feedback": "Correct: Red means below production target. Green = at/above target, yellow = approaching threshold, red = below target. Incorrect: Red indicates below target \u2014 not above, not approaching, and not shut down.",
+      "lo_alignment": "LO2"
+    },
+    {
+      "question_id": "F3.1",
+      "type": "multiple_choice",
+      "stem": "The dashboard displays: \"Line 2 \u2014 Declining throughput and elevated motor vibration detected. Predicted machine fault within 2 hours.\" Which correctly identifies the three components of this predictive alert?",
+      "options": [
+        "A) Prediction: elevated motor vibration; Basis: machine fault; Window: 2 hours",
+        "B) Prediction: machine fault on Line 2; Basis: declining throughput + elevated motor vibration; Window: 2 hours",
+        "C) Prediction: declining throughput; Basis: 2-hour timeline; Window: motor vibration",
+        "D) Prediction: Line 2 shutdown; Basis: production schedule; Window: end of shift"
+      ],
+      "correct_answer": "B",
+      "feedback": "Correct: Prediction = machine fault; Basis = sensor patterns (declining throughput + elevated motor vibration); Window = 2 hours. Incorrect: The three components are: (1) Prediction \u2014 expected event; (2) Confidence basis \u2014 sensor data triggering the alert; (3) Action window \u2014 response time available.",
+      "lo_alignment": "LO3"
+    },
+    {
+      "question_id": "F3.2",
+      "type": "multiple_choice",
+      "stem": "Three alerts appear simultaneously: Alert A \u2014 coolant flow anomaly, overheating predicted within 45 minutes. Alert B \u2014 belt wear detected, slippage predicted within 6 hours. Alert C \u2014 motor vibration increase, bearing issue predicted within 3 hours. Which alert requires the most immediate attention?",
+      "options": [
+        "A) Alert A \u2014 45-minute window (immediate attention required)",
+        "B) Alert B \u2014 6-hour window (longest lead time)",
+        "C) Alert C \u2014 3-hour window (medium urgency)",
+        "D) All three should be addressed equally at the same time"
+      ],
+      "correct_answer": "A",
+      "feedback": "Correct: Alert A has the shortest action window (45 min, under 1 hour = immediate attention). Alert C (3 hrs) can be planned within shift. Alert B (6 hrs) can be monitored and handed off. Incorrect: Urgency is determined by action window: under 1 hour = immediate, 1\u20134 hours = plan within shift, over 4 hours = monitor and handoff.",
+      "lo_alignment": "LO3"
+    },
+    {
+      "question_id": "F4.1",
+      "type": "multiple_choice",
+      "stem": "The dashboard recommends halting Line 5 due to predicted seal failure within 90 minutes. However, Line 5 is the only active packaging line, and a backup unit can be online in 20 minutes. Using the three-step evaluation framework, what is the most appropriate decision?",
+      "options": [
+        "A) Act \u2014 halt Line 5 immediately as the dashboard recommends",
+        "B) Modify \u2014 switch to backup unit before halting Line 5 to minimize downtime, then address the seal issue",
+        "C) Escalate \u2014 pass the decision to a supervisor because the dashboard might be wrong",
+        "D) Ignore \u2014 continue running Line 5 since the prediction might not come true"
+      ],
+      "correct_answer": "B",
+      "feedback": "Correct: Modify accounts for context \u2014 backup available in 20 min within a 90-min window. Address the alert while minimizing operational disruption. Incorrect: (1) Assess data: seal failure in 90 min. (2) Context: only packaging line but backup in 20 min. (3) Modify is best \u2014 addresses alert while minimizing disruption. Ignoring risks failure; immediate halt stops all outbound unnecessarily.",
+      "lo_alignment": "LO4"
+    },
+    {
+      "question_id": "F4.2",
+      "type": "multiple_choice",
+      "stem": "Two alerts fire simultaneously: Line 1 predicts a conveyor fault within 1 hour and Line 3 predicts a bearing failure within 45 minutes. You have one available technician. What is the appropriate action?",
+      "options": [
+        "A) Send the technician to Line 1 because it appeared first on the dashboard",
+        "B) Send the technician to Line 3 (shortest window) and escalate Line 1 to your supervisor with alert details, your assessment, and time remaining",
+        "C) Ignore both alerts and wait for actual failures to confirm the predictions",
+        "D) Send the technician to whichever line has higher output"
+      ],
+      "correct_answer": "B",
+      "feedback": "Correct: Address the most urgent alert first (Line 3, 45 min) and escalate Line 1 with full details when resources are insufficient for both. Escalation is a professional response, not a failure. Incorrect: Converging alerts exceeding resources require triage (shortest window first) and escalation of the remaining alert with details, assessment, recommendation, and time remaining.",
+      "lo_alignment": "LO4, LO5"
+    },
+    {
+      "question_id": "S1",
+      "type": "scenario",
+      "stem": "[Capstone] Looking at the Line 4 dashboard \u2014 throughput declining 4 hours, predictive alert for motor overheating with failure within 90 minutes, throughput at 78% (red) \u2014 which signal requires your most immediate attention?",
+      "options": [
+        "A) The performance trend showing 4 hours of decline",
+        "B) The predictive alert for motor overheating with a 90-minute window",
+        "C) The throughput indicator at 78% (red)",
+        "D) All three are equally urgent"
+      ],
+      "correct_answer": "B",
+      "feedback": "Correct: The predictive alert has the shortest action window (90 min) and highest consequence (motor failure). Trends show history; throughput shows current state; the alert tells you what's about to happen. Incorrect: The predictive alert is most urgent due to its time-limited action window and high consequence. The other signals provide context but do not have the same time sensitivity.",
+      "lo_alignment": "LO2, LO3"
+    },
+    {
+      "question_id": "S2",
+      "type": "scenario",
+      "stem": "[Capstone] Break down the predictive alert: \"Motor overheating detected on Line 4. Temperature and vibration patterns consistent with imminent motor failure. Respond within 90 minutes.\" What are the prediction, confidence basis, and action window?",
+      "options": [
+        "A) Prediction: temperature increase; Basis: motor overheating; Window: 90 minutes",
+        "B) Prediction: imminent motor failure on Line 4; Basis: temperature and vibration sensor patterns; Window: 90 minutes",
+        "C) Prediction: Line 4 shutdown; Basis: throughput at 78%; Window: 3 hours",
+        "D) Prediction: vibration patterns; Basis: imminent failure; Window: end of shift"
+      ],
+      "correct_answer": "B",
+      "feedback": "Correct: Prediction = imminent motor failure; Basis = temperature and vibration sensor patterns; Window = 90 minutes. Incorrect: (1) Prediction = expected event (motor failure); (2) Basis = sensor data triggering the alert (temperature + vibration patterns); (3) Window = response time (90 minutes). Throughput percentage and shift end are not components of this alert.",
+      "lo_alignment": "LO3"
+    },
+    {
+      "question_id": "S3",
+      "type": "scenario",
+      "stem": "[Capstone] Apply the three-step evaluation. The alert predicts motor failure in 90 minutes. Context: a priority order is due in 3 hours and a technician is available now. What is the best course of action?",
+      "options": [
+        "A) Ignore the alert and focus on the priority order \u2014 the motor might not actually fail",
+        "B) Escalate immediately \u2014 this is too complex to handle independently",
+        "C) Modify \u2014 dispatch the technician now for inspection and planned brief stoppage within the 90-minute window while communicating the priority order status to your supervisor",
+        "D) Act \u2014 shut down Line 4 immediately and wait for the motor to be fully replaced"
+      ],
+      "correct_answer": "C",
+      "feedback": "Correct: Data = motor failure in 90 min (credible, time-sensitive). Context = technician available, priority order gives 3-hr buffer. Decision = Modify: dispatch technician, plan controlled intervention within window, manage the order. Incorrect: Ignoring risks failure. Immediate shutdown is premature given available resources. Escalation isn't needed when you have resources and authority. Modify uses the action window effectively.",
+      "lo_alignment": "LO4, LO5"
+    },
+    {
+      "question_id": "S4",
+      "type": "scenario",
+      "stem": "[Capstone] After making your decision, what should you include in your shift documentation? Select the most complete answer.",
+      "options": [
+        "A) The alert details only",
+        "B) The alert details, the decision made, and the rationale for your decision",
+        "C) The alert details, your decision, your rationale, and any escalation or communication actions taken",
+        "D) A copy of all raw sensor log data from Line 4"
+      ],
+      "correct_answer": "C",
+      "feedback": "Correct: Complete documentation includes alert details, your decision, your rationale, and any communication or escalation actions. This protects you, informs the next shift, and creates an auditable trail. Incorrect: Documentation must include what you saw, what you decided, why, and what actions were communicated. Alert details alone or without communication records are incomplete. Raw sensor logs are not required at manager level.",
+      "lo_alignment": "LO5"
+    }
+  ],
+  "storyboards": [
+    {
+      "screen_id": "m1.1.s1",
+      "visual_layout": "Full-width single panel. Dashboard screenshot centered at 90% container width. Text overlay at bottom-left fades in after image sharpens.",
+      "media_asset_description": "img/m1/dashboard_full_blur.png \u2014 Full AI dashboard screenshot with initial Gaussian blur (radius 8px) that dissolves to sharp over 1.5s.",
+      "alt_text": "Full view of the AI production dashboard showing performance trends, predictive alerts, and throughput indicators panels before labels are applied.",
+      "dev_notes": "CSS blur filter on load; animate to filter:blur(0) over 1.5s ease-out on viewport entry. Text fades in (opacity 0\u21921, 0.8s) after blur clears. Use object-fit:contain for tablet responsiveness."
+    },
+    {
+      "screen_id": "m1.1.s2",
+      "visual_layout": "Full-width dashboard screenshot with three sequential color-coded border overlays (blue, amber, green). Corresponding text blocks appear below each highlighted panel.",
+      "media_asset_description": "img/m1/dashboard_three_panels.png \u2014 Dashboard screenshot. Three SVG overlays: overlay_trends_blue.svg, overlay_alerts_amber.svg, overlay_throughput_green.svg.",
+      "alt_text": "AI dashboard with three panels highlighted sequentially: Performance Trends in blue, Predictive Alerts in amber, Throughput Indicators in green.",
+      "dev_notes": "Guided reveal on scroll/click Next. Sequence: blue\u2192amber\u2192green. All remain visible after reveal. Tablet: stack text below image. Border animation via stroke-dashoffset 0.6s."
+    },
+    {
+      "screen_id": "m1.1.s3",
+      "visual_layout": "Two-zone layout. Left 60%: unlabeled dashboard with three drop-target hotspots. Right 40%: three draggable label chips stacked vertically.",
+      "media_asset_description": "img/m1/dashboard_unlabeled.png \u2014 Dashboard with visible panels but no labels. Three styled label chips: Performance Trends, Predictive Alerts, Throughput Indicators.",
+      "alt_text": "Interactive drag-and-drop exercise with three labels to place on the correct dashboard panel.",
+      "dev_notes": "HTML5 Drag and Drop with touch fallback (SortableJS). Drop zones as percentage-based regions. Correct: green check + lock. Incorrect: red shake + return. Tablet: min 48x48px touch targets. Summary feedback after all correct."
+    },
+    {
+      "screen_id": "m1.2.s1",
+      "visual_layout": "Full-width animated explainer. Three-stage horizontal flow: Sensor \u2192 Data Stream \u2192 Dashboard. Text below animation.",
+      "media_asset_description": "anim/m1/sensor_to_dashboard.json (Lottie) \u2014 Production line sensors emitting data particles flowing into dashboard wireframe. Timestamp cycles every 5s. Fallback: img/m1/sensor_flow_static.png.",
+      "alt_text": "Animation showing production line sensors collecting temperature, vibration, pressure, and speed data flowing into the AI dashboard, refreshing every 5 minutes.",
+      "dev_notes": "Lottie-web autoplay on viewport entry, loop refresh indicator. prefers-reduced-motion fallback to static image. Tablet: 100% width, reduce particle count."
+    },
+    {
+      "screen_id": "m1.2.s2",
+      "visual_layout": "Centered card (max-width 680px). Checklist with check and cross items.",
+      "media_asset_description": "icon/check_circle_green.svg and icon/cancel_red.svg. Card background #F5F5F5, rounded 8px, subtle shadow.",
+      "alt_text": "Summary card with five facts: three true (sensor-sourced, 5-minute updates, actual conditions) and two false (not manual, not guessed).",
+      "dev_notes": "Staggered entrance: each line fades in 0.3s delay. Green items first, then red. Static on prefers-reduced-motion."
+    },
+    {
+      "screen_id": "m1.2.s3",
+      "visual_layout": "Scenario card. Top: colleague avatar + speech bubble. Below: four radio options. Bottom: hidden feedback panel.",
+      "media_asset_description": "img/m1/avatar_colleague_a.svg \u2014 Neutral factory colleague avatar with hardhat and high-vis vest. Speech bubble gray background.",
+      "alt_text": "Colleague in factory gear says the AI dashboard is making things up. Four response options below.",
+      "dev_notes": "Radio + Submit. Disable options after submit. Correct (B): green + feedback slides in. Incorrect: red + correct highlighted + corrective text. Tablet: full-width, 48px targets."
+    },
+    {
+      "screen_id": "m1.3.s1",
+      "visual_layout": "Split screen 50/50 horizontal. Left: Before (desaturated). Right: After (full color). Center divider labeled Before | After.",
+      "media_asset_description": "Left: img/m1/before_clipboard.svg \u2014 Manager with clipboard, papers, slow clock. Right: img/m1/after_tablet.svg \u2014 Manager viewing dashboard on tablet, fast clock.",
+      "alt_text": "Split comparison. Before: manager with clipboard and papers, time-consuming checks. After: manager viewing dashboard on tablet, faster status check.",
+      "dev_notes": "Panels slide in from respective sides 0.6s ease-out. Divider draws vertically 0.4s. Tablet: stack vertically with horizontal divider."
+    },
+    {
+      "screen_id": "m1.3.s2",
+      "visual_layout": "Dashboard snippet 60% centered with annotation callout. Text below.",
+      "media_asset_description": "img/m1/overnight_throughput_snippet.png \u2014 Trend line with downward slope last 2 hours. Annotation: Throughput declined 12% between 03:00 and 06:00.",
+      "alt_text": "Dashboard snippet showing overnight throughput trend with downward slope. Annotation: Throughput declined 12 percent between 03:00 and 06:00.",
+      "dev_notes": "Annotation fades in after 1s with arrow draw. Static on reduced-motion. Responsive max-width:100%."
+    },
+    {
+      "screen_id": "m1.3.s3",
+      "visual_layout": "Reflection card centered (max-width 640px). Optional text area. Expandable examples section below.",
+      "media_asset_description": "icon/lightbulb_outline.svg. Text area with placeholder. Expandable section with chevron toggle.",
+      "alt_text": "Reflection prompt about first shift decision with optional text box and expandable examples from other managers.",
+      "dev_notes": "Text area 4-row min, autogrow. No validation. Examples collapsed by default. Response in sessionStorage only. Tablet: full-width."
+    },
+    {
+      "screen_id": "m2.1.s1",
+      "visual_layout": "Top: annotated trend graph 70% width. Right sidebar legend. Bottom: text. Shaded normal-range band.",
+      "media_asset_description": "img/m2/trend_graph_annotated.svg \u2014 Three lines: upward green, downward red, flat gray. Normal range as blue band. Annotations: Increasing, Declining, Stable.",
+      "alt_text": "Annotated trend graph with three lines (increasing, declining, stable) and a shaded normal range band.",
+      "dev_notes": "SVG lines draw sequentially (stroke-dashoffset 1s each). Annotations fade in after line. Normal band fades last. Tablet: legend below graph."
+    },
+    {
+      "screen_id": "m2.1.s2",
+      "visual_layout": "Three mini-graphs side by side (33% each). Radio group below each. Submit button.",
+      "media_asset_description": "img/m2/mini_graph_a.svg (upward), img/m2/mini_graph_b.svg (sharp decline), img/m2/mini_graph_c.svg (flat). Three-option radio per graph.",
+      "alt_text": "Three mini trend graphs for classification. Graph A: upward. Graph B: sharp decline. Graph C: flat within normal range.",
+      "dev_notes": "Independent scoring per graph. Correct: green border + check. Incorrect: red + correct answer. All three required. Tablet: stack vertically."
+    },
+    {
+      "screen_id": "m2.2.s1",
+      "visual_layout": "Side-by-side 50/50. Left: trend graph with blue header. Right: alert box with amber header. Center divider.",
+      "media_asset_description": "Left: img/m2/trend_example.svg. Right: img/m2/alert_example.svg with prediction/basis/window fields.",
+      "alt_text": "Side-by-side comparison. Left: Performance Trend showing what happened. Right: Predictive Alert showing what is coming.",
+      "dev_notes": "Panels slide in from sides 0.5s. Tablet: stack vertically."
+    },
+    {
+      "screen_id": "m2.2.s2",
+      "visual_layout": "Glossary card centered (max-width 600px). Amber left border accent 4px.",
+      "media_asset_description": "icon/alert_amber.svg. Card background #FFF8E1.",
+      "alt_text": "Glossary card defining Predictive Alert as a forward-looking signal from sensor data patterns indicating a probable future event.",
+      "dev_notes": "Static. Entrance: fade in + translateY 10px\u21920. Tablet: full-width 16px margin."
+    },
+    {
+      "screen_id": "m2.2.s3",
+      "visual_layout": "Two-column sort area top (Trend left, Alert right). Five draggable cards below.",
+      "media_asset_description": "Five dashboard message card divs. Column headers: blue (Trend), amber (Alert). Drop zones highlight on drag.",
+      "alt_text": "Sorting exercise with five dashboard messages to classify as Performance Trend or Predictive Alert.",
+      "dev_notes": "SortableJS drag-and-drop. Per-card feedback on drop. Reset button. Tablet: columns as top/bottom zones, cards horizontal scroll. 48px targets."
+    },
+    {
+      "screen_id": "m2.3.s1",
+      "visual_layout": "Dashboard snippet centered with three clickable line cards. Expanded explanation on click (accordion).",
+      "media_asset_description": "img/m2/throughput_three_lines.svg \u2014 Line 1 Green 102%, Line 2 Yellow 91%, Line 3 Red 78%. Target line at 90%.",
+      "alt_text": "Three throughput indicators: Line 1 green 102%, Line 2 yellow 91%, Line 3 red 78%, with target at 90%.",
+      "dev_notes": "Click-to-reveal accordion. One panel open at a time. Tablet: cards stack vertically. Desktop: hover elevation."
+    },
+    {
+      "screen_id": "m2.3.s2",
+      "visual_layout": "Top: combined Line 2 dashboard view. Below: three sequential multiple-choice questions with per-question feedback.",
+      "media_asset_description": "img/m2/line2_combined_dashboard.png \u2014 Line 2 with declining trend, conveyor jam alert 1hr, throughput 89% yellow.",
+      "alt_text": "Combined Line 2 dashboard with declining trend, conveyor jam alert within 1 hour, and throughput at 89% yellow. Three questions follow.",
+      "dev_notes": "Progressive disclosure: Q2 after Q1 answered, Q3 after Q2. Desktop: sticky dashboard at top. Tablet: scrolls with content."
+    },
+    {
+      "screen_id": "m3.1.s1",
+      "visual_layout": "Large alert box centered (max-width 720px). Three color-coded sections with callout arrows. Click to expand.",
+      "media_asset_description": "img/m3/alert_anatomy.svg \u2014 Alert with Prediction (red tint), Confidence Basis (blue tint), Action Window (amber tint). Callout arrows.",
+      "alt_text": "Predictive alert with three highlighted sections: Prediction (red), Confidence Basis (blue), Action Window (amber). Click each to reveal explanation.",
+      "dev_notes": "Click-to-reveal per section. Arrow draw on hover/focus. All three must be opened to Continue. Tablet: numbered badges replace arrows."
+    },
+    {
+      "screen_id": "m3.1.s2",
+      "visual_layout": "Two-tier. Top: alert box. Bottom: three-row decomposition table. Connecting lines between.",
+      "media_asset_description": "img/m3/sme_alert_decomposition.svg \u2014 Alert box with decomposition table. Dotted connecting lines. Color-coded rows.",
+      "alt_text": "Worked example decomposing the SME alert into Prediction (machine fault), Confidence Basis (declining throughput + motor vibration), Action Window (2 hours).",
+      "dev_notes": "Lines draw sequentially 0.5s each. Rows highlight as lines draw. Reduced-motion: static. Tablet: numbered badges instead of lines."
+    },
+    {
+      "screen_id": "m3.1.s3",
+      "visual_layout": "Top: new alert card. Below: three dropdown fields. Submit + feedback panel.",
+      "media_asset_description": "Alert card with amber border. Three labeled dropdown fields color-coded by component.",
+      "alt_text": "Exercise: Line 4 pressure sensor alert with valve degradation predicted within 4 hours. Identify prediction, confidence basis, and action window.",
+      "dev_notes": "Dropdown selects with predefined options. Per-field feedback (green/red). All must be reviewed before Continue. Tablet: full-width stacked dropdowns."
+    },
+    {
+      "screen_id": "m3.2.s1",
+      "visual_layout": "Centered comparison table (max-width 700px). Two columns, five rows. Analogy callout below.",
+      "media_asset_description": "img/m3/guess_vs_prediction_table.svg \u2014 Guess (gray) vs Prediction (green) table. icon/car_engine_light.svg below.",
+      "alt_text": "Comparison table: Guess vs Sensor-Based Prediction across five dimensions. Check-engine light analogy below.",
+      "dev_notes": "Rows fade in staggered 0.2s. Analogy appears after table. Tablet: horizontal scroll if needed, analogy full-width."
+    },
+    {
+      "screen_id": "m3.2.s2",
+      "visual_layout": "Centered takeaway card (max-width 600px). Amber left border 4px.",
+      "media_asset_description": "icon/info_amber.svg. Card background #FFF8E1.",
+      "alt_text": "Key takeaway: Predictive alerts are evidence-based, not infallible. Evaluate them \u2014 do not dismiss or follow blindly.",
+      "dev_notes": "Static. Entrance: fade-in + scale 0.98\u21921.0 over 0.4s. Tablet: full-width 16px margin."
+    },
+    {
+      "screen_id": "m3.2.s3",
+      "visual_layout": "Scenario card. Avatar + speech bubble top. Four radio options below. Feedback panel.",
+      "media_asset_description": "img/m3/avatar_veteran_manager.svg \u2014 Experienced manager, hardhat, crossed arms, skeptical. Speech bubble gray.",
+      "alt_text": "Veteran manager says he will not change plans because of an AI guess. Four response options below.",
+      "dev_notes": "Same pattern as m1.2.s3. Correct answer acknowledges experience AND sensor basis. Tablet: full-width, 48px targets."
+    },
+    {
+      "screen_id": "m3.3.s1",
+      "visual_layout": "Full-width horizontal timeline. Three color-coded zones. Labels above. Summary below.",
+      "media_asset_description": "img/m3/urgency_timeline.svg \u2014 Red (<1hr Immediate), Yellow (1-4hr Plan), Blue (>4hr Monitor & Handoff). Clock icons at boundaries.",
+      "alt_text": "Urgency timeline: Red under 1 hour (Immediate), Yellow 1-4 hours (Plan Within Shift), Blue over 4 hours (Monitor and Handoff).",
+      "dev_notes": "Timeline draws left to right 1.2s. Labels fade after zone draws. Tablet: vertical stack as three cards."
+    },
+    {
+      "screen_id": "m3.3.s2",
+      "visual_layout": "Three alert cards draggable. Three numbered ranking slots (1=Most Urgent, 3=Least).",
+      "media_asset_description": "Three alert cards: A (Red, 45min), B (Blue, 6hr), C (Yellow, 3hr). Numbered drop zone slots.",
+      "alt_text": "Rank three alerts by urgency. A: coolant 45min. B: belt 6hrs. C: motor vibration 3hrs. Drag to rank 1-3.",
+      "dev_notes": "SortableJS drag-and-rank. Correct: A\u2192C\u2192B. Feedback with checkmarks/corrections. Tablet: tap-to-assign priority number."
+    },
+    {
+      "screen_id": "m4.1.s1",
+      "visual_layout": "Horizontal three-step flow diagram centered. Rounded-rectangle nodes with arrows.",
+      "media_asset_description": "img/m4/three_step_framework.svg \u2014 Step 1 Blue (Assess Data) \u2192 Step 2 Amber (Consider Context) \u2192 Step 3 Green (Decide: Act/Modify/Escalate).",
+      "alt_text": "Three-step evaluation framework: Assess the Data, Consider the Context, Decide (Act, Modify, or Escalate).",
+      "dev_notes": "Nodes draw sequentially 0.4s each with 0.2s gap. Arrows animate. Step 3 sub-options fan out. Tablet: vertical top-to-bottom."
+    },
+    {
+      "screen_id": "m4.1.s2",
+      "visual_layout": "Three-row framework with worked example content. Modify highlighted green. Rationale annotation right.",
+      "media_asset_description": "img/m4/worked_example_framework.svg \u2014 Populated three-step framework. Manager silhouette. Modify highlighted.",
+      "alt_text": "Worked example: Alert data (bearing fault 2hr), Context (priority order, tech in 30min), Decision: Modify \u2014 schedule tech during break, monitor, document.",
+      "dev_notes": "Steps reveal sequentially on scroll/click. Modify pulses 0.3s on reveal. Tablet: full-width vertical."
+    },
+    {
+      "screen_id": "m4.1.s3",
+      "visual_layout": "Top: alert card + context card side by side. Below: three-part structured response form. Step-by-step feedback.",
+      "media_asset_description": "Alert card (amber border) Line 5 seal failure. Context card (gray border) with operational details. Three form sections.",
+      "alt_text": "Practice: Line 5 seal failure in 90min, only packaging line, backup in 20min. Three-part form: assess, context, decide with rationale.",
+      "dev_notes": "Multi-step gated form: Step 1\u21922\u21923. Per-step feedback. Retry on incorrect. Tablet: full-width stacked, sticky cards."
+    },
+    {
+      "screen_id": "m4.2.s1",
+      "visual_layout": "Decision table centered (max-width 760px). Four rows, three columns. Callout box below.",
+      "media_asset_description": "img/m4/escalation_table.svg \u2014 Table with icons (shield, badge, arrows, clock). Green check callout box.",
+      "alt_text": "Escalation criteria table: safety risk, exceeds authority, converging alerts, insufficient time. Callout: Escalation is professional, not failure.",
+      "dev_notes": "Rows stagger in 0.15s. Callout bounce-in after table. Tablet: horizontal scroll with indicator."
+    },
+    {
+      "screen_id": "m4.2.s2",
+      "visual_layout": "Two scenario cards side by side 50/50. Each: description, Act/Escalate radios, rationale dropdown. Per-card feedback.",
+      "media_asset_description": "Scenario A: gray border (standard). Scenario B: amber border (converging alerts).",
+      "alt_text": "Two scenarios. A: bearing fault 3hr, tech available, standard order. B: Lines 1 and 3 alerting within 1hr, insufficient techs. Choose Act or Escalate.",
+      "dev_notes": "Independent submit per card. Both required before Continue. Tablet: stack vertically."
+    },
+    {
+      "screen_id": "m4.3.s1",
+      "visual_layout": "Horizontal four-step workflow. Icons + labels. Click-to-reveal recap panels below.",
+      "media_asset_description": "img/m4/four_step_workflow.svg \u2014 Consult (eye, blue) \u2192 Interpret (magnifier, amber) \u2192 Decide (scale, green) \u2192 Document (pencil, gray).",
+      "alt_text": "Four-step workflow: Consult, Interpret, Decide, Document. Click each step for a recap.",
+      "dev_notes": "Click-to-reveal accordion. All four must be clicked. Workflow bar stays visible. Tablet: vertical stacked."
+    },
+    {
+      "screen_id": "m4.3.s2",
+      "visual_layout": "Centered summary card (max-width 600px). Large mantra text. Subtle icon pattern background.",
+      "media_asset_description": "img/m4/habit_summary_card.svg \u2014 Mantra: Consult. Interpret. Decide. Document. Background: four icons at low opacity.",
+      "alt_text": "Summary card: Consult, Interpret, Decide, Document \u2014 every shift, every alert, every adjustment.",
+      "dev_notes": "Words fade in sequentially 0.4s each. Background parallax on scroll (desktop only). Tablet: disable parallax."
+    },
+    {
+      "screen_id": "m4.4.s1",
+      "visual_layout": "Simulated dashboard 70% left. Context panel 30% right sidebar.",
+      "media_asset_description": "img/m4/capstone_dashboard_line4.png \u2014 Line 4: declining 4hr trend, motor overheating alert 90min, throughput 78% red. img/m4/capstone_context_panel.svg \u2014 Priority order 3hr, technician available.",
+      "alt_text": "Simulated Line 4 dashboard with declining trend, motor overheating alert within 90 minutes, throughput 78% red. Context: priority order in 3 hours, technician available.",
+      "dev_notes": "Setup screen only. Begin Assessment button. Tablet: dashboard full-width, context as collapsible card below."
+    },
+    {
+      "screen_id": "m4.4.s2",
+      "visual_layout": "Sticky dashboard top. Three radio options below. Feedback panel.",
+      "media_asset_description": "Capstone dashboard image. Three radio options: Performance trend, Predictive alert, Throughput indicator.",
+      "alt_text": "Capstone Q1: Which signal requires most immediate attention? Performance trend, Predictive alert, or Throughput indicator.",
+      "dev_notes": "Sticky dashboard desktop. Correct (B): green + shortest window feedback. Tablet: dashboard scrolls with content."
+    },
+    {
+      "screen_id": "m4.4.s3",
+      "visual_layout": "Alert excerpt card. Three dropdown fields. Per-component feedback.",
+      "media_asset_description": "Alert card amber border. Three labeled dropdowns matching component colors.",
+      "alt_text": "Capstone Q2: Identify prediction, confidence basis, and action window from the motor overheating alert.",
+      "dev_notes": "Three dropdowns with 4-5 options each. Submit all together. Per-field green/red feedback. Tablet: full-width stacked."
+    },
+    {
+      "screen_id": "m4.4.s4",
+      "visual_layout": "Compact framework reminder top. Three-part form: context checkboxes, decision radios, rationale dropdown. Step-by-step feedback.",
+      "media_asset_description": "Compact framework bar. Checkbox group, radio group, dropdown. Feedback sections.",
+      "alt_text": "Capstone Q3: Select context factors, choose Act/Modify/Escalate, select rationale. Correct: Modify with technician dispatch and documented stoppage plan.",
+      "dev_notes": "Multi-part form. Per-section feedback on submit. Tablet: stacked, large targets."
+    },
+    {
+      "screen_id": "m4.4.s5",
+      "visual_layout": "Checklist card centered (max-width 640px). Five checkboxes. Feedback with item highlights.",
+      "media_asset_description": "Five checkbox items. Four correct (green on feedback), one incorrect: detailed sensor logs (red on feedback).",
+      "alt_text": "Capstone Q4: Select documentation items. Correct: alert details, decision, rationale, escalation actions. Incorrect: detailed sensor logs.",
+      "dev_notes": "Select-all checkboxes. Per-item feedback. Score shown. Tablet: full-width."
+    },
+    {
+      "screen_id": "m4.4.s6",
+      "visual_layout": "Score card top. Five outcome items with checks below. Completion badge. Conditional retake link.",
+      "media_asset_description": "img/m4/completion_badge.svg \u2014 Circular badge: AI Dashboard Certified. Score as large percentage. Five outcome items with green checks. Conditional retake button.",
+      "alt_text": "Completion screen with capstone score, five learning outcome summaries, and AI Dashboard Certified badge. Retake available if below 80 percent.",
+      "dev_notes": "Score animates 0\u2192final 1.5s. Outcomes fade in sequentially. Badge scales in 0.4s bounce. <80%: amber Retake button. \u226580%: green Complete + optional certificate. Tablet: full-width."
+    }
+  ],
+  "qa": {
+    "status": "pass",
+    "critical_issues": [],
+    "recommended_fixes": [
+      "Validate 'throughput indicator' terminology with SME \u2014 term is used extensively but not listed in SME-provided terminology (AI dashboard, predictive alert, performance trend)",
+      "Add WCAG 2.1 AA compliance requirement to storyboard build specifications and include colorblind-safe alternatives (icons, patterns, text labels) alongside red/yellow/green color coding",
+      "Specify capstone scoring mechanism: define point value per question (S1\u2013S4), whether partial credit is available, and how the 80% pass threshold maps to the 4-question format",
+      "Add progress saving and bookmarking requirement to build specifications \u2014 research identified interruption-prone production floor environment as a medium-severity barrier",
+      "Add a brief formative practice activity to M4.3 (The Complete Decision Workflow) before the capstone to scaffold LO5 \u2014 currently marked as 'None \u2014 flows directly into capstone'",
+      "Specify tablet performance budget and define fallback behavior for complex animations (Lottie particle effects, CSS blur, parallax scrolling) to prevent degraded tablet experience",
+      "Consider adding a downloadable post-training job aid (dashboard quick-reference card) to support Kirkpatrick L3 behavior transfer on the production floor",
+      "Consider adding one integrative formative item combining LO1 and LO2 to assess full dashboard reading comprehension before Module 3"
+    ],
+    "alignment_gaps": [],
+    "completeness_gaps": [
+      "LO5 lacks a standalone formative assessment \u2014 currently only assessed in capstone items shared with LO4",
+      "M4.3 (The Complete Decision Workflow) has no practice activity specified \u2014 lesson flows directly into capstone without a low-stakes practice opportunity",
+      "No post-training reinforcement mechanism specified for Kirkpatrick Level 3 behavior transfer",
+      "Capstone scoring rubric not defined \u2014 80% threshold stated but point allocation across S1\u2013S4 unspecified"
+    ],
+    "risk_flags": [
+      "SME Validation: 'Throughput indicator' used as a core dashboard element but not in SME-provided terminology \u2014 requires SME confirmation before build",
+      "Accessibility: No WCAG 2.1 AA compliance statement in storyboard specifications; red/yellow/green color coding used without confirmed colorblind-safe alternatives",
+      "Build Feasibility: No progress saving or bookmarking specified despite research identifying interruption-prone environment as a barrier",
+      "Build Feasibility: Complex animations (Lottie particles, CSS blur, parallax) may underperform on older tablet hardware \u2014 no performance budget specified",
+      "Assessment: Capstone scoring mechanism undefined \u2014 cannot verify 80% threshold operationalization"
+    ]
+  },
+  "change_plan": {
+    "status": "complete",
+    "comms_timeline": [
+      {
+        "day": -14,
+        "action": "Senior leadership endorsement message to plant managers and supervisors"
+      },
+      {
+        "day": -7,
+        "action": "Announcement email to all operations managers with WIIFM framing"
+      },
+      {
+        "day": -5,
+        "action": "Manager Huddle Guide distributed to supervisors and plant managers"
+      },
+      {
+        "day": -3,
+        "action": "Reminder email with access logistics and device compatibility info"
+      },
+      {
+        "day": 0,
+        "action": "Course launches in LMS; managers begin self-paced completion"
+      },
+      {
+        "day": 1,
+        "action": "Supervisors begin holding 10-minute shift-start huddles (Days +1 to +5)"
+      },
+      {
+        "day": 7,
+        "action": "Progress check email \u2014 celebrate completers, remind remaining"
+      },
+      {
+        "day": 10,
+        "action": "Course completion deadline"
+      },
+      {
+        "day": 14,
+        "action": "Post-Training Nudge: self-check email + printed quick-reference card at workstations"
+      },
+      {
+        "day": 30,
+        "action": "Dashboard usage data review; targeted follow-up coaching for low adopters"
+      },
+      {
+        "day": 60,
+        "action": "Impact report on dashboard usage, decision speed, and production efficiency to leadership"
+      }
+    ],
+    "reinforcement_tactics": [
+      "Leadership endorsement message at Day \u221214 to establish credibility and organizational commitment",
+      "WIIFM-framed announcement email addressing common concerns and positioning dashboard as augmenting judgment",
+      "Manager Huddle Guide equipping supervisors to address resistance, set behavioral expectations, and model support",
+      "Completion reminder at Day +7 with recognition of early completers",
+      "Post-training nudge email at Day +14 with behavioral self-check and specific shift-start challenge",
+      "Laminated quick-reference card at each workstation for on-the-job performance support",
+      "Dashboard usage data review at Day +30 to identify and coach low adopters",
+      "Impact report at Day +60 to sustain leadership commitment and demonstrate ROI"
+    ],
+    "key_messages": {
+      "primary": "The AI dashboard gives your judgment better inputs \u2014 sensor data updated every 5 minutes, not guesses",
+      "for_managers": "Your experience runs the floor. The dashboard just gets you there faster.",
+      "for_supervisors": "Your role is to set expectations, address concerns privately, and lead by example \u2014 reference dashboard data in your own communications",
+      "for_leadership": "This investment in training ensures the AI dashboard technology delivers measurable returns in decision speed and production efficiency"
+    },
+    "resistance_mitigation": [
+      "Frame AI as augmentation, not replacement \u2014 consistent across all communications",
+      "Address 'AI is guessing' misconception explicitly in announcement email, huddle guide, and nudge materials using sensor-data explanation",
+      "Equip supervisors for private one-on-one follow-up with persistently resistant managers",
+      "Provide visible quick-reference card so behavioral change has a physical prompt at point of need",
+      "Monitor adoption data at Day +30 and intervene with coaching rather than punitive measures"
+    ],
+    "success_metrics": [
+      "90% course completion within 10 days of launch",
+      "Minimum one dashboard consultation per shift per manager within 30 days",
+      "Action taken within stated action window for 80%+ of predictive alerts",
+      "70%+ manager-reported moderate-to-high confidence at Day +30 pulse survey",
+      "Measurable reduction in unplanned downtime within 60 days"
+    ]
+  },
+  "ops_metadata": {
+    "course_code": "OPS-AI-DASH-001",
+    "lms_description": "This 45-minute self-paced eLearning course equips plant operations managers to confidently use AI dashboards for daily production decisions. Through four short modules and realistic scenario-based exercises, learners will understand what the AI dashboard displays and where its data originates, identify and differentiate performance trends, predictive alerts, and throughput indicators, interpret predictive alerts accurately, and apply a structured decision workflow \u2014 consult, interpret, decide, document \u2014 to take timely, data-driven action on the production floor. No prior AI knowledge is required. The course is optimized for desktop and tablet access and designed for completion across shifts.",
+    "tags": [
+      "AI dashboard",
+      "predictive alert",
+      "performance trend",
+      "throughput indicator",
+      "production decision-making",
+      "data-driven decisions",
+      "sensor data",
+      "operations management",
+      "manufacturing training",
+      "plant operations",
+      "dashboard interpretation",
+      "predictive maintenance",
+      "decision workflow",
+      "eLearning",
+      "scenario-based learning",
+      "AI adoption",
+      "change management"
+    ],
+    "asset_manifest": [
+      "img/m1/dashboard_full_blur.png",
+      "img/m1/dashboard_three_panels.png",
+      "img/m1/dashboard_unlabeled.png",
+      "img/m1/overnight_throughput_snippet.png",
+      "img/m2/line2_combined_dashboard.png",
+      "img/m4/capstone_dashboard_line4.png",
+      "img/m1/sensor_flow_static.png",
+      "img/m1/before_clipboard.svg",
+      "img/m1/after_tablet.svg",
+      "img/m1/avatar_colleague_a.svg",
+      "img/m2/trend_graph_annotated.svg",
+      "img/m2/mini_graph_a.svg",
+      "img/m2/mini_graph_b.svg",
+      "img/m2/mini_graph_c.svg",
+      "img/m2/trend_example.svg",
+      "img/m2/alert_example.svg",
+      "img/m2/throughput_three_lines.svg",
+      "img/m3/alert_anatomy.svg",
+      "img/m3/sme_alert_decomposition.svg",
+      "img/m3/guess_vs_prediction_table.svg",
+      "img/m3/avatar_veteran_manager.svg",
+      "img/m3/urgency_timeline.svg",
+      "img/m4/three_step_framework.svg",
+      "img/m4/worked_example_framework.svg",
+      "img/m4/escalation_table.svg",
+      "img/m4/four_step_workflow.svg",
+      "img/m4/habit_summary_card.svg",
+      "img/m4/capstone_context_panel.svg",
+      "img/m4/completion_badge.svg",
+      "img/m1/overlay_trends_blue.svg",
+      "img/m1/overlay_alerts_amber.svg",
+      "img/m1/overlay_throughput_green.svg",
+      "icon/check_circle_green.svg",
+      "icon/cancel_red.svg",
+      "icon/lightbulb_outline.svg",
+      "icon/alert_amber.svg",
+      "icon/info_amber.svg",
+      "icon/car_engine_light.svg",
+      "anim/m1/sensor_to_dashboard.json",
+      "Senior Leadership Endorsement Message (email template)",
+      "Manager Announcement Email (WIIFM-framed)",
+      "Manager Huddle Guide (facilitator guide)",
+      "Reminder Email (access logistics)",
+      "Progress Check Email (Day +7)",
+      "Post-Training Nudge Email (Day +14)",
+      "Quick-Reference Card (laminated print)"
+    ]
+  }
+}
