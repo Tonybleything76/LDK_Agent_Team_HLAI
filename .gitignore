@@ -2,6 +2,7 @@
 outputs/
 governance/run_ledger.jsonl
 *.env
+*.zip
 .env
 .env.*
 __pycache__/

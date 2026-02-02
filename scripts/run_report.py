@@ -2,8 +2,8 @@
 import argparse
 import json
 import os
+import re
 import sys
-from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
@@ -24,10 +24,10 @@ def find_latest_run_id(outputs_dir: Path) -> Optional[str]:
         return None
     
     runs = []
+    pattern = re.compile(r"^\d{8}_\d{6}$")
     for d in outputs_dir.iterdir():
-        if d.is_dir() and d.name.isdigit() or "_" in d.name: # basic heuristic for run dirs
+        if d.is_dir() and pattern.match(d.name):
              try:
-                 # Try to parse timestamp from name if possible, or just use modification time
                  runs.append((d.stat().st_mtime, d.name))
              except OSError:
                  continue
@@ -43,8 +43,9 @@ def find_all_recent_runs(outputs_dir: Path, limit: int = 10) -> List[str]:
         return []
     
     runs = []
+    pattern = re.compile(r"^\d{8}_\d{6}$")
     for d in outputs_dir.iterdir():
-         if d.is_dir():
+         if d.is_dir() and pattern.match(d.name):
              try:
                  runs.append((d.stat().st_mtime, d.name))
              except OSError:
@@ -65,20 +66,22 @@ def load_json(path: Path) -> Optional[Dict[str, Any]]:
 
 def generate_report_data(run_dir: Path, audit_summary: Dict[str, Any], run_manifest: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     run_meta = audit_summary.get("run_metadata", {})
+    manifest = run_manifest if run_manifest else {}
+
     gate_summary = audit_summary.get("gate_summary", {})
     open_questions_summary = audit_summary.get("open_questions_summary", {})
     
     # Header
     header = {
-        "system_version": run_meta.get("system_version", "unknown"),
+        "system_version": run_meta.get("system_version") or manifest.get("system_version", "unknown"),
         "run_id": run_meta.get("run_id", "UNKNOWN"),
         "end_state": audit_summary.get("end_state", "UNKNOWN"),
-        "governance_profile": run_meta.get("governance_profile", "N/A"),
-        "auto_approve": run_meta.get("auto_approve", False),
+        "governance_profile": run_meta.get("governance_profile") or manifest.get("governance_profile", "N/A"),
+        "auto_approve": run_meta.get("auto_approve") if "auto_approve" in run_meta else manifest.get("auto_approve", False),
         "risk_gate_escalation_enabled": run_meta.get("risk_gate_escalation_enabled", False),
-        "open_questions_threshold": run_meta.get("open_questions_threshold", "N/A"),
-        "weighted_severities": run_meta.get("weighted_severities", []),
-        "failure_reason": run_meta.get("failure_reason") # Might not be standard, but check
+        "open_questions_threshold": run_meta.get("open_questions_threshold") or manifest.get("open_questions_threshold", "N/A"),
+        "weighted_severities": run_meta.get("weighted_severities") or manifest.get("weighted_severities", []),
+        "failure_reason": audit_summary.get("failure_reason") or run_meta.get("failure_reason")
     }
 
     # Gates
@@ -284,6 +287,8 @@ def main():
         print(generate_markdown_report(report_data))
     else:
         print_console_report(report_data)
+        if (Path(__file__).parent / "run_diff.py").exists():
+            print("Tip: To compare runs, use: python3 scripts/run_diff.py <run_a> <run_b>")
 
     # Handle Write MD
     if args.write_md:
