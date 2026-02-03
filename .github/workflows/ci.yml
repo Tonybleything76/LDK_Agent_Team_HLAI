@@ -44,7 +44,7 @@ jobs:
         echo "captured_run_id=$RUN_ID" >> $GITHUB_OUTPUT
         echo "Golden Run ID: $RUN_ID"
 
-    - name: Run Run Diff Enforcement (PROD)
+    - name: Run Diff Enforcement (CI Profile)
       run: |
         RUN_ID="${{ steps.golden_run.outputs.captured_run_id }}"
         if [ -z "$RUN_ID" ]; then
