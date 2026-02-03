@@ -239,6 +239,7 @@ def main():
             "summary": "Added deterministic simulation fixtures"
         })
         
+        print(f"RUN_ID={run_dir.name}")
         print("\n✨ GOLDEN RUN VERIFICATION SUCCESSFUL")
         print(json.dumps(DELIVERABLE, indent=2))
         
