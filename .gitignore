@@ -42,3 +42,11 @@ api_keys.*
 !schemas/
 !tests/
 !VERSION
+
+# Generated artifacts
+deliverable.json
+tmp/
+outputs/
+*.zip
+golden_output.txt
+golden_pass_output.txt
