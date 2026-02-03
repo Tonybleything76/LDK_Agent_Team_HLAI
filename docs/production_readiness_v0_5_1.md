@@ -24,14 +24,33 @@ python3 scripts/preflight_check.py
 # 2. Golden run - regression test with deterministic fixtures
 python3 scripts/verify_golden_run.py
 
-# 3. Failure injection - verifies run_diff catches regressions
+# 3. CI run-diff enforcement - validates governance policy compliance
+# (Automatically run in CI, can be run manually for testing)
+python3 scripts/verify_run_diff.py \
+  --baseline_dir tests/baselines/golden_run_baseline \
+  --candidate_run_id <RUN_ID> \
+  --profile ci \
+  --format console
+
+# 4. Failure injection - verifies run_diff catches regressions
 python3 scripts/verify_failure_injection.py
 
-# 4. Full release check (runs all above + report validation)
+# 5. Full release check (runs preflight + golden run + report validation)
 python3 scripts/release_check.py
 ```
 
 All commands must exit 0 (pass).
+
+### CI Run-Diff Policy Enforcement
+
+The `verify_run_diff.py` script enforces governance policy by validating:
+
+- **No new CRITICAL/BLOCKER questions** introduced vs baseline
+- **Auto-approvals only at phase gates 3, 6, 9** (verified via ledger)
+- **Risk gates require manual approval** (or simulated manual in CI)
+- **Governance profile matches expectations** (ci/dev/prod)
+
+This script is automatically run in CI after the golden run to ensure policy compliance.
 
 ---
 
