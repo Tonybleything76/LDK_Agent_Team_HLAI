@@ -18,6 +18,8 @@ __pycache__/
 tmp/
 run_diff_*.json
 run_diff_*.md
+golden_output.txt
+golden_pass_output.txt
 
 # Common Hygiene (Restored)
 .venv/
@@ -40,3 +42,11 @@ api_keys.*
 !schemas/
 !tests/
 !VERSION
+
+# Generated artifacts
+deliverable.json
+tmp/
+outputs/
+*.zip
+golden_output.txt
+golden_pass_output.txt

@@ -1,0 +1,117 @@
+{
+  "run_metadata": {
+    "system_version": "0.5.0-dev",
+    "run_id": "20260202_232042",
+    "run_dir": "outputs/20260202_232042",
+    "auto_approve": true,
+    "governance_profile": "dev",
+    "risk_auto_override_default": true,
+    "started_at_utc": "2026-02-02T23:20:42.617185",
+    "open_questions_threshold": 3,
+    "weighted_severities": [
+      "CRITICAL",
+      "BLOCKER",
+      "MAJOR",
+      "UNPREFIXED"
+    ],
+    "risk_gate_escalation_enabled": true
+  },
+  "gate_summary": {
+    "phase_gates": [
+      {
+        "step_idx": 3,
+        "agent": "learning_architect_agent",
+        "gate_strategy": "per_phase",
+        "gate_type": "phase_gate",
+        "gate_reason": "routine_check"
+      },
+      {
+        "step_idx": 6,
+        "agent": "storyboard_agent",
+        "gate_strategy": "per_phase",
+        "gate_type": "phase_gate",
+        "gate_reason": "routine_check"
+      },
+      {
+        "step_idx": 9,
+        "agent": "operations_librarian_agent",
+        "gate_strategy": "per_phase",
+        "gate_type": "phase_gate",
+        "gate_reason": "routine_check"
+      }
+    ],
+    "risk_gates": [
+      {
+        "step_idx": 1,
+        "agent": "strategy_lead_agent",
+        "gate_reason": "open_questions_threshold",
+        "overridden": true,
+        "approved_mode": "auto",
+        "metadata": {
+          "step_idx": 1,
+          "agent": "strategy_lead_agent",
+          "agent_name": "strategy_lead_agent",
+          "gate_strategy": "per_phase",
+          "gate_type": "risk_gate",
+          "gate_reason": "open_questions_threshold",
+          "observed_open_questions_count_weighted": 10,
+          "observed_open_questions_count_total": 10,
+          "observed_open_questions_count": 10,
+          "open_questions_threshold": 3,
+          "weighted_severities": [
+            "BLOCKER",
+            "UNPREFIXED",
+            "CRITICAL",
+            "MAJOR"
+          ],
+          "risk_auto_override": true
+        }
+      },
+      {
+        "step_idx": 7,
+        "agent": "qa_agent",
+        "gate_reason": "qa_critical",
+        "overridden": true,
+        "approved_mode": "auto",
+        "metadata": {
+          "step_idx": 7,
+          "agent": "qa_agent",
+          "agent_name": "qa_agent",
+          "gate_strategy": "per_phase",
+          "gate_type": "risk_gate",
+          "gate_reason": "qa_critical",
+          "qa_critical_error_count": 1,
+          "risk_auto_override": true
+        }
+      }
+    ],
+    "approvals": {
+      "manual": 0,
+      "auto": 5
+    }
+  },
+  "open_questions_summary": {
+    "total_count": 11,
+    "top_10": [
+      "MAJOR: Simulated specific issue 0",
+      "MAJOR: Simulated specific issue 1",
+      "MAJOR: Simulated specific issue 2",
+      "MAJOR: Simulated specific issue 3",
+      "MAJOR: Simulated specific issue 4",
+      "MAJOR: Simulated specific issue 5",
+      "MAJOR: Simulated specific issue 6",
+      "MAJOR: Simulated specific issue 7",
+      "MAJOR: Simulated specific issue 8",
+      "MAJOR: Simulated specific issue 9"
+    ],
+    "severity_counts": {
+      "critical": 1,
+      "blocker": 0,
+      "major": 10,
+      "minor": 0,
+      "unprefixed": 0
+    },
+    "weighted_count_definition": "weighted = CRITICAL + BLOCKER + MAJOR"
+  },
+  "end_state": "run_completed"
+}
