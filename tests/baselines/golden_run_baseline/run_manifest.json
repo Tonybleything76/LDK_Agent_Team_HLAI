@@ -1,0 +1,37 @@
+{
+  "system_version": "0.5.0-dev",
+  "run_id": "20260202_232042",
+  "started_at_utc": "2026-02-02T23:20:42.617185",
+  "config_hash": "f45f818fd4244cb5c93a1e92cc0a014b80d534533a18e04a8ac4f37de6091d5b",
+  "inputs_hash": "097b35a4c6b254d5a8c7a7e713caea7fef4a8c9e7ad0f52a4deee4a0be8e5ce3",
+  "current_step_completed": 9,
+  "providers_used_by_step": {
+    "1": "dry_run",
+    "2": "dry_run",
+    "3": "dry_run",
+    "4": "dry_run",
+    "5": "dry_run",
+    "6": "dry_run",
+    "7": "dry_run",
+    "8": "dry_run",
+    "9": "dry_run"
+  },
+  "status": "completed",
+  "auto_approve": true,
+  "governance_profile": "dev",
+  "risk_auto_override_default": true,
+  "approval_config": {
+    "risk_gate_escalation": {
+      "enabled": true,
+      "open_questions_threshold": 3,
+      "force_gate_on_qa_critical": true,
+      "auto_override": true,
+      "weighted_severities": [
+        "CRITICAL",
+        "BLOCKER",
+        "MAJOR",
+        "UNPREFIXED"
+      ]
+    }
+  }
+}
