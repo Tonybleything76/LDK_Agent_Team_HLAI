@@ -43,32 +43,3 @@ The following artifacts are **Runtime Outputs** or **Scratch Files** and MUST NO
 *   **`.gitignore`**: Defines the technical enforcement of these rules. Do not bypass it with `git add -f`.
 *   **Preflight Checks**: `scripts/preflight_check.py` validates that the environment is clean before runs.
 *   **Release Checks**: `scripts/release_check.py` ensures no untracked artifacts are leaking before a release.
-
-## 5. Governance Baseline & CI
-
-CI enforces strict governance rules using **Run Diff Policy Enforcement**:
-
-*   **Baseline**: `tests/baselines/golden_run_baseline` (The "Gold Standard" run).
-*   **Profile**: `ci` (Enforces deterministic CI behavior with simulated manual approvals).
-*   **Process**:
-    1. CI generates a fresh deterministic run (`verify_golden_run.py`).
-    2. Compares it against the stored baseline using policy enforcement (`verify_run_diff.py`).
-    3. Validates:
-       - No new CRITICAL/BLOCKER questions introduced
-       - Auto-approvals only at phase gates 3, 6, 9
-       - Risk gates require manual approval (simulated in CI)
-       - Governance profile matches expectations
-    4. Failure indicates a governance regression or policy violation.
-
-### Refreshing the Baseline
-
-If a change is intentional (e.g., new policy approved), update the baseline:
-
-1. Run `python3 scripts/verify_golden_run.py` locally.
-2. Note the generated `RUN_ID`.
-3. Copy the outputs:
-   ```bash
-   cp outputs/<RUN_ID>/audit_summary.json tests/baselines/golden_run_baseline/audit_summary.json
-   cp outputs/<RUN_ID>/run_manifest.json tests/baselines/golden_run_baseline/run_manifest.json
-   ```
-4. Commit the new baseline with a clear explanation of why the baseline changed.
