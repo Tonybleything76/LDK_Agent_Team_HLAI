@@ -83,7 +83,7 @@ def run_pipeline() -> str:
     cmd = [
         "python3", "scripts/run_pipeline.py",
         "--dry_run",
-        "--governance_profile", "dev",
+        "--governance_profile", "ci",
         "--auto_approve"
     ]
     
@@ -93,7 +93,11 @@ def run_pipeline() -> str:
         capture_output=True, 
         text=True, 
         cwd=PROJECT_ROOT,
-        env={**os.environ, "PROVIDER": "dry_run"} # Force dry_run provider
+        env={
+            **os.environ, 
+            "PROVIDER": "dry_run",  # Force dry_run provider
+            "CI_SIMULATE_MANUAL_RISK_APPROVAL": "true"  # Enable CI harness simulation
+        }
     )
     
     if result.returncode != 0:
@@ -142,9 +146,9 @@ def verify_invariants(run_dir: Path):
     # --------------------------------------------------------------------------
     # A) Manifest Invariants
     # --------------------------------------------------------------------------
-    if manifest.get("governance_profile") != "dev":
-        fail(f"Manifest: governance_profile expected 'dev', got '{manifest.get('governance_profile')}'")
-    log_invariant("Manifest: governance_profile == 'dev'")
+    if manifest.get("governance_profile") != "ci":
+        fail(f"Manifest: governance_profile expected 'ci', got '{manifest.get('governance_profile')}'")
+    log_invariant("Manifest: governance_profile == 'ci'")
     
     if manifest.get("auto_approve") is not True:
         fail(f"Manifest: auto_approve expected True, got {manifest.get('auto_approve')}")
@@ -155,9 +159,9 @@ def verify_invariants(run_dir: Path):
         fail("Manifest: risk_gate_escalation.enabled expected True")
     log_invariant("Manifest: risk_gate_escalation.enabled == true")
     
-    if "MAJOR" not in risk_cfg.get("weighted_severities", []):
-         fail("Manifest: weighted_severities missing MAJOR")
-    log_invariant("Manifest: weighted_severities contains MAJOR")
+    if "BLOCKER" not in risk_cfg.get("weighted_severities", []):
+         fail("Manifest: weighted_severities missing BLOCKER")
+    log_invariant("Manifest: weighted_severities contains BLOCKER")
 
     # --------------------------------------------------------------------------
     # B) Audit Summary Invariants
@@ -220,6 +224,25 @@ def verify_invariants(run_dir: Path):
     if not qa_risk_events:
         fail("Ledger: Expected 'qa_critical' risk gate (from QA Agent identity simulation)")
     log_invariant("Ledger: Identity-based QA Critical gate triggered")
+    
+    # Verify CI Harness Simulation: Risk gates should be approved as manual with ci_harness source
+    ci_harness_approvals = [
+        e for e in step_approved_events 
+        if e.get("approval_mode") == "manual" 
+        and e.get("approval_source") == "ci_harness"
+        and e.get("gate_type") == "risk_gate"
+    ]
+    if not ci_harness_approvals:
+        fail("Ledger: Expected at least one manual approval with approval_source='ci_harness' for risk gates")
+    log_invariant("Ledger: Risk gates approved as manual with ci_harness source")
+    
+    # Verify auto-approvals only at phase gates 3/6/9
+    auto_approvals = [e for e in step_approved_events if e.get("approval_mode") == "auto"]
+    auto_approval_steps = [e.get("step_idx") for e in auto_approvals]
+    expected_auto_steps = [3, 6, 9]
+    if set(auto_approval_steps) != set(expected_auto_steps):
+        fail(f"Ledger: Auto-approvals expected only at steps {expected_auto_steps}, got {auto_approval_steps}")
+    log_invariant(f"Ledger: Auto-approvals only at phase gates {expected_auto_steps}")
 
     DELIVERABLE["verification_results"].append("Golden run passed")
 
@@ -239,6 +262,7 @@ def main():
             "summary": "Added deterministic simulation fixtures"
         })
         
+        print(f"RUN_ID={run_dir.name}")
         print("\n✨ GOLDEN RUN VERIFICATION SUCCESSFUL")
         print(json.dumps(DELIVERABLE, indent=2))
         

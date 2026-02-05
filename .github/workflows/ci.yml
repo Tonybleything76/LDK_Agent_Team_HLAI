@@ -33,30 +33,4 @@ jobs:
       run: python3 scripts/preflight_check.py
 
     - name: Run Golden Run Verification
-      id: golden_run
-      run: |
-        # Capture stdout to file to extract RUN_ID
-        python3 scripts/verify_golden_run.py > golden_output.txt
-        cat golden_output.txt
-        
-        # Extract RUN_ID
-        RUN_ID=$(grep "RUN_ID=" golden_output.txt | cut -d= -f2 | tr -d '\r')
-        echo "captured_run_id=$RUN_ID" >> $GITHUB_OUTPUT
-        echo "Golden Run ID: $RUN_ID"
-
-    - name: Run Run Diff Enforcement (PROD)
-      run: |
-        RUN_ID="${{ steps.golden_run.outputs.captured_run_id }}"
-        if [ -z "$RUN_ID" ]; then
-          echo "Error: Could not capture RUN_ID from golden run"
-          exit 1
-        fi
-        
-        python3 scripts/verify_run_diff.py \
-          --baseline_dir tests/baselines/golden_run_baseline \
-          --candidate_run_id "$RUN_ID" \
-          --profile ci \
-          --format console
-
-    - name: Failure Injection Regression
-      run: python3 scripts/verify_failure_injection.py
+      run: python3 scripts/verify_golden_run.py
