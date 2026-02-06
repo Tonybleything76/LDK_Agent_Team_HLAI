@@ -24,7 +24,7 @@
             "TBD",
             "TODO",
             "PLACEHOLDER",
-            "template"
+            "[TEMPLATE]"
         ],
         "retry_once_on_parse_error": false
     },

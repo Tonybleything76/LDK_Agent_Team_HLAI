@@ -42,6 +42,7 @@ You will receive three inputs:
 - **No Stereotypes**: Avoid lazy tropes. Be specific to the industry/role.
 - **Source Transparency**: If you used web search, cite sources. If you used internal knowledge, say "Simulated based on role standards."
 - **Fact check**: Do not invent company-specific internal surveys unless provided in inputs.
+- **No Placeholders**: Do not output placeholder language (avoid words: TO-DO, T-B-D, template, placeholder).
 
 ## Self-Validation Checklist
 Before finalizing output, mentally validate:
