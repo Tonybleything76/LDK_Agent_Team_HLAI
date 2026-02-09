@@ -23,6 +23,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from orchestrator.root_agent import run_pipeline, write_ledger, utc_now
 from scripts.preflight_check import run_preflight_checks
+from utils.worktree_guard import enforce_preflight, enforce_postflight
 
 CONFIG_PATH = PROJECT_ROOT / "config" / "run_config.json"
 INPUTS_DIR = PROJECT_ROOT / "inputs"
@@ -276,6 +277,12 @@ The --dry_run flag is a shortcut for --mode dry_run.
         choices=["dev", "staging", "prod", "ci"],
         help="Governance profile (overrides config defaults: dev=relaxed, prod=strict, ci=strict+non-interactive)"
     )
+
+    parser.add_argument(
+        "--allow-dirty-worktree",
+        action="store_true",
+        help="Allow running with dirty worktree (dev profile only)"
+    )
     
     args = parser.parse_args()
     
@@ -426,15 +433,43 @@ The --dry_run flag is a shortcut for --mode dry_run.
     print("=" * 60)
     print()
     
+    # Generate Run ID and Directory explicitly to support preflight checks
+    run_id = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    run_dir = PROJECT_ROOT / "outputs" / run_id
+
+    # Define a ledger writer that injects timestamps
+    def guarded_ledger_writer(event):
+        if "timestamp_utc" not in event:
+            event["timestamp_utc"] = utc_now()
+        write_ledger(event)
+
     try:
+        # Enforce Preflight Guard
+        enforce_preflight(
+            allow_dirty=args.allow_dirty_worktree,
+            profile=governance_profile, # Pass actual profile (None if unset)
+            ledger_writer=guarded_ledger_writer,
+            run_id=run_id
+        )
+        
         run_pipeline(
             config_path=str(CONFIG_PATH),
-            run_dir=None,  # Fresh run
+            run_dir=str(run_dir),  # Pass explicit run_dir to use the same ID
             start_step=1,
             initial_state=None,
             config_overrides=config_overrides,
             governance_profile=governance_profile,
         )
+
+        # Enforce Postflight Guard
+        # Only run if pipeline completed successfully (did not raise exception)
+        enforce_postflight(
+            allow_dirty=args.allow_dirty_worktree,
+            profile=governance_profile,
+            ledger_writer=guarded_ledger_writer,
+            run_id=run_id
+        )
+        
     except KeyboardInterrupt:
         print("\n\n⚠️  Pipeline interrupted by user (Ctrl+C)")
         sys.exit(130)
