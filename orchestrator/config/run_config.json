@@ -1,92 +1,92 @@
 {
-    "version": "0.2",
-    "mode": "claude_cli",
-    "approval": {
-        "enabled": true,
-        "token": "APPROVE",
-        "case_insensitive": true,
-        "gate_strategy": "per_phase",
-        "phase_gates": [
-            2,
-            6,
-            9
-        ]
+  "agents": [
+    {
+      "agent_name": "strategy_lead_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/strategy_lead/prompt.md",
+      "step_idx": 1,
+      "tmp_json_relpath": "outputs/tmp_strategy_lead_agent.json"
     },
-    "validation": {
-        "min_deliverable_chars": 300,
-        "placeholder_markers": [
-            "[Missing",
-            "[Pending",
-            "Awaiting",
-            "No business brief",
-            "TBD",
-            "TODO",
-            "unpopulated"
-        ]
+    {
+      "agent_name": "learner_research_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/learner_research/prompt.md",
+      "step_idx": 2,
+      "tmp_json_relpath": "outputs/tmp_learner_research_agent.json"
     },
-    "agents": [
-        {
-            "agent_name": "strategy_lead_agent",
-            "prompt_relpath": "prompts/strategy_lead/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_strategy_lead_agent.json",
-            "step_idx": 1,
-            "gate": true
-        },
-        {
-            "agent_name": "learner_research_agent",
-            "prompt_relpath": "prompts/learner_research/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_learner_research_agent.json",
-            "step_idx": 2,
-            "gate": true
-        },
-        {
-            "agent_name": "learning_architect_agent",
-            "prompt_relpath": "prompts/learning_architect/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_learning_architect_agent.json",
-            "step_idx": 3,
-            "gate": true
-        },
-        {
-            "agent_name": "instructional_designer_agent",
-            "prompt_relpath": "prompts/instructional_designer/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_instructional_designer_agent.json",
-            "step_idx": 4,
-            "gate": true
-        },
-        {
-            "agent_name": "assessment_designer_agent",
-            "prompt_relpath": "prompts/assessment_designer/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_assessment_designer_agent.json",
-            "step_idx": 5,
-            "gate": true
-        },
-        {
-            "agent_name": "storyboard_agent",
-            "prompt_relpath": "prompts/storyboard/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_storyboard_agent.json",
-            "step_idx": 6,
-            "gate": true
-        },
-        {
-            "agent_name": "qa_agent",
-            "prompt_relpath": "prompts/qa_agent/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_qa_agent.json",
-            "step_idx": 7,
-            "gate": true
-        },
-        {
-            "agent_name": "change_management_agent",
-            "prompt_relpath": "prompts/change_management/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_change_management_agent.json",
-            "step_idx": 8,
-            "gate": true
-        },
-        {
-            "agent_name": "operations_librarian_agent",
-            "prompt_relpath": "prompts/operations_librarian/prompt.md",
-            "tmp_json_relpath": "outputs/tmp_operations_librarian_agent.json",
-            "step_idx": 9,
-            "gate": true
-        }
+    {
+      "agent_name": "learning_architect_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/learning_architect/prompt.md",
+      "step_idx": 3,
+      "tmp_json_relpath": "outputs/tmp_learning_architect_agent.json"
+    },
+    {
+      "agent_name": "instructional_designer_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/instructional_designer/prompt.md",
+      "step_idx": 4,
+      "tmp_json_relpath": "outputs/tmp_instructional_designer_agent.json"
+    },
+    {
+      "agent_name": "assessment_designer_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/assessment_designer/prompt.md",
+      "step_idx": 5,
+      "tmp_json_relpath": "outputs/tmp_assessment_designer_agent.json"
+    },
+    {
+      "agent_name": "storyboard_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/storyboard/prompt.md",
+      "step_idx": 6,
+      "tmp_json_relpath": "outputs/tmp_storyboard_agent.json"
+    },
+    {
+      "agent_name": "qa_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/qa_agent/prompt.md",
+      "step_idx": 7,
+      "tmp_json_relpath": "outputs/tmp_qa_agent.json"
+    },
+    {
+      "agent_name": "change_management_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/change_management/prompt.md",
+      "step_idx": 8,
+      "tmp_json_relpath": "outputs/tmp_change_management_agent.json"
+    },
+    {
+      "agent_name": "operations_librarian_agent",
+      "gate": true,
+      "prompt_relpath": "prompts/operations_librarian/prompt.md",
+      "step_idx": 9,
+      "tmp_json_relpath": "outputs/tmp_operations_librarian_agent.json"
+    }
+  ],
+  "approval": {
+    "case_insensitive": true,
+    "enabled": true,
+    "gate_strategy": "per_phase",
+    "phase_gates": [
+      2,
+      6,
+      9
+    ],
+    "token": "APPROVE"
+  },
+  "mode": "claude_cli",
+  "validation": {
+    "min_deliverable_chars": 300,
+    "placeholder_markers": [
+      "[Missing",
+      "[Pending",
+      "Awaiting",
+      "No business brief",
+      "TBD",
+      "TODO",
+      "unpopulated"
     ]
+  },
+  "version": "0.5.2"
 }
