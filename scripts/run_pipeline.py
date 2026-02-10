@@ -283,8 +283,19 @@ The --dry_run flag is a shortcut for --mode dry_run.
         action="store_true",
         help="Allow running with dirty worktree (dev profile only)"
     )
+
+    parser.add_argument(
+        "--max-step",
+        type=int,
+        help="Stop execution after completing this step number (inclusive)"
+    )
     
     args = parser.parse_args()
+
+    # Validate max-step
+    if args.max_step is not None and args.max_step < 1:
+        print("\n❌ Error: --max-step must be >= 1")
+        sys.exit(1)
     
     # Determine provider
     if args.dry_run:
@@ -417,6 +428,11 @@ The --dry_run flag is a shortcut for --mode dry_run.
     
     # Step 4: Cost guardrail check
     num_steps = len(config["agents"])
+    # Adjust num_steps for cost guardrail if max_step is set
+    if args.max_step:
+        num_steps = min(num_steps, args.max_step)
+        print(f"\n⚡ Run limited to first {args.max_step} steps (--max-step)")
+
     effective_provider = provider or config.get("provider") or os.getenv("PROVIDER") or "manual"
     
     if not cost_guardrail_check(num_steps, effective_provider, args.yes):
@@ -459,6 +475,7 @@ The --dry_run flag is a shortcut for --mode dry_run.
             initial_state=None,
             config_overrides=config_overrides,
             governance_profile=governance_profile,
+            max_step=args.max_step,
         )
 
         # Enforce Postflight Guard

@@ -287,6 +287,7 @@ def run_pipeline(
     initial_state: dict = None,
     config_overrides: dict = None,
     governance_profile: str = None,
+    max_step: int = None,
 ) -> None:
     """
     Execute the agent pipeline with optional resume support.
@@ -442,6 +443,28 @@ def run_pipeline(
             # Skip steps before start_step (for resume)
             if step_idx < start_step:
                 continue
+            
+            # Check for early stop (max_step)
+            # Checked at start of loop so we don't start the step if we exceeded max_step
+            # But wait, max_step is inclusive "completed this step number".
+            # So if max_step=1, we run step 1, then stop.
+            # So we check AFTER completion? Or before?
+            # If max_step=1, we want loop to run for step_idx=1.
+            # Then next iter step_idx=2.
+            # So if step_idx > max_step: break
+            
+            if max_step is not None and step_idx > max_step:
+                print(f"\n🛑 Reached max_step ({max_step}) - Stopping early.")
+                write_ledger({
+                    "timestamp_utc": utc_now(),
+                    "event": "run_stopped_early",
+                    "max_step": max_step,
+                    "last_step_completed": step_idx - 1,
+                    "run_id": run_id,
+                    "run_dir": run_dir,
+                })
+                break
+
             agent_name = agent_cfg["name"]
             prompt_path = agent_cfg["prompt_path"]
 
