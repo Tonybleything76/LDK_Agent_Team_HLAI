@@ -26,7 +26,7 @@ def write_ledger(event: Dict[str, Any], ledger_path: str = "governance/run_ledge
         pass
 
 
-def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "governance/run_ledger.jsonl"):
+def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "governance/run_ledger.jsonl", suppress_ledger_events: bool = False):
     """
     Generates a run-level audit summary file in the run directory.
     Aggregates data from run_ledger.jsonl (filtered by run_id) and
@@ -34,7 +34,9 @@ def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "govern
     """
     try:
         summary = {
+            "run_id": run_id,
             "run_metadata": {},
+            "gate_manifest": {}, # Will be populated with gate_summary content
             "gate_summary": {
                 "phase_gates": [],
                 "risk_gates": [],
@@ -309,6 +311,9 @@ def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "govern
                         "policy": "open_questions_threshold"
                      })
 
+        # Ensure gate_manifest reflects gate_summary as requested
+        summary["gate_manifest"] = summary["gate_summary"]
+
         # 4. Write Artifact
         output_path = Path(run_dir) / "audit_summary.json"
         with open(output_path, "w") as f:
@@ -317,7 +322,7 @@ def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "govern
         # 5. Log Risk Gate Triggered Event (if any)
         # This event serves as the official "Risk Gate Encountered" signal for governance.
         risk_gates = summary["gate_summary"].get("risk_gates", [])
-        if risk_gates:
+        if risk_gates and not suppress_ledger_events:
             risk_event = {
                 "timestamp_utc": utc_now(),
                 "event": "risk_gate_triggered",
