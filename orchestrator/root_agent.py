@@ -246,6 +246,20 @@ def approval_gate(
         })
         raise ApprovalRejectedError("Approval rejected by user")
 
+    # If risk gate, log specific risk_gate_approved event
+    if gate_type == "risk_gate":
+        write_ledger({
+            "timestamp_utc": utc_now(),
+            "event": "risk_gate_approved",
+            "run_id": run_id,
+            "run_dir": run_dir,
+            "step_idx": step_idx,
+            "agent": agent_name,
+            "gate_reason": gate_reason,
+            "approval_mode": "manual",
+            "approval_source": "stdin"
+        })
+
     write_ledger({
         "timestamp_utc": utc_now(),
         "event": "step_approved",

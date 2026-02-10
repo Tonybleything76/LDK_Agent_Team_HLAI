@@ -13,14 +13,18 @@ def load_json_safe(path: str) -> Dict[str, Any]:
     except Exception:
         return {}
 
-def load_text_safe(path: str) -> str:
+def utc_now():
+    from datetime import datetime
+    return datetime.utcnow().isoformat()
+
+def write_ledger(event: Dict[str, Any], ledger_path: str = "governance/run_ledger.jsonl"):
     try:
-        if not os.path.exists(path):
-            return ""
-        with open(path, "r") as f:
-            return f.read()
+        os.makedirs(os.path.dirname(ledger_path), exist_ok=True)
+        with open(ledger_path, "a") as f:
+            f.write(json.dumps(event) + "\n")
     except Exception:
-        return ""
+        pass
+
 
 def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "governance/run_ledger.jsonl"):
     """
@@ -238,11 +242,92 @@ def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "govern
         summary["open_questions_summary"]["weighted_count_definition"] = "weighted = CRITICAL + BLOCKER + MAJOR"
         summary["open_questions_summary"]["top_10"] = unique_qs[:10]
 
+        # 3c. Populate Risk Gates based on final state
+        # Logic: If risk escalation is enabled, check conditions and add to gate_summary.risk_gates if met.
+        # This ensures audit summary reflects the risk state even if the run didn't explicitly log a risk_gate_forced event
+        # (e.g. if run failed before gate, or if we are re-auditing an old run).
+        
+        # Calculate weighted count based on Metadata or Default
+        # User constraint: "Weighted definition in your audit_summary says: weighted = CRITICAL + BLOCKER + MAJOR"
+        # We reuse the severity_counts we just calculated.
+        
+        # Resolve weighted severities from metadata (which came from manifest/config)
+        # If metadata is empty, fallback to the required default
+        eff_weighted_severities = summary["run_metadata"]["weighted_severities"]
+        if not eff_weighted_severities:
+             eff_weighted_severities = ["CRITICAL", "BLOCKER", "MAJOR"]
+
+        weighted_count = 0
+        for sev in eff_weighted_severities:
+            sev_key = sev.lower()
+            weighted_count += severity_counts.get(sev_key, 0)
+            
+        summary["open_questions_summary"]["weighted_count"] = weighted_count
+
+        # Check for Risk Gates
+        if summary["run_metadata"]["risk_gate_escalation_enabled"]:
+            
+            # Condition 1: Force Gate on QA Critical
+            # Logic: If force_gate_on_qa_critical is true AND critical >= 1
+            # We need force_gate_on_qa_critical from config/manifest.
+            # It wasn't in run_metadata summary yet, let's fetch it from risk_cfg_manifest or risk_cfg
+            
+            force_gate_critical = risk_cfg_manifest.get(
+                "force_gate_on_qa_critical",
+                risk_cfg.get("force_gate_on_qa_critical", True) # Default true per text? check root_agent.
+            )
+            # In root_agent: risk_force_on_qa_critical = risk_cfg.get("force_gate_on_qa_critical", True)
+            
+            if force_gate_critical and severity_counts["critical"] >= 1:
+                # Check if this gate is already in risk_gates (from ledger)
+                # If so, we don't need to duplicate it, but requirements say "add a risk gate entry".
+                # If we rely on ledger, we might miss it if the run crushed or if we are auditing a run that didn't have the logic yet.
+                # Since this is "risk gate escalation", we should probably ensure it's visible.
+                # Let's check for duplicates based on gate_reason.
+                
+                existing_reasons = [g.get("gate_reason") for g in summary["gate_summary"]["risk_gates"]]
+                if "qa_critical_open_questions" not in existing_reasons:
+                    summary["gate_summary"]["risk_gates"].append({
+                        "gate_type": "risk_gate",
+                        "gate_reason": "qa_critical_open_questions",
+                        "threshold": summary["run_metadata"]["open_questions_threshold"], # Not exactly relevant but keeps schema
+                        "observed": severity_counts["critical"],
+                        "policy": "force_gate_on_qa_critical"
+                    })
+
+            # Condition 2: Open Questions Threshold Exceeded
+            threshold = summary["run_metadata"]["open_questions_threshold"]
+            if weighted_count > threshold: # User said "exceed", so >
+                # Check duplicates
+                existing_reasons = [g.get("gate_reason") for g in summary["gate_summary"]["risk_gates"]]
+                if "open_questions_threshold_exceeded" not in existing_reasons:
+                     summary["gate_summary"]["risk_gates"].append({
+                        "gate_type": "risk_gate",
+                        "gate_reason": "open_questions_threshold_exceeded",
+                        "threshold": threshold,
+                        "observed": weighted_count,
+                        "policy": "open_questions_threshold"
+                     })
+
         # 4. Write Artifact
         output_path = Path(run_dir) / "audit_summary.json"
         with open(output_path, "w") as f:
             json.dump(summary, f, indent=2)
             
+        # 5. Log Risk Gate Triggered Event (if any)
+        # This event serves as the official "Risk Gate Encountered" signal for governance.
+        risk_gates = summary["gate_summary"].get("risk_gates", [])
+        if risk_gates:
+            risk_event = {
+                "timestamp_utc": utc_now(),
+                "event": "risk_gate_triggered",
+                "run_id": run_id,
+                "run_dir": run_dir,
+                "risk_gate_count": len(risk_gates),
+                "gates": risk_gates
+            }
+            write_ledger(risk_event, ledger_path=ledger_path)
+
         return output_path
 
     except Exception as e:
