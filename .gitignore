@@ -52,3 +52,5 @@ golden_pass_output.txt
 staged.txt
 status.txt
 *.patch
+
+governance/approval_ledger.jsonl
