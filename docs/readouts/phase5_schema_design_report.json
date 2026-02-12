@@ -1,0 +1,33 @@
+{
+    "phase": "v0.6 Phase 5: Improvement Backlog Architecture",
+    "step": "Schema Design",
+    "status": "completed",
+    "timestamp_utc": "2026-02-07T00:18:00Z",
+    "summary": "Designed the initial schema specification set for the Improvement Backlog, defining the authoritative data model before tooling implementation.",
+    "artifacts_created": [
+        {
+            "path": "docs/specs/phase5_backlog_schemas.md",
+            "type": "specification",
+            "description": "Defines Improvement Signal, Proposal, Evidence, and Governance Audit schemas."
+        }
+    ],
+    "design_decisions": {
+        "required_schemas": [
+            "improvement_signal.json",
+            "improvement_proposal.json",
+            "validation_evidence.json",
+            "governance_audit.json"
+        ],
+        "governance_constraints": [
+            "Append-only history",
+            "Prohibition of silent mutation",
+            "Explicit approval lineage",
+            "Tenant boundary protection"
+        ]
+    },
+    "next_steps": [
+        "Create JSON schema files in schemas/backlog/",
+        "Implement CLI tooling for proposal generation",
+        "Wire CI enforcement"
+    ]
+}

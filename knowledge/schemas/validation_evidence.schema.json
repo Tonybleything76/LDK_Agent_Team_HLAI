@@ -1,0 +1,90 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ld-course-factory.adk/schemas/backlog/validation_evidence.schema.json",
+    "title": "Validation Evidence",
+    "description": "Immutable record of verification for a specific Proposal.",
+    "type": "object",
+    "required": [
+        "governance_id",
+        "schema_version",
+        "created_at_utc",
+        "proposal_id",
+        "validator_context",
+        "validation_outcome",
+        "evidence_artifacts"
+    ],
+    "properties": {
+        "governance_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$"
+        },
+        "schema_version": {
+            "type": "string",
+            "const": "1.0.0"
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "proposal_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$"
+        },
+        "validator_context": {
+            "type": "object",
+            "required": [
+                "runner_id",
+                "environment"
+            ],
+            "properties": {
+                "runner_id": {
+                    "type": "string"
+                },
+                "environment": {
+                    "type": "string",
+                    "enum": [
+                        "ci",
+                        "sandbox",
+                        "dry_run"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "validation_outcome": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "REGRESSION",
+                "ERROR"
+            ]
+        },
+        "evidence_artifacts": {
+            "type": "object",
+            "required": [
+                "run_id",
+                "summary"
+            ],
+            "properties": {
+                "run_id": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "logs_uri": {
+                    "type": "string"
+                },
+                "metrics": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "number"
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}

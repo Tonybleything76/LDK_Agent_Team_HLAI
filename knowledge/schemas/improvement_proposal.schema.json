@@ -1,0 +1,105 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ld-course-factory.adk/schemas/backlog/improvement_proposal.schema.json",
+    "title": "Improvement Proposal",
+    "description": "A proposed change to the system logic or content, linking signals to a solution.",
+    "type": "object",
+    "required": [
+        "governance_id",
+        "schema_version",
+        "created_at_utc",
+        "author_id",
+        "linked_signal_ids",
+        "target_component",
+        "change_intent",
+        "risk_level",
+        "governance_state"
+    ],
+    "properties": {
+        "governance_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$"
+        },
+        "schema_version": {
+            "type": "string",
+            "const": "1.0.0"
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "author_id": {
+            "type": "string",
+            "description": "Agent or Human ID proposing the change."
+        },
+        "linked_signal_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F-]{36}$"
+            },
+            "description": "Must link to at least one valid Signal ID."
+        },
+        "target_component": {
+            "type": "object",
+            "required": [
+                "path",
+                "version_constraint"
+            ],
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "Fully qualified module path (e.g. agents.librarian.prompts)."
+                },
+                "version_constraint": {
+                    "type": "string",
+                    "description": "Semantic version range this proposal applies to."
+                }
+            },
+            "additionalProperties": false
+        },
+        "change_intent": {
+            "type": "object",
+            "required": [
+                "rationale",
+                "proposed_modification"
+            ],
+            "properties": {
+                "rationale": {
+                    "type": "string"
+                },
+                "proposed_modification": {
+                    "type": "string",
+                    "description": "Description or diff of the intended change."
+                }
+            },
+            "additionalProperties": false
+        },
+        "risk_level": {
+            "type": "string",
+            "enum": [
+                "LOW",
+                "MEDIUM",
+                "HIGH"
+            ]
+        },
+        "governance_state": {
+            "type": "string",
+            "enum": [
+                "DRAFT",
+                "REVIEW",
+                "APPROVED",
+                "REJECTED",
+                "SUPERSEDED",
+                "IMPLEMENTED"
+            ]
+        },
+        "parent_proposal_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$",
+            "description": "If this updates a previous proposal, link it here."
+        }
+    },
+    "additionalProperties": false
+}

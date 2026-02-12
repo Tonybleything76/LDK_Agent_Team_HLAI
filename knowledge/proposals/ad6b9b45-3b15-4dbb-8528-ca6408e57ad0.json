@@ -1,0 +1,20 @@
+{
+    "author_id": "admin_user",
+    "change_intent": {
+        "proposed_modification": "Update json parameter 'version' from '0.2' to '0.5.2'",
+        "rationale": "Align config version with validated build identity v0.5.2 (ref docs/team_test_cycle_1_report.md and architecture baseline)."
+    },
+    "created_at_utc": "2026-02-09T17:23:54Z",
+    "governance_id": "ad6b9b45-3b15-4dbb-8528-ca6408e57ad0",
+    "governance_state": "DRAFT",
+    "linked_signal_ids": [
+        "f5ab2eb6-5afe-4a2a-9010-e52fc7c5b969"
+    ],
+    "parent_proposal_id": "d68e5a92-3a47-4cbb-858e-c288936303af",
+    "risk_level": "LOW",
+    "schema_version": "1.0.0",
+    "target_component": {
+        "path": "orchestrator/config/run_config.json",
+        "version_constraint": ">=0.5.2"
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "governance_id": "79692b8c-b196-42a4-8606-35a77401a611",
+    "schema_version": "1.0.0",
+    "created_at_utc": "2026-02-07T00:45:29Z",
+    "source": {
+        "type": "operator_observation",
+        "origin_id": "manual_test"
+    },
+    "signal_type": "observation",
+    "content": {
+        "summary": "Manual Test",
+        "details": "Testing full flow"
+    },
+    "tenant_context": {
+        "tenant_id": "test-tenant"
+    },
+    "pii_scrubbed": true
+}

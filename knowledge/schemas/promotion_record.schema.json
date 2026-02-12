@@ -1,0 +1,74 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ld-course-factory.adk/schemas/backlog/promotion_record.schema.json",
+    "title": "Promotion Record",
+    "description": "The final seal of approval linking a Proposal to a specific commit/release.",
+    "type": "object",
+    "required": [
+        "governance_id",
+        "schema_version",
+        "created_at_utc",
+        "proposal_id",
+        "evidence_id",
+        "approval_authority",
+        "target_git_ref",
+        "promotion_status"
+    ],
+    "properties": {
+        "governance_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$"
+        },
+        "schema_version": {
+            "type": "string",
+            "const": "1.0.0"
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "proposal_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$"
+        },
+        "evidence_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F-]{36}$",
+            "description": "The PASSing validation evidence ID."
+        },
+        "approval_authority": {
+            "type": "object",
+            "required": [
+                "approver_id",
+                "signature",
+                "role"
+            ],
+            "properties": {
+                "approver_id": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "signature": {
+                    "type": "string",
+                    "description": "Cryptographic signature or authenticated token hash."
+                }
+            },
+            "additionalProperties": false
+        },
+        "target_git_ref": {
+            "type": "string",
+            "description": "The git commit hash or tag that implements this proposal."
+        },
+        "promotion_status": {
+            "type": "string",
+            "enum": [
+                "PROMOTED",
+                "ROLLED_BACK"
+            ],
+            "description": "State transition direction."
+        }
+    },
+    "additionalProperties": false
+}

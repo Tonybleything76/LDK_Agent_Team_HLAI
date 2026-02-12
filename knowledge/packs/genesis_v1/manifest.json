@@ -1,0 +1,13 @@
+{
+    "files": [
+        {
+            "path": "included/README.md",
+            "sha256": "bdc35c5f10a816fc0af0bc3a66cf70d0101e905430718f74a12bfc30a2a0f4bf"
+        }
+    ],
+    "generated_at_utc": "2026-02-08T01:38:39Z",
+    "git_commit_hash": "genesis_bootstrap",
+    "manifest_hash": "a7f20560b82552c40d58bc3c7d8d709ed0d062bf35062791f1a136bc3efe88a4",
+    "pack_version": "genesis_v1",
+    "proposal_id": "genesis_bootstrap"
+}

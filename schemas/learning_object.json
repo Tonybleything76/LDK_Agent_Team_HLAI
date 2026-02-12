@@ -1,0 +1,155 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Learning Object Schema v0.6",
+    "description": "Definition of a canonical Learning Object (LO) for v0.6 architecture.",
+    "type": "object",
+    "required": [
+        "id",
+        "type",
+        "metadata",
+        "content"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique identifier for this LO (e.g., lo_101_intro).",
+            "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "concept",
+                "procedure",
+                "fact",
+                "principle",
+                "process"
+            ],
+            "description": "The pedagogical type of this learning object."
+        },
+        "metadata": {
+            "type": "object",
+            "required": [
+                "taxonomy_level",
+                "duration_minutes",
+                "tags"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "taxonomy_level": {
+                    "type": "string",
+                    "enum": [
+                        "bloom_remember",
+                        "bloom_understand",
+                        "bloom_apply",
+                        "bloom_analyze",
+                        "bloom_evaluate",
+                        "bloom_create"
+                    ],
+                    "description": "Target Bloom's Taxonomy cognitive level."
+                },
+                "duration_minutes": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Estimated learner seat time in minutes."
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Keywords for indexing and retrieval."
+                },
+                "sme_nuances": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "description": "Specific phrases, jargon, or 'truth-isms' cited by the SME that MUST appear in the content."
+                }
+            }
+        },
+        "content": {
+            "type": "object",
+            "required": [
+                "key_points"
+            ],
+            "description": "Core educational content.",
+            "properties": {
+                "key_points": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "description": "Main takeaways to be taught."
+                },
+                "misconceptions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Common errors or myths to address."
+                },
+                "narrative_arc": {
+                    "type": "string",
+                    "description": "Suggested storytelling approach (e.g., Hero's Journey, Problem-Solution)."
+                }
+            }
+        },
+        "assessment": {
+            "type": "object",
+            "description": "Assessment strategy for this LO.",
+            "properties": {
+                "knowledge_checks": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "question",
+                            "type"
+                        ],
+                        "properties": {
+                            "question": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "mcq",
+                                    "tf",
+                                    "open_ended"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "rubric_id": {
+                    "type": "string",
+                    "description": "Reference to an external rubric ID."
+                }
+            }
+        },
+        "relationships": {
+            "type": "object",
+            "description": "Links to other LOs.",
+            "properties": {
+                "prerequisites": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "IDs of LOs that must be completed first."
+                },
+                "supports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "IDs of LOs that this LO enables."
+                }
+            }
+        }
+    }
+}

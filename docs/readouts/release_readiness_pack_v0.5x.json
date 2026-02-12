@@ -1,0 +1,76 @@
+{
+    "task": "release_readiness_pack_v0.5x",
+    "repo_tracked_clean": true,
+    "untracked_summary": {
+        "count": 52,
+        "top_level": [
+            "adk/",
+            "cli/",
+            "docs/",
+            "governance/",
+            "inputs/",
+            "knowledge/",
+            "orchestrator/",
+            "prompts/",
+            "risk_gate_test_proof.json",
+            "schemas/",
+            "scripts/",
+            "services/",
+            "staged.txt",
+            "status.txt",
+            "tests/",
+            "utils/"
+        ]
+    },
+    "head_commit": "685236b fix(governance): attribute auto-approvals to profile vs CLI",
+    "run_config_version": "0.5.2",
+    "provider_default": "openai",
+    "pytest_pass": false,
+    "pytest_summary": "3 failed (test_bundle_export, test_config_integrity, test_offline_integration), 65 passed, 1 error (test_proposal_create import), 3.37s",
+    "governance_runs": [
+        {
+            "run_id": "20260212_212221",
+            "profile": "dev",
+            "audit_ok": true,
+            "ledger_ok": false,
+            "cli_flag_regression": false,
+            "notes": "ledger missing preflight/postflight events"
+        },
+        {
+            "run_id": "20260212_212233",
+            "profile": "staging",
+            "audit_ok": true,
+            "ledger_ok": false,
+            "cli_flag_regression": false,
+            "notes": "ledger missing preflight/postflight events"
+        },
+        {
+            "run_id": "20260212_212256",
+            "profile": "staging",
+            "audit_ok": true,
+            "ledger_ok": false,
+            "cli_flag_regression": false,
+            "notes": "ledger missing preflight/postflight events"
+        }
+    ],
+    "risk_gate_spotcheck": {
+        "run_id": "20260212_211808",
+        "ledger_ok": false,
+        "audit_ok": true,
+        "attribution_ok": true,
+        "notes": "audit shows 2 risk gates triggered correctly, ledger missing events (possible ledger schema change or event name mismatch)"
+    },
+    "env_prereqs": {
+        "OPENAI_API_KEY": "MISSING",
+        "PERPLEXITY_API_KEY": "MISSING",
+        "ANTHROPIC_API_KEY": "MISSING",
+        "dotenv_usage": "NO_DOTENV - operator must: set -a; source .env; set +a"
+    },
+    "release_blockers": [
+        "CRITICAL: pytest failures (3 tests failing: bundle_export, config_integrity, offline_integration)",
+        "CRITICAL: API keys not visible in current session (operator must source .env)",
+        "MAJOR: ledger preflight/postflight events missing for all governance runs (possible schema/event name change)",
+        "MINOR: run_config version mismatch (0.5.2 vs task naming v0.5x)"
+    ],
+    "final_status": "FAIL"
+}
