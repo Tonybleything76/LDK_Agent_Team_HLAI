@@ -158,7 +158,18 @@ def collect_run_files(run_id: str, run_dir: Path, include_state: bool) -> List[D
                 'source': f,
                 'arcname': f.name
             })
-            
+
+    # 7. Dist directory (delivery artifacts)
+    dist_dir = run_dir / "dist"
+    if dist_dir.is_dir():
+        for f in sorted(dist_dir.rglob("*")):
+            if f.is_file():
+                rel = f.relative_to(run_dir)
+                files_to_add.append({
+                    'source': f,
+                    'arcname': str(rel)
+                })
+
     return files_to_add
 
 def main():

@@ -61,6 +61,11 @@
             "gate": false
         },
         {
+            "name": "media_producer_agent",
+            "prompt_path": "prompts/media_producer/prompt.md",
+            "gate": false
+        },
+        {
             "name": "qa_agent",
             "prompt_path": "prompts/qa/prompt.md",
             "gate": false
