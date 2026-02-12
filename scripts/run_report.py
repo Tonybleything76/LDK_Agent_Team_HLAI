@@ -119,11 +119,20 @@ def generate_report_data(run_dir: Path, audit_summary: Dict[str, Any], run_manif
         "output_directory": str(run_dir)
     }
 
+    # Deployables (dist/ directory contents)
+    deployables = []
+    dist_dir = run_dir / "dist"
+    if dist_dir.is_dir():
+        for f in sorted(dist_dir.rglob("*")):
+            if f.is_file():
+                deployables.append(str(f.relative_to(run_dir)))
+
     return {
         "header": header,
         "gates": gates,
         "open_questions": oq,
-        "artifacts": artifacts
+        "artifacts": artifacts,
+        "deployables": deployables
     }
 
 def print_console_report(data: Dict[str, Any]):
