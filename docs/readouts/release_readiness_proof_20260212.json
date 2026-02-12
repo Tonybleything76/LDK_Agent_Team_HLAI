@@ -1,0 +1,50 @@
+{
+  "repo_root": "/Users/jbleyta/Projects/ld-course-factory-adk",
+  "git": {
+    "head_commit": "39e42591631ebb16ecc0455fb0ac8ebf3c2f4b34",
+    "tracked_clean": true,
+    "untracked_count": 51
+  },
+  "pytest": {
+    "command": "python3 -m pytest -q",
+    "result": "pass",
+    "summary": "69 passed, 2 warnings in 2.82s"
+  },
+  "changes": {
+    "files_modified": [
+      "config/run_config.json",
+      "scripts/bundle_export.py",
+      "scripts/run_report.py"
+    ],
+    "files_created": [
+      "cli/commands/__init__.py",
+      "cli/commands/proposal_create.py",
+      "pyproject.toml",
+      "tests/test_auto_approval_attribution.py",
+      "tests/test_bundle_export.py",
+      "tests/test_config_integrity.py",
+      "tests/test_offline_integration.py",
+      "tests/test_proposal_create.py"
+    ],
+    "commit_hash": "39e42591631ebb16ecc0455fb0ac8ebf3c2f4b34"
+  },
+  "governance_proof": {
+    "run_id": "20260212_222942",
+    "profile": "staging",
+    "max_step": 3,
+    "artifacts_present": true,
+    "ledger_events_present": {
+      "preflight_passed": true,
+      "postflight_passed": true,
+      "step_approved": true
+    },
+    "audit_checks": {
+      "run_id_populated": true,
+      "gate_manifest_keys_ok": true,
+      "planned_phase_gates_present": true,
+      "phase_gate_step3_present": true,
+      "approvals_auto_ge_1": true
+    }
+  },
+  "final_status": "PASS"
+}
