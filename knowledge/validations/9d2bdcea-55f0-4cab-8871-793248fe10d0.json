@@ -1,0 +1,19 @@
+{
+    "created_at_utc": "2026-02-08T17:41:17Z",
+    "evidence_artifacts": {
+        "metrics": {
+            "schema_valid": 1.0,
+            "signals_present": 1.0
+        },
+        "run_id": "N/A",
+        "summary": "Validation run in mode schema_only. Internal Status: PASS"
+    },
+    "governance_id": "9d2bdcea-55f0-4cab-8871-793248fe10d0",
+    "proposal_id": "0b0e63a1-afa6-4e6e-905f-22231f634794",
+    "schema_version": "1.0.0",
+    "validation_outcome": "PASS",
+    "validator_context": {
+        "environment": "ci",
+        "runner_id": "jbleyta"
+    }
+}

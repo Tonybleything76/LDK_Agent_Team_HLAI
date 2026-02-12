@@ -1,0 +1,57 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Improvement Signal",
+    "type": "object",
+    "properties": {
+        "governance_id": {
+            "type": "string",
+            "format": "uuid"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "pii_scrubbed": {
+            "const": true
+        },
+        "signal_source": {
+            "type": "string",
+            "enum": [
+                "pilot",
+                "operator",
+                "automated_scorer",
+                "manual"
+            ]
+        },
+        "signal_type": {
+            "type": "string",
+            "enum": [
+                "complaint",
+                "observation",
+                "failure"
+            ]
+        },
+        "title": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 120
+        },
+        "description": {
+            "type": "string",
+            "minLength": 10
+        },
+        "context": {
+            "type": "object"
+        }
+    },
+    "required": [
+        "governance_id",
+        "created_at",
+        "pii_scrubbed",
+        "signal_source",
+        "signal_type",
+        "title",
+        "description"
+    ],
+    "additionalProperties": false
+}

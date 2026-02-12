@@ -1,0 +1,10 @@
+{
+    "approval_id": "163a4dc7-64f2-48be-9f64-ff4d00f8e3bc",
+    "approver_id": "admin_user",
+    "created_at_utc": "2026-02-09T18:02:40Z",
+    "notes": null,
+    "proposal_id": "ad6b9b45-3b15-4dbb-8528-ca6408e57ad0",
+    "risk_level_at_approval": "LOW",
+    "schema_version": "1.0.0",
+    "validation_ref": "6b9e18e5-f8b6-4525-a6d8-1b47442cbe5b"
+}

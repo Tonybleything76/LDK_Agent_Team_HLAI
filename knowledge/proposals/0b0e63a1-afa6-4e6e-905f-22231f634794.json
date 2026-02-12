@@ -1,0 +1,19 @@
+{
+    "author_id": "jbleyta",
+    "change_intent": {
+        "proposed_modification": "Triage-only draft. See linked signals for details. NEXT: human review to author patch.",
+        "rationale": "Pilot triage from 1 signals: Successful pilot run 4e985263-6066-4900-9499-3b8aff680b48"
+    },
+    "created_at_utc": "2026-02-08T02:19:40Z",
+    "governance_id": "0b0e63a1-afa6-4e6e-905f-22231f634794",
+    "governance_state": "DRAFT",
+    "linked_signal_ids": [
+        "7cfb1f28-a5d3-4478-abfb-a4158464b589"
+    ],
+    "risk_level": "LOW",
+    "schema_version": "1.0.0",
+    "target_component": {
+        "path": "orchestrator/root_agent.py",
+        "version_constraint": "^1.0.0"
+    }
+}

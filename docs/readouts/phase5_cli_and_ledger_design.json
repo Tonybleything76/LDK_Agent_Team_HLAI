@@ -1,0 +1,118 @@
+{
+    "context": {
+        "phase": "v0.6 Phase 5: Improvement Backlog Architecture",
+        "step": "First Operational Capability",
+        "status": "DESIGN_COMPLETE",
+        "timestamp_utc": "2026-02-06T18:31:00-06:00"
+    },
+    "objective": "Implement the Governed Backlog CLI and Approval Ledger based on the finalized design.",
+    "design_specification": {
+        "cli_surface": {
+            "commands": [
+                {
+                    "name": "adk signal create",
+                    "purpose": "Ingest raw feedback",
+                    "args": [
+                        "--source",
+                        "--content",
+                        "--context-run-id"
+                    ],
+                    "governance": [
+                        "Schema validation",
+                        "PII scrubbing",
+                        "Immutable ID"
+                    ]
+                },
+                {
+                    "name": "adk proposal create",
+                    "purpose": "Initialize unit of work",
+                    "args": [
+                        "--signals",
+                        "--target-component",
+                        "--intent",
+                        "--risk"
+                    ],
+                    "governance": [
+                        "Linkage verification",
+                        "Target validation",
+                        "Orphan prevention"
+                    ]
+                },
+                {
+                    "name": "adk proposal validate",
+                    "purpose": "Generate evidence via Validation Runner",
+                    "args": [
+                        "--proposal",
+                        "--mode"
+                    ],
+                    "governance": [
+                        "Deterministic sandbox",
+                        "Signed output"
+                    ]
+                },
+                {
+                    "name": "adk proposal approve",
+                    "purpose": "Record authority decision",
+                    "args": [
+                        "--proposal",
+                        "--evidence",
+                        "--decision",
+                        "--comment"
+                    ],
+                    "governance": [
+                        "Evidence linkage",
+                        "Pass status check",
+                        "Authority/Risk check"
+                    ]
+                },
+                {
+                    "name": "adk promotion record",
+                    "purpose": "Link code change to approval",
+                    "args": [
+                        "--proposal",
+                        "--commit-sha"
+                    ],
+                    "governance": [
+                        "Ledger CHECK",
+                        "Lock proposal state"
+                    ]
+                }
+            ]
+        },
+        "ledger_architecture": {
+            "location": "governance/approval_ledger.jsonl",
+            "format": "JSONL",
+            "integrity_mechanism": "Merkle Hash Chain (previous_entry_hash + integrity_hash)",
+            "fields": [
+                "timestamp_utc",
+                "ledger_seq",
+                "action",
+                "actor",
+                "target_artifact_id",
+                "evidence_ref",
+                "decision_metadata",
+                "previous_entry_hash",
+                "integrity_hash"
+            ]
+        },
+        "security_enforcement": [
+            "Cross-Tenant Signal Mixing: Fatal error on mixed scopes",
+            "Unauthorized Approvals: Risk-level vs User Authority check",
+            "Proposal Tampering: Content hash ID validation",
+            "Promotion Blocking: Exit code 1 if no APPROVED ledger entry"
+        ]
+    },
+    "implementation_plan": {
+        "immediate_actions": [
+            "Scaffold 'adk' CLI entrypoint",
+            "Implement 'adk signal create' with schema validation",
+            "Implement 'approval_ledger.py' module with hashing logic",
+            "Implement 'adk proposal create' with linkage checks"
+        ],
+        "success_criteria": [
+            "Executable Feedback Loop: 'adk signal create' makes valid JSON",
+            "Ledger Integrity: Manual tampering detected by verify check",
+            "Blocked Release: 'adk promotion record' fails without approval"
+        ]
+    }
+}

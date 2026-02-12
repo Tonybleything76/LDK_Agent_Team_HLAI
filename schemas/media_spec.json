@@ -1,0 +1,96 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Media Specification Schema v0.1",
+    "description": "Defines the media and delivery assets for a course, anchored to the architecture.",
+    "type": "object",
+    "required": [
+        "course_id",
+        "architecture_hash",
+        "generated_at_utc",
+        "media_assets"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "course_id": {
+            "type": "string",
+            "description": "Must match the course_id in course_architecture.json"
+        },
+        "architecture_hash": {
+            "type": "string",
+            "description": "SHA256 hash of the specific course_architecture.json version this media is built for."
+        },
+        "generated_at_utc": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "media_assets": {
+            "type": "array",
+            "description": "List of media definitions per Learning Object",
+            "items": {
+                "type": "object",
+                "required": [
+                    "learning_object_id",
+                    "slides"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "learning_object_id": {
+                        "type": "string",
+                        "description": "ID of the LO this asset belongs to"
+                    },
+                    "slides": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": [
+                                "order",
+                                "layout",
+                                "narration"
+                            ],
+                            "additionalProperties": false,
+                            "properties": {
+                                "order": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "layout": {
+                                    "type": "string",
+                                    "enum": [
+                                        "title",
+                                        "bullet_list",
+                                        "split_image_text",
+                                        "quote",
+                                        "interaction",
+                                        "full_image",
+                                        "video"
+                                    ]
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "bullets": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "narration": {
+                                    "type": "string",
+                                    "description": "Voiceover script for this slide"
+                                },
+                                "visual_prompt": {
+                                    "type": "string",
+                                    "description": "Prompt for generating the visual, or description of the visual asset"
+                                },
+                                "duration_seconds": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

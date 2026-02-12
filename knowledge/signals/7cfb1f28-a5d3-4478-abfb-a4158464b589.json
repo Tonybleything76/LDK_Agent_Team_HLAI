@@ -1,0 +1,18 @@
+{
+    "governance_id": "7cfb1f28-a5d3-4478-abfb-a4158464b589",
+    "schema_version": "1.0.0",
+    "created_at_utc": "2026-02-08T02:16:46Z",
+    "source": {
+        "type": "pilot_feedback",
+        "origin_id": "4e985263-6066-4900-9499-3b8aff680b48"
+    },
+    "signal_type": "observation",
+    "content": {
+        "summary": "Successful pilot run 4e985263-6066-4900-9499-3b8aff680b48",
+        "details": "Pilot run executed successfully using genesis_v1 pack."
+    },
+    "tenant_context": {
+        "tenant_id": "test-tenant"
+    },
+    "pii_scrubbed": true
+}

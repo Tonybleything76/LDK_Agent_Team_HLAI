@@ -1,0 +1,109 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://ld-course-factory.adk/schemas/backlog/improvement_signal.schema.json",
+    "title": "Improvement Signal",
+    "description": "A discrete unit of feedback, observation, or error from the runtime environment.",
+    "type": "object",
+    "required": [
+        "governance_id",
+        "schema_version",
+        "created_at_utc",
+        "source",
+        "signal_type",
+        "content",
+        "tenant_context",
+        "pii_scrubbed"
+    ],
+    "properties": {
+        "governance_id": {
+            "type": "string",
+            "description": "Immutable UUIDv4 or Content Hash identifying this signal.",
+            "pattern": "^[0-9a-fA-F-]{36}$"
+        },
+        "schema_version": {
+            "type": "string",
+            "const": "1.0.0"
+        },
+        "created_at_utc": {
+            "type": "string",
+            "format": "date-time",
+            "description": "creation timestamp in UTC ISO-8601."
+        },
+        "source": {
+            "type": "object",
+            "required": [
+                "type",
+                "origin_id"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "pilot_feedback",
+                        "operator_observation",
+                        "automated_scorer",
+                        "system_error"
+                    ]
+                },
+                "origin_id": {
+                    "type": "string",
+                    "description": "ID of the user, agent, or run that generated the signal."
+                }
+            },
+            "additionalProperties": false
+        },
+        "signal_type": {
+            "type": "string",
+            "enum": [
+                "complaint",
+                "observation",
+                "feature_request",
+                "bug_report"
+            ]
+        },
+        "content": {
+            "type": "object",
+            "required": [
+                "summary",
+                "details"
+            ],
+            "properties": {
+                "summary": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "details": {
+                    "type": "string"
+                },
+                "affected_artifacts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "tenant_context": {
+            "type": "object",
+            "required": [
+                "tenant_id"
+            ],
+            "properties": {
+                "tenant_id": {
+                    "type": "string"
+                },
+                "course_id": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "pii_scrubbed": {
+            "type": "boolean",
+            "const": true,
+            "description": "Must be true to be accepted into the backlog."
+        }
+    },
+    "additionalProperties": false
+}
