@@ -37,6 +37,8 @@ deliverable.json
 governance/run_ledger.jsonl
 
 # ── Generated diff / test artifacts ─────────────────────
+phase5_proposal_validate_report.json
+risk_gate_test_proof.json
 run_diff_*.json
 run_diff_*.md
 golden_output.txt
