@@ -38,7 +38,8 @@ def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "govern
             "run_metadata": {},
             "gate_manifest": {}, # Will be populated with gate_summary content
             "gate_summary": {
-                "phase_gates": [],
+                "planned_phase_gates": [],  # Configured phase gates from config
+                "phase_gates": [],  # Actually encountered phase gates
                 "risk_gates": [],
                 "approvals": {"manual": 0, "auto": 0}
             },
@@ -56,6 +57,15 @@ def generate_audit_summary(run_id: str, run_dir: str, ledger_path: str = "govern
         # Load Config (global)
         config_path = "config/run_config.json"
         config = load_json_safe(config_path)
+        
+        # Extract planned phase gates from config for transparency
+        approval_cfg = config.get("approval", {})
+        planned_phase_gates = approval_cfg.get("phase_gates", [])
+        try:
+            planned_phase_gates = [int(x) for x in planned_phase_gates]
+        except Exception:
+            planned_phase_gates = []
+        summary["gate_summary"]["planned_phase_gates"] = planned_phase_gates
         
         # Determine defaults
         risk_cfg = config.get("approval", { }).get("risk_gate_escalation", {})
