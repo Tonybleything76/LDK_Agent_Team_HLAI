@@ -370,12 +370,19 @@ The --dry_run flag is a shortcut for --mode dry_run.
         
         # Apply Auto-Approve from Profile
         # Note: CLI --auto_approve flag takes precedence if set, but profile sets the baseline
+        auto_approve_from_profile = False
         if profile_settings.get("auto_approve"):
             if not args.auto_approve:
                 # If profile says yes, enable it (unless explicitly disabled? we don't have --no-auto-approve yet)
                 # We assume profile sets the floor.
                 args.auto_approve = True
+                auto_approve_from_profile = True
                 print(f"   → Auto-Approve: ENABLED (by profile)")
+        
+        # Track auto-approval source for audit attribution
+        if auto_approve_from_profile:
+            os.environ["AUTO_APPROVE_SOURCE"] = "profile"
+            os.environ["AUTO_APPROVE_PROFILE"] = governance_profile
         
         # Build Config Overrides
         overrides = {
@@ -394,6 +401,9 @@ The --dry_run flag is a shortcut for --mode dry_run.
     # Handle Auto-Approve Flag
     if args.auto_approve:
         os.environ["AUTO_APPROVE"] = "1"
+        # Track source if not already set by profile
+        if "AUTO_APPROVE_SOURCE" not in os.environ:
+            os.environ["AUTO_APPROVE_SOURCE"] = "cli_flag"
         print("\n" + "!" * 60)
         print("⚠️  WARNING: AUTO-APPROVAL ENABLED")
         print("!" * 60)
