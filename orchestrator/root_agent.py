@@ -140,6 +140,7 @@ def approval_gate(
     # Check for Auto-Approval
     auto_approve_env = os.getenv("AUTO_APPROVE", "").lower()
     is_auto_approve = auto_approve_env in ("1", "true", "yes", "on")
+    auto_approve_source = os.getenv("AUTO_APPROVE_SOURCE", "cli_flag")
 
     # Risk Gate Override Logic
     # If it's a risk gate and auto-approve is ON, we check strictness policy.
@@ -148,7 +149,13 @@ def approval_gate(
     
     if is_auto_approve:
         should_pause = False
-        approval_reason = "Auto-approval enabled via CLI"
+        
+        # Determine approval reason based on source
+        if auto_approve_source == "profile":
+            profile_name = os.getenv("AUTO_APPROVE_PROFILE", "unknown")
+            approval_reason = f"Auto-approval enabled by governance profile: {profile_name}"
+        else:
+            approval_reason = "Auto-approval enabled via CLI flag"
 
         if gate_type == "risk_gate":
             # Check for risk gate specific override policy
@@ -172,7 +179,7 @@ def approval_gate(
                 "timestamp_utc": utc_now(),
                 "event": "step_approved",
                 "approval_mode": "auto",
-                "approval_source": "cli_flag",
+                "approval_source": auto_approve_source,
                 "approval_reason": approval_reason,
                 "gate_strategy": gate_strategy,
                 "step_idx": step_idx,
