@@ -1,52 +1,52 @@
-# Mandatory Ignore
-outputs/
-governance/run_ledger.jsonl
-*.env
-*.zip
-*.sha256
+# ── Secrets ──────────────────────────────────────────────
 .env
 .env.*
-__pycache__/
-*.pyc
-*.pyo
-.DS_Store
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-*.log
-*.tmp
-tmp/
-run_diff_*.json
-run_diff_*.md
-golden_output.txt
-golden_pass_output.txt
-
-# Common Hygiene (Restored)
-.venv/
-venv/
-env/
-exports/
-.idea/
-.vscode/
-
-# Conditional (Ignore if present)
+*.env
 credentials.json
 secrets.json
 api_keys.*
 *.key
 
-# Explicitly Do Not Ignore (Files that should be tracked)
-!prompts/
-!scripts/
-!orchestrator/
-!schemas/
-!tests/
-!VERSION
+# ── Python bytecode / caches ────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Generated artifacts
-deliverable.json
-tmp/
+# ── Virtual environments ────────────────────────────────
+.venv/
+venv/
+env/
+
+# ── IDE / OS metadata ──────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+
+# ── Generated outputs & build artifacts ─────────────────
 outputs/
+exports/
+tmp/
+deliverable.json
 *.zip
+*.sha256
+
+# ── Runtime governance ledger (regenerated each run) ────
+governance/run_ledger.jsonl
+
+# ── Generated diff / test artifacts ─────────────────────
+run_diff_*.json
+run_diff_*.md
 golden_output.txt
 golden_pass_output.txt
+
+# ── Log / temp files ───────────────────────────────────
+*.log
+*.tmp
+
+# ── Local scratch files ────────────────────────────────
+staged.txt
+status.txt
+*.patch
