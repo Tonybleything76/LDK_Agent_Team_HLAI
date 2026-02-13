@@ -50,30 +50,45 @@ Before finalizing output, mentally validate:
 3.  **No Hallucinations**: No invented metrics or sources.
 4.  **State Isolation**: Only writing to allowed state keys.
 
-## Output Contract
-You must return a **SINGLE JSON OBJECT**.
-- No markdown fences (```json ... ```).
-- No talk before or after the JSON.
-- keys: `deliverable_markdown`, `updated_state`, `open_questions`.
+----------------------------------------------------------------
 
-### JSON Structure
+OUTPUT FORMAT (STRICT JSON ONLY)
+Return exactly one JSON object and nothing else.
+No markdown fences. No commentary. No text before or after JSON.
 
-{{
-  "deliverable_markdown": "# Learning Strategy\n\n## 1. Audience Profile\n...",
-  "updated_state": {{
-    "strategy": {{
-      "target_audience": "...",
-      "learning_goals": ["..."],
-      "success_metrics": ["..."],
-      "recommended_modality": "..."
-    }}
-  }},
+{
+  "deliverable_markdown": "string (markdown allowed inside the string)",
+  "updated_state": {
+    "strategy": {
+      "audience": {
+        "primary_learners": [],
+        "secondary_learners": []
+      },
+      "goals": [],
+      "success_metrics": [],
+      "constraints": [],
+      "recommended_modality": {
+        "format": "",
+        "duration_minutes": 0,
+        "assessment": ""
+      }
+    }
+  },
   "open_questions": [
-    "Clarification 1 needed...",
-    "Clarification 2 needed..."
+    {
+      "id": "Q1",
+      "question": "",
+      "severity": "MAJOR",
+      "why_it_matters": ""
+    }
   ]
-}}
+}
 
-### State Update Rules
-- **ONLY** write to `updated_state.strategy`.
-- **DO NOT** overwrite or touch other keys.
+HARD RULES
+- You MUST include all three top-level keys:
+  deliverable_markdown, updated_state, open_questions.
+- `updated_state` MUST be a JSON object (use {} only if unavoidable).
+- `open_questions` MUST be an array (use [] if none).
+- Do NOT output anything outside the JSON object.
+
+----------------------------------------------------------------
