@@ -17,15 +17,15 @@ from typing import Dict, List, Any
 
 # Paths
 PROJECT_ROOT = Path(__file__).parent.parent
-INPUTS_DIR = PROJECT_ROOT / "inputs"
-OUTPUTS_DIR = PROJECT_ROOT / "outputs"
+# We now use a temporary directory for inputs to avoid dirtying the worktree
+TEMP_INPUTS_DIR = PROJECT_ROOT / "_temp_inputs_golden_run"
 FIXTURES_DIR = PROJECT_ROOT / "tests" / "fixtures" / "golden_run"
-TEMP_BACKUP_DIR = PROJECT_ROOT / "inputs_backup_golden_run"
+OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 
 # Output Deliverable
 DELIVERABLE = {
     "files_changed": [],
-    "fixture_created": "tests/fixtures/golden_run/",
+    "fixture_created": str(TEMP_INPUTS_DIR),
     "invariants_asserted": [],
     "verification_results": [],
     "tests_run": ["scripts/verify_golden_run.py"],
@@ -43,38 +43,28 @@ def log_invariant(message: str):
     DELIVERABLE["invariants_asserted"].append(message)
 
 def setup_fixtures():
-    """Backup existing inputs and install golden fixtures."""
-    print("📋 Setting up golden fixtures...")
+    """Install golden fixtures into temporary inputs directory."""
+    print(f"📋 Setting up golden fixtures in {TEMP_INPUTS_DIR}...")
     
-    if INPUTS_DIR.exists():
-        if TEMP_BACKUP_DIR.exists():
-            shutil.rmtree(TEMP_BACKUP_DIR)
-        shutil.copytree(INPUTS_DIR, TEMP_BACKUP_DIR)
-        shutil.rmtree(INPUTS_DIR)
+    if TEMP_INPUTS_DIR.exists():
+        shutil.rmtree(TEMP_INPUTS_DIR)
     
-    os.makedirs(INPUTS_DIR)
+    os.makedirs(TEMP_INPUTS_DIR)
     
     # Copy fixtures
     for filename in ["business_brief.md", "sme_notes.md"]:
         src = FIXTURES_DIR / filename
-        dst = INPUTS_DIR / filename
+        dst = TEMP_INPUTS_DIR / filename
         shutil.copy2(src, dst)
         
-    # We don't need system_state.json for inputs, it's used for resume which we aren't doing here
-    # usually, but we can verify it exists if needed. The prompt uses it.
-    
     print("   Fixtures installed.")
 
-def restore_inputs():
-    """Restore original inputs."""
-    print("📋 Restoring original inputs...")
-    if INPUTS_DIR.exists():
-        shutil.rmtree(INPUTS_DIR)
-    
-    if TEMP_BACKUP_DIR.exists():
-        shutil.copytree(TEMP_BACKUP_DIR, INPUTS_DIR)
-        shutil.rmtree(TEMP_BACKUP_DIR)
-    print("   Inputs restored.")
+def cleanup_temp_inputs():
+    """Cleanup temporary inputs directory."""
+    print(f"📋 Cleaning up {TEMP_INPUTS_DIR}...")
+    if TEMP_INPUTS_DIR.exists():
+        shutil.rmtree(TEMP_INPUTS_DIR)
+    print("   Cleanup complete.")
 
 def run_pipeline() -> str:
     """Run the pipeline and return the run_id."""
@@ -84,7 +74,8 @@ def run_pipeline() -> str:
         "python3", "scripts/run_pipeline.py",
         "--dry_run",
         "--governance_profile", "ci",
-        "--auto_approve"
+        "--auto_approve",
+        "--inputs-dir", str(TEMP_INPUTS_DIR.name)
     ]
     
     # Run with captured output
@@ -208,12 +199,12 @@ def verify_invariants(run_dir: Path):
     if not relevant_events:
         fail("Ledger: No events found for this run_id")
         
-    step_approved_events = [e for e in relevant_events if e["event"] == "step_approved"]
+    step_approved_events = [e for e in relevant_events if e.get("event") == "step_approved"]
     if not step_approved_events:
         fail("Ledger: No step_approved events found")
     log_invariant("Ledger: at least one step_approved event")
     
-    risk_forced_events = [e for e in relevant_events if e["event"] == "risk_gate_forced"]
+    risk_forced_events = [e for e in relevant_events if e.get("event") == "risk_gate_forced"]
     if not risk_forced_events:
         fail("Ledger: No risk_gate_forced events found")
     log_invariant("Ledger: at least one risk_gate_forced event")
@@ -267,10 +258,10 @@ def main():
         print(json.dumps(DELIVERABLE, indent=2))
         
     except Exception as e:
-        restore_inputs()
+        cleanup_temp_inputs()
         fail(f"Exception during verification: {e}")
     finally:
-        restore_inputs()
+        cleanup_temp_inputs()
 
 if __name__ == "__main__":
     main()

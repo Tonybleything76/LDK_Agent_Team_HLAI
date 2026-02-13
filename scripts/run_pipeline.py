@@ -33,24 +33,30 @@ SME_NOTES_PATH = INPUTS_DIR / "sme_notes.md"
 MIN_INPUT_CHARS = 50  # Minimum chars to consider input "non-empty"
 
 
-def validate_inputs() -> bool:
+def validate_inputs(inputs_dir: Path) -> bool:
     """
     Validate that input files exist and are non-empty.
     
+    Args:
+        inputs_dir: Directory containing input files
+
     Returns:
         True if inputs are valid, False otherwise
     """
     errors = []
     
-    if not BUSINESS_BRIEF_PATH.exists():
-        errors.append(f"❌ Missing: {BUSINESS_BRIEF_PATH}")
-    elif BUSINESS_BRIEF_PATH.stat().st_size <= MIN_INPUT_CHARS:
-        errors.append(f"❌ Empty or too short: {BUSINESS_BRIEF_PATH} ({BUSINESS_BRIEF_PATH.stat().st_size} bytes)")
+    business_brief_path = inputs_dir / "business_brief.md"
+    sme_notes_path = inputs_dir / "sme_notes.md"
+
+    if not business_brief_path.exists():
+        errors.append(f"❌ Missing: {business_brief_path}")
+    elif business_brief_path.stat().st_size <= MIN_INPUT_CHARS:
+        errors.append(f"❌ Empty or too short: {business_brief_path} ({business_brief_path.stat().st_size} bytes)")
     
-    if not SME_NOTES_PATH.exists():
-        errors.append(f"❌ Missing: {SME_NOTES_PATH}")
-    elif SME_NOTES_PATH.stat().st_size <= MIN_INPUT_CHARS:
-        errors.append(f"❌ Empty or too short: {SME_NOTES_PATH} ({SME_NOTES_PATH.stat().st_size} bytes)")
+    if not sme_notes_path.exists():
+        errors.append(f"❌ Missing: {sme_notes_path}")
+    elif sme_notes_path.stat().st_size <= MIN_INPUT_CHARS:
+        errors.append(f"❌ Empty or too short: {sme_notes_path} ({sme_notes_path.stat().st_size} bytes)")
     
     if errors:
         print("\n⚠️  INPUT VALIDATION FAILED\n")
@@ -289,6 +295,12 @@ The --dry_run flag is a shortcut for --mode dry_run.
         type=int,
         help="Stop execution after completing this step number (inclusive)"
     )
+
+    parser.add_argument(
+        "--inputs-dir",
+        default="inputs",
+        help="Directory containing input files (default: inputs)"
+    )
     
     args = parser.parse_args()
 
@@ -420,7 +432,10 @@ The --dry_run flag is a shortcut for --mode dry_run.
 
     # Step 1: Validate inputs
     print("\n📋 Step 1: Validating inputs...")
-    if not validate_inputs():
+    inputs_dir = PROJECT_ROOT / args.inputs_dir
+    print(f"   Using inputs directory: {inputs_dir}")
+    
+    if not validate_inputs(inputs_dir):
         sys.exit(1)
     print("   ✅ Inputs validated")
     
@@ -486,6 +501,7 @@ The --dry_run flag is a shortcut for --mode dry_run.
             config_overrides=config_overrides,
             governance_profile=governance_profile,
             max_step=args.max_step,
+            inputs_dir=str(inputs_dir),  # Pass the resolved inputs directory
         )
 
         # Enforce Postflight Guard

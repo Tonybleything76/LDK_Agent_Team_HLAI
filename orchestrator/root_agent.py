@@ -295,6 +295,7 @@ def run_pipeline(
     config_overrides: dict = None,
     governance_profile: str = None,
     max_step: int = None,
+    inputs_dir: str = "inputs",
 ) -> None:
     """
     Execute the agent pipeline with optional resume support.
@@ -304,6 +305,8 @@ def run_pipeline(
         run_dir: Existing run directory for resume (default: create new)
         start_step: Step index to start from (default: 1)
         initial_state: Initial state for resume (default: get_initial_state())
+        max_step: Stop execution after completing this step number (inclusive)
+        inputs_dir: Directory containing input files (default: "inputs")
     """
     # Track manifest in outer scope for error handlers
     manifest = None
@@ -327,8 +330,16 @@ def run_pipeline(
         # Load Inputs
         # ----------------------------------------------------------------------
 
-        business_brief = load_text(os.path.join(INPUTS_DIR, "business_brief.md"))
-        sme_notes = load_text(os.path.join(INPUTS_DIR, "sme_notes.md"))
+        business_brief_path = os.path.join(inputs_dir, "business_brief.md")
+        sme_notes_path = os.path.join(inputs_dir, "sme_notes.md")
+
+        if not os.path.exists(business_brief_path):
+             raise FileNotFoundError(f"Missing input file: {business_brief_path}")
+        if not os.path.exists(sme_notes_path):
+             raise FileNotFoundError(f"Missing input file: {sme_notes_path}")
+
+        business_brief = load_text(business_brief_path)
+        sme_notes = load_text(sme_notes_path)
 
         # ----------------------------------------------------------------------
         # Initial State and Run Directory
@@ -385,8 +396,8 @@ def run_pipeline(
                 "started_at_utc": utc_now(),
                 "config_hash": compute_config_hash(Path(config_path)),
                 "inputs_hash": compute_inputs_hash(
-                    Path(INPUTS_DIR) / "business_brief.md",
-                    Path(INPUTS_DIR) / "sme_notes.md",
+                    Path(business_brief_path),
+                    Path(sme_notes_path),
                 ),
                 "current_step_completed": 0,
                 "providers_used_by_step": {},
