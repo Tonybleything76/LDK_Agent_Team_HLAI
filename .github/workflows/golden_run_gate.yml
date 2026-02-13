@@ -1,0 +1,42 @@
+name: Golden Run Gate
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: golden-run-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  golden_run_verification:
+    name: Golden Run Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f pyproject.toml ]; then pip install -e .; fi
+
+      - name: Run Golden Run Verification
+        env:
+          PROVIDER: dry_run
+        run: |
+          python3 scripts/verify_golden_run.py
