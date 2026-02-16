@@ -75,12 +75,10 @@ No markdown fences. No commentary. No text before or after JSON.
     }
   },
   "open_questions": [
-    {
-      "id": "Q1",
-      "question": "",
-      "severity": "MAJOR",
-      "why_it_matters": ""
-    }
+  "open_questions": [
+    "MAJOR: Missing constraints for timeline.",
+    "MINOR: Clarify target audience region."
+  ]
   ]
 }
 
@@ -88,7 +86,7 @@ HARD RULES
 - You MUST include all three top-level keys:
   deliverable_markdown, updated_state, open_questions.
 - `updated_state` MUST be a JSON object (use {} only if unavoidable).
-- `open_questions` MUST be an array (use [] if none).
+- `open_questions` MUST be an array of strings (use [] if none). Use format "SEVERITY: Question".
 - Do NOT output anything outside the JSON object.
 
 ----------------------------------------------------------------

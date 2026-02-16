@@ -327,6 +327,25 @@ def run_pipeline(
             config = deep_merge(config, config_overrides)
 
         # ----------------------------------------------------------------------
+        # Pilot Profile Validation
+        # ----------------------------------------------------------------------
+        if governance_profile == "pilot":
+            env_provider = os.getenv("PROVIDER")
+            # If PROVIDER is strictly "dry_run" or if default config uses "dry_run" and no env override
+            resolved_provider = env_provider or config.get("provider", "")
+            
+            if resolved_provider == "dry_run":
+                raise ValueError(
+                    "❌ PILOT SAFETY: Cannot use 'dry_run' provider with 'pilot' governance profile. "
+                    "You must use a real provider (e.g., openai)."
+                )
+            
+            # Ensure CI Simulation is disabled
+            if os.getenv("CI_SIMULATE_MANUAL_RISK_APPROVAL", "").lower() in ("1", "true", "yes", "on"):
+                print("⚠️  PILOT SAFETY: Disabling CI_SIMULATE_MANUAL_RISK_APPROVAL for pilot run.")
+                os.environ.pop("CI_SIMULATE_MANUAL_RISK_APPROVAL", None)
+
+        # ----------------------------------------------------------------------
         # Load Inputs
         # ----------------------------------------------------------------------
 
