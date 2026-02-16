@@ -26,7 +26,7 @@ Produce a single JSON object matching the standard agent output contract:
 
 ```json
 {
-  "deliverable_markdown": "# Media Spec Generated\n\nGenerated media specification for [Course ID]. compliance hash: [Hash].",
+  "deliverable_markdown": "# Media Spec Generated\n\n## Overview\nThis document contains the generated media specification for [Course ID], including slide breakdowns, visual prompts, and narration scripts. It complies with the input architecture hash [Hash].\n\n## Summary of Assets\n- **Slides**: 15\n- **Total Duration**: 450s\n- **Visual Style**: Modern Professional\n\n## Compliance Check\n- Architecture Mapping: VALID\n- Script Coverage: 100%\n- Accessibility Tags: INCLUDED\n\n[Detailed specification follows in the machine-readable JSON below]",
   "updated_state": {
     "media_spec": {
         "course_id": "...",
