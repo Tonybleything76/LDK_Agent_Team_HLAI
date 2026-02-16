@@ -30,6 +30,7 @@ outputs/
 exports/
 tmp/
 deliverable.json
+_inputs_*/
 *.zip
 *.sha256
 
