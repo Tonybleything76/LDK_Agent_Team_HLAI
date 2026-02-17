@@ -138,5 +138,50 @@ class TestOpenAIProviderJSONMode(unittest.TestCase):
         system_msg_retry = next(m for m in payload2["messages"] if m["role"] == "system")
         self.assertIn("JSON ONLY", system_msg_retry["content"])
 
+
+    @patch("orchestrator.providers.openai_provider.urllib.request.urlopen")
+    def test_json_parse_retry(self, mock_urlopen):
+        # 1. Setup invalid JSON response for first call
+        invalid_response = MagicMock()
+        invalid_response.read.return_value = json.dumps({
+            "choices": [{"message": {"content": 'Here is your JSON:\n```json\n{"foo": "bar"}\n```'}}]
+        }).encode("utf-8")
+        
+        ctx_invalid = MagicMock()
+        ctx_invalid.__enter__.return_value = invalid_response
+        ctx_invalid.__exit__.return_value = None
+
+        # 2. Setup valid JSON response for second call
+        valid_response = MagicMock()
+        valid_response.read.return_value = json.dumps({
+            "choices": [{"message": {"content": '{"foo": "bar"}'}}]
+        }).encode("utf-8")
+        
+        ctx_valid = MagicMock()
+        ctx_valid.__enter__.return_value = valid_response
+        ctx_valid.__exit__.return_value = None
+
+        mock_urlopen.side_effect = [ctx_invalid, ctx_valid]
+
+        provider = OpenAIProvider()
+        result = provider.run("Test prompt")
+
+        # 3. Verify success
+        self.assertEqual(result, '{"foo": "bar"}')
+        
+        # 4. Verify 2 calls
+        self.assertEqual(mock_urlopen.call_count, 2)
+        
+        # 5. Verify retry payload contains repair instructions
+        req2 = mock_urlopen.call_args_list[1][0][0]
+        payload2 = json.loads(req2.data.decode("utf-8"))
+        
+        # Check that we appended the error context to the user message or system message
+        # Implementation detail: we'll likely append to the last user message
+        messages = payload2["messages"]
+        last_message = messages[-1]["content"]
+        self.assertIn("Previous response object failed to parse", last_message)
+        self.assertIn("Here is your JSON", last_message) # The bad content
+
 if __name__ == '__main__':
     unittest.main()

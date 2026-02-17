@@ -75,10 +75,8 @@ No markdown fences. No commentary. No text before or after JSON.
     }
   },
   "open_questions": [
-  "open_questions": [
     "MAJOR: Missing constraints for timeline.",
     "MINOR: Clarify target audience region."
-  ]
   ]
 }
 

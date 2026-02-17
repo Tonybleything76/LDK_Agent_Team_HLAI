@@ -127,4 +127,54 @@ class OpenAIProvider(BaseProvider):
                 raise ValueError(f"Unexpected OpenAI API response format: {response_data}")
             
             content = response_data["choices"][0]["message"]["content"]
-            return content.strip()
+            
+            # ------------------------------------------------------------------
+            # JSON Integrity Check & Auto-Repair
+            # ------------------------------------------------------------------
+            try:
+                # Try to parse to verify it is valid JSON
+                json.loads(content)
+                return content.strip()
+            except json.JSONDecodeError as e:
+                print(f"⚠️  JSON Parse Error in OpenAI response. Attempting repair...")
+                
+                # RECURSION GUARD: Check if we are already in a retry loop
+                # If the last message was our repair prompt, do not retry again
+                if len(payload.get("messages", [])) > 0:
+                     last_msg = payload["messages"][-1]
+                     if last_msg.get("role") == "user" and "Previous response object failed to parse" in last_msg.get("content", ""):
+                         print("⚠️  JSON repair failed (recursion detected). Aborting.")
+                         raise e
+
+                # Construct repair payload
+                # We simply append a user message asking to fix it
+                repair_payload = payload.copy()
+                new_messages = [m.copy() for m in repair_payload["messages"]]
+                
+                # Append the failure context
+                new_messages.append({
+                    "role": "user",
+                    "content": (
+                        f"Previous response object failed to parse as JSON: {str(e)}\n\n"
+                        f"Here is your JSON:\n{content}\n\n"
+                        f"Please FIX this and return ONLY valid JSON."
+                    )
+                })
+                
+                repair_payload["messages"] = new_messages
+                
+                # We can keep response_format={"type": "json_object"} if model supports it
+                # or rely on the prompt. Let's keep it if original had it.
+                
+                try:
+                    return self._execute_request(repair_payload)
+                except Exception as repair_error:
+                     # If repair fails (HTTP or otherwise), we raise the ORIGINAL parse error 
+                     # or the new error? 
+                     # If we return the raw string here, the Agent validation will fail later 
+                     # and dump the error file, which is robust.
+                     # BUT the requirement says "returns ONLY corrected JSON".
+                     # If we fail here, we should probably let the downstream validator handle it.
+                     # However, to satisfy the test "verify retry success", we must return new content.
+                     raise repair_error
+
