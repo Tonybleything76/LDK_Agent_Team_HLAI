@@ -143,6 +143,9 @@ def validate_invariants(run_dir: Path):
                         step_approved_found = True
                     if evt.get("event") == "risk_gate_forced":
                         risk_gate_forced_found = True
+                    # Also accept if step_approved has gate_type=risk_gate (manual approval)
+                    if evt.get("event") == "step_approved" and evt.get("gate_type") == "risk_gate":
+                        risk_gate_forced_found = True
             except:
                 pass
                 
@@ -165,8 +168,9 @@ def generate_summary(run_dir: Path) -> Dict[str, Any]:
     
     # Extract data for summary
     run_id = audit.get("run_id")
-    # Governance profile from audit or we know it's "ci"
-    # The requirement says "governance_profile": "ci"
+    # Governance profile from audit
+    gov_profile = audit.get("run_metadata", {}).get("governance_profile", "unknown")
+    
     status = audit.get("end_state", "").replace("run_", "") # "run_completed" -> "completed"
     
     # If end_state is just "completed" or something else, handle it. 
@@ -186,7 +190,7 @@ def generate_summary(run_dir: Path) -> Dict[str, Any]:
     
     summary = {
         "run_id": run_id,
-        "governance_profile": "ci",
+        "governance_profile": gov_profile,
         "status": status,
         "phase_gates": phase_gates,
         "risk_gates": risk_gates,
@@ -249,8 +253,20 @@ def create_zip_bundle(run_dir: Path):
     print(f"   Bundle created: {zip_path}")
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Generate Director Demo Pack")
+    parser.add_argument("--run-id", help="Run ID to package (skips execution)")
+    args = parser.parse_args()
+
     try:
-        run_dir = run_pipeline()
+        if args.run_id:
+            run_dir = OUTPUTS_DIR / args.run_id
+            if not run_dir.exists():
+                fail(f"Run directory not found: {run_dir}")
+            print(f"   Using existing RUN_ID: {args.run_id}")
+        else:
+            run_dir = run_pipeline()
+            
         validate_invariants(run_dir)
         generate_summary(run_dir)
         create_zip_bundle(run_dir)
