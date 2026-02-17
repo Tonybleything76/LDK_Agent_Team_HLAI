@@ -280,7 +280,7 @@ The --dry_run flag is a shortcut for --mode dry_run.
 
     parser.add_argument(
         "--governance_profile",
-        choices=["dev", "staging", "prod", "ci"],
+        choices=["dev", "staging", "prod", "ci", "pilot"],
         help="Governance profile (overrides config defaults: dev=relaxed, prod=strict, ci=strict+non-interactive)"
     )
 
@@ -365,6 +365,15 @@ The --dry_run flag is a shortcut for --mode dry_run.
                 "auto_override": False,
                 "force_gate_on_qa_critical": True,
                 "weighted_severities": ["CRITICAL", "BLOCKER"]
+            }
+        },
+        "pilot": {
+            "auto_approve": False,
+            "risk_gate_escalation": {
+                "enabled": True,
+                "open_questions_threshold": 5,
+                "auto_override": False,
+                "weighted_severities": ["CRITICAL", "BLOCKER", "MAJOR"]
             }
         }
     }
