@@ -1,57 +1,121 @@
-Scenario: Customer Service Onboarding + De-escalation (v0.5.1 test)
+# Business Brief: LLM & AI Fundamentals for PR Professionals
 
-# Business Brief: Customer Service Excellence Training
+## 1. Business Context
 
-## Business Context
+Apex Communications, a public relations and government relations firm, has deployed Microsoft Copilot across Microsoft 365 but is experiencing **low adoption, inconsistent usage, and unclear business value realization**.
 
-Our contact center operations are experiencing high turnover (45% annually) and declining customer satisfaction scores (CSAT dropped from 82% to 71% in Q4 2025). Exit interviews reveal that new agents feel overwhelmed during their first 90 days, citing inadequate training on de-escalation techniques and system navigation.
+Leaders believe AI can improve:
 
-**Organizational Goals:**
-- Reduce new-hire attrition from 45% to 30% by Q3 2026
-- Improve first-call resolution rate from 68% to 80%
-- Increase CSAT scores back to 80%+ within 6 months
+- Writing clarity and speed  
+- Research depth and synthesis quality  
+- Presentation development efficiency  
+- Internal knowledge work productivity  
 
-**Strategic Priority:** This is a Tier 1 initiative tied to our customer experience transformation roadmap.
+However, employees currently lack:
 
-## Target Audience
+- Foundational understanding of AI and LLMs  
+- Practical workflow integration skills  
+- Confidence in responsible and ethical AI usage  
+- Clear expectations for when and how Copilot should be used  
 
-**Primary Learners:** Newly hired customer service representatives (CSRs) in their first 30 days
-
-**Profile:**
-- Job Role: Inbound customer service, handling billing inquiries, technical support, and account changes
-- Current Skill Level: Entry-level, most have retail or hospitality experience but no contact center background
-- Knowledge Gaps: CRM system proficiency, conflict de-escalation, company policies
-- Learning Preferences: Prefer hands-on practice over lecture-style content
-- Estimated Cohort Size: 40-60 learners per quarter
-
-**Constraints:**
-- Learners are on paid training time but need to be productive quickly
-- Limited computer literacy for some learners
-- English is a second language for approximately 30% of cohort
-
-## Learning Goals
-
-After completing this course, learners should be able to:
-
-1. Navigate the ServiceNow CRM system to access customer accounts, log interactions, and escalate issues appropriately
-2. Apply the LEAP de-escalation framework (Listen, Empathize, Apologize, Problem-solve) in challenging customer interactions
-3. Identify and execute the correct resolution path for the 15 most common customer inquiries (billing disputes, password resets, service upgrades, etc.)
-
-## Constraints and Requirements
-
-- **Timeline**: Course must be ready for pilot testing by March 15, 2026 (5 weeks from now)
-- **Budget**: Limited to existing LMS platform (Articulate Rise) and internal SME time
-- **Technology**: Must work on both desktop and tablet (agents use iPads during training)
-- **Compliance**: Must include mandatory data privacy and PCI compliance sections (legal requirement)
-- **Accessibility**: WCAG 2.1 AA compliance required for all digital content
-
-## Success Metrics
-
-- **Completion Rate**: 95%+ of learners complete within first 30 days of employment
-- **Assessment Performance**: 85%+ pass rate on final knowledge check (first attempt)
-- **Time-to-Proficiency**: New hires meet productivity targets (15 calls/day, 80% quality score) by day 45 (currently day 60)
-- **Business Impact**: Reduce training-related escalations to supervisors by 40%
+This course is the **foundational enablement layer** of a broader AI transformation initiative led by Human Loop AI.
 
 ---
 
-**Note:** The de-escalation framework is new and not yet documented. We'll need to work with our top-performing agents to codify best practices. The CRM system is scheduled for a major update in April 2026, but we're proceeding with current version for now.
+## 2. Organizational Goals
+
+### Adoption & Behavior
+- Achieve **≥75% active Copilot usage** among employees within 90 days  
+- Normalize AI-assisted drafting, research, and summarization in daily workflows  
+- Reduce skepticism and fear related to AI usage  
+
+### Quality & Productivity
+- Improve **writing quality, analytical rigor, and presentation clarity**  
+- Reduce time required for first-draft creation and research synthesis  
+- Increase confidence in decision-support analysis  
+
+### Strategic Positioning
+- Establish Human Loop AI as a **trusted transformation partner**  
+- Create a scalable **AI literacy foundation** for future advanced programs  
+
+---
+
+## 3. Target Audience
+
+### Primary Learners
+Employees across Apex Communications:
+
+- PR & GR interns  
+- Account managers and strategists  
+- Senior partners  
+- HR, marketing, and communications support staff  
+
+### Current State
+- Limited AI/LLM literacy  
+- Inconsistent Copilot experimentation  
+- Unclear ethical and professional boundaries  
+- Reliance on manual drafting and research  
+
+### Desired State
+Learners confidently:
+
+- Understand **what AI is and is not**  
+- Select appropriate AI tools for tasks  
+- Use Copilot inside real PR workflows  
+- Apply **responsible, human-governed AI judgment**  
+
+---
+
+## 4. Learning Objectives
+
+By the end of this course, learners will be able to:
+
+1. **Explain core AI and LLM concepts** in practical business language  
+2. **Use Microsoft Copilot** to support writing, research, and presentation workflows  
+3. **Evaluate AI outputs critically** for accuracy, bias, and appropriateness  
+4. Apply **responsible and ethical AI practices** in PR contexts  
+5. Integrate AI into daily work while maintaining **human ownership and judgment**
+
+---
+
+## 5. Success Metrics
+
+### Adoption
+- ≥75% weekly Copilot usage  
+- Increased Copilot feature utilization across Word, PowerPoint, Outlook, and Teams  
+
+### Quality
+- Measurable improvement in:
+  - Writing clarity  
+  - Insight depth  
+  - Presentation structure  
+
+### Human Factors
+- Increased confidence using AI responsibly  
+- Reduced fear or resistance toward AI  
+- Clear understanding of **human-in-the-loop accountability**
+
+---
+
+## 6. Delivery Modality
+
+- **Format:** Self-paced digital course with narration, examples, and guided practice  
+- **Length:** 30–45 minutes total learning time  
+- **Structure:** Scenario-anchored micro-modules  
+- **Assessment:** Applied reflection and workflow-based knowledge checks  
+
+---
+
+## 7. Strategic Framing (Human Loop AI)
+
+This course establishes a core professional belief:
+
+> **AI creates value only when guided by human judgment, responsibility, and purpose.**
+
+Learners will leave with:
+
+- A **belief** in responsible human-AI partnership  
+- **Behaviors** that integrate AI into real work  
+- Awareness of **systems and policies** enabling safe, effective usage  
+
+This foundation enables future transformation work.
