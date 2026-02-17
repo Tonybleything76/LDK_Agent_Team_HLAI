@@ -64,6 +64,9 @@ class TestMaxStepStop:
         root = mock_inputs["root"]
         mock_root.return_value = root
         
+        # Configure PROJECT_ROOT / "path" to return real path
+        mock_root.__truediv__.side_effect = lambda x: root / x
+        
         # We need to patch CONFIG_PATH with a real Path object because open() is used on it
         real_config_path = Path(mock_inputs["config_path"])
         

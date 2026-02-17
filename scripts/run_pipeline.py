@@ -167,6 +167,72 @@ def print_run_plan(config: dict, provider_override: str = None):
     print("\n" + "=" * 60)
 
 
+def apply_profile_transformations(config: dict, profile: str) -> dict:
+    """
+    Apply profile-specific transformations to the configuration.
+    
+    Args:
+        config: Original configuration dict
+        profile: Governance profile name
+        
+    Returns:
+        Transformed configuration dict (or original if no transformations needed)
+    """
+    if profile != "content_only":
+        return config
+    
+    print(f"\n⚡ Applying transformation for profile: {profile}")
+    
+    # 1. Filter out media_producer_agent
+    original_agents = config.get("agents", [])
+    filtered_agents = [
+        agent for agent in original_agents 
+        if agent["name"] != "media_producer_agent"
+    ]
+    
+    removed_count = len(original_agents) - len(filtered_agents)
+    if removed_count > 0:
+        print(f"   → Removed {removed_count} agent(s) (media_producer_agent)")
+    
+    # 2. Re-map phase gates
+    # Original strategy: Phase 1 end (3), Phase 2 end (6), Phase 3 end (9)
+    # If we remove step 7 (media_producer), the steps shift:
+    # 1,2,3 (LA) -> Gate
+    # 4,5,6 (Storyboard) -> Gate
+    # 7 (QA), 8 (Change Mgmt), 9 (Ops Lib)
+    #
+    # So new gates should be: 3, 6, 8 (Change Mgmt)
+    #
+    # Let's verify indices:
+    # 1. strategy_lead
+    # 2. learner_research
+    # 3. learning_architect  <-- GATE 1
+    # 4. instructional_designer
+    # 5. assessment_designer
+    # 6. storyboard          <-- GATE 2
+    # -- media_producer (REMOVED)
+    # 7. qa_agent
+    # 8. change_management   <-- GATE 3
+    # 9. operations_librarian
+    
+    new_phase_gates = [3, 6, 8]
+    
+    # Create new config structure
+    new_config = config.copy()
+    new_config["agents"] = filtered_agents
+    
+    if "approval" not in new_config:
+        new_config["approval"] = {}
+    
+    # Ensure we copy approval dict to avoid mutating original if shared (though strictly copy() is shallow)
+    new_config["approval"] = new_config["approval"].copy()
+    new_config["approval"]["phase_gates"] = new_phase_gates
+    
+    print(f"   → Updated phase gates to: {new_phase_gates}")
+    
+    return new_config
+
+
 def cost_guardrail_check(num_steps: int, provider: str, skip_confirmation: bool) -> bool:
     """
     Check with user before making API calls (unless --yes flag is set).
@@ -280,7 +346,7 @@ The --dry_run flag is a shortcut for --mode dry_run.
 
     parser.add_argument(
         "--governance_profile",
-        choices=["dev", "staging", "prod", "ci", "pilot"],
+        choices=["dev", "staging", "prod", "ci", "pilot", "content_only"],
         help="Governance profile (overrides config defaults: dev=relaxed, prod=strict, ci=strict+non-interactive)"
     )
 
@@ -375,6 +441,15 @@ The --dry_run flag is a shortcut for --mode dry_run.
                 "auto_override": False,
                 "weighted_severities": ["CRITICAL", "BLOCKER", "MAJOR"]
             }
+        },
+        "content_only": {
+            "auto_approve": False,
+            "risk_gate_escalation": {
+                "enabled": True,
+                "open_questions_threshold": 5,
+                "auto_override": False,
+                "weighted_severities": ["CRITICAL", "BLOCKER", "MAJOR"]
+            }
         }
     }
     
@@ -457,10 +532,34 @@ The --dry_run flag is a shortcut for --mode dry_run.
         print(f"\n❌ Config validation failed: {e}\n")
         sys.exit(1)
     
-    # Step 3: Print run plan
+    # Step 3: Apply Profile Transformations
+    # This must happen BEFORE printing run plan and BEFORE calculating num_steps
+    if governance_profile:
+        config = apply_profile_transformations(config, governance_profile)
+        
+        # We also need to ensure these structural changes (agents list, gates)
+        # are passed to the orchestrator via overrides, because orchestrator 
+        # re-loads config from disk.
+        
+        if "agents" not in config_overrides:
+            config_overrides["agents"] = config["agents"]
+            
+        if "approval" not in config_overrides:
+            config_overrides["approval"] = {}
+        
+        # Merge approval configs carefully
+        current_approval = config.get("approval", {})
+        override_approval = config_overrides["approval"]
+        
+        if "phase_gates" in current_approval:
+             override_approval["phase_gates"] = current_approval["phase_gates"]
+             
+        config_overrides["approval"] = override_approval
+
+    # Step 4: Print run plan
     print_run_plan(config, provider)
     
-    # Step 4: Cost guardrail check
+    # Step 5: Cost guardrail check
     num_steps = len(config["agents"])
     # Adjust num_steps for cost guardrail if max_step is set
     if args.max_step:
@@ -472,12 +571,12 @@ The --dry_run flag is a shortcut for --mode dry_run.
     if not cost_guardrail_check(num_steps, effective_provider, args.yes):
         sys.exit(1)
     
-    # Step 5: Set provider environment variable if needed
+    # Step 6: Set provider environment variable if needed
     if provider:
         os.environ["PROVIDER"] = provider
         print(f"🔧 Set PROVIDER={provider}\n")
     
-    # Step 6: Run the pipeline
+    # Step 7: Run the pipeline
     print("=" * 60)
     print("STARTING PIPELINE EXECUTION")
     print("=" * 60)
