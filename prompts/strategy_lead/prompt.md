@@ -84,6 +84,7 @@ HARD RULES
 - You MUST include all three top-level keys:
   deliverable_markdown, updated_state, open_questions.
 - `updated_state` MUST be a JSON object (use {} only if unavoidable).
+- `deliverable_markdown` MUST be a non-empty string containing the full markdown report.
 - `open_questions` MUST be an array of strings (use [] if none). Use format "SEVERITY: Question".
 - Do NOT output anything outside the JSON object.
 
