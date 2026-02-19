@@ -38,9 +38,9 @@ REQUIRED_ARTIFACTS = [
     "04_instructional_designer_agent_state.json",
     "05_assessment_designer_agent_state.json",
     "06_storyboard_agent_state.json",
-    "08_qa_agent_state.json",
-    "09_change_management_agent_state.json",
-    "10_operations_librarian_agent_state.json",
+    "07_qa_agent_state.json",
+    "08_change_management_agent_state.json",
+    "09_operations_librarian_agent_state.json",
     "audit_summary.json",
     "run_manifest.json",
 ]
@@ -148,7 +148,9 @@ def analyze_structure(run_data: Dict[str, Any]) -> Dict[str, Any]:
         try:
             with open(la_path) as f:
                 data = json.load(f)
-                outline = data.get("curriculum", {}).get("outline", [])
+                updated_state = data.get("updated_state", {})
+                curriculum = updated_state.get("curriculum", {})
+                outline = curriculum.get("outline", [])
                 metrics["modules_count"] = len(outline)
                 metrics["objectives_count"] = sum(len(m.get("objectives", [])) for m in outline)
                 metrics["schema_validity"]["learning_architect"] = True
@@ -167,12 +169,14 @@ def analyze_structure(run_data: Dict[str, Any]) -> Dict[str, Any]:
                 # Inspecting prompt for Assessment Designer would confirm, but let's look for known keys.
                 # If structure unknown, we count raw items if list, or key count.
                 # Assuming generic "assessment" key
-                if "assessment" in data:
-                   if isinstance(data["assessment"], list):
-                       metrics["assessment_items_count"] = len(data["assessment"])
-                   elif isinstance(data["assessment"], dict):
+                updated_state = data.get("updated_state", {})
+                assessment = updated_state.get("assessment", {})
+                if assessment:
+                   if isinstance(assessment, list):
+                       metrics["assessment_items_count"] = len(assessment)
+                   elif isinstance(assessment, dict):
                         # heuristics
-                        metrics["assessment_items_count"] = len(data["assessment"].get("items", []))
+                        metrics["assessment_items_count"] = len(assessment.get("questions", []) or assessment.get("items", []))
                 metrics["schema_validity"]["assessment_designer"] = True
         except:
             metrics["schema_validity"]["assessment_designer"] = False
@@ -219,10 +223,11 @@ def calculate_quality_rubric(run_path: Path) -> Dict[str, Any]:
                 # Alignment Calculation (0-2)
                 # Presence of Goal (Strategy) -> Outline (LA) -> Assessment (AD)
                 # We need cross-file checks. 
-                # Check strategy goals
+                updated_state = data.get("updated_state", {})
+                strategy = updated_state.get("strategy", {})
                 has_goals = False
-                if "strategy" in data and "goals" in data["strategy"]:
-                    if data["strategy"]["goals"]: has_goals = True
+                if strategy and "goals" in strategy:
+                    if strategy["goals"]: has_goals = True
                 
                 # We'll update alignment in a wider scope or check other files here?
                 # Let's do partial check here.
@@ -241,8 +246,9 @@ def calculate_quality_rubric(run_path: Path) -> Dict[str, Any]:
     if la_path.exists():
         try:
             with open(la_path) as f:
-                data = json.load(f)
-                outline = data.get("curriculum", {}).get("outline", [])
+                updated_state = data.get("updated_state", {})
+                curriculum = updated_state.get("curriculum", {})
+                outline = curriculum.get("outline", [])
                 
                 # Alignment score pt 2: Has modules?
                 if outline: scores["alignment_score"] += 1
