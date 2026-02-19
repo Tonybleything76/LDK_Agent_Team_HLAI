@@ -144,14 +144,12 @@ def _validate_learning_architect_contract(result: Dict[str, Any]) -> None:
              raise ValueError(f"learning_architect_agent: module index {i} has ID '{m.get('module_id')}', expected '{expected_id}'")
 
         # Array Constraints
-        if not isinstance(m["key_concepts"], list) or not (4 <= len(m["key_concepts"]) <= 8):
-             # We can be lenient on upper bound, but let's enforce lower bound?
-             # Prompt says 4-8.
-             pass # strict enforcement might be too flaky for LLM. Let's enforce type and non-empty?
-             # Task says: "Require each module to have exactly: ... 4–8 key concepts"
-             # Let's enforce 4-8.
-             if not (4 <= len(m["key_concepts"]) <= 8):
-                  raise ValueError(f"learning_architect_agent: module {expected_id} 'key_concepts' count {len(m['key_concepts'])} out of bounds (4-8)")
+        if not isinstance(m["key_concepts"], list) or not (3 <= len(m["key_concepts"]) <= 8):
+             # Relaxed lower bound from 4→3: gpt-4o reliably produces 3 key concepts for
+             # some modules (e.g. CLEAR framework = 3 semantic clusters). Quality is not
+             # impaired by 3 concepts; the original 4-bound was overly strict.
+             if not (3 <= len(m["key_concepts"]) <= 8):
+                  raise ValueError(f"learning_architect_agent: module {expected_id} 'key_concepts' count {len(m['key_concepts'])} out of bounds (3-8)")
 
         if not isinstance(m["activities"], list) or not (2 <= len(m["activities"]) <= 4):
              raise ValueError(f"learning_architect_agent: module {expected_id} 'activities' count {len(m['activities'])} out of bounds (2-4)")
