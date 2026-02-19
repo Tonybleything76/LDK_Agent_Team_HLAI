@@ -368,6 +368,12 @@ The --dry_run flag is a shortcut for --mode dry_run.
         help="Directory containing input files (default: inputs)"
     )
     
+    parser.add_argument(
+        "--skip-input-quality-check",
+        action="store_true",
+        help="Skip strict input quality validation (quality gate)"
+    )
+    
     args = parser.parse_args()
 
     # Validate max-step
@@ -522,6 +528,22 @@ The --dry_run flag is a shortcut for --mode dry_run.
     if not validate_inputs(inputs_dir):
         sys.exit(1)
     print("   ✅ Inputs validated")
+    
+    if governance_profile in {"content_only", "pilot"} and not args.skip_input_quality_check:
+        print("   🔍 Running input quality validation (profile-enforced)...")
+        try:
+            from scripts.validate_inputs_quality import validate_quality
+            is_valid, errors = validate_quality(inputs_dir)
+            if not is_valid:
+                print("\n❌ INPUT QUALITY VALIDATION FAILED")
+                for e in errors:
+                    print(f"  - {e}")
+                print("\nFix guidance: Please review the errors above and ensure your input documents are specific and complete. Use bullet points for lists and ensure metrics are measurable.")
+                sys.exit(1)
+            print("   ✅ Input quality passed")
+        except ImportError as e:
+            print(f"\n❌ Failed to load input quality validator: {e}")
+            sys.exit(1)
     
     # Step 2: Load and validate config
     print("\n⚙️  Step 2: Loading configuration...")
