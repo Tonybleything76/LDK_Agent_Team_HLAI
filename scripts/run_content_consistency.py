@@ -51,7 +51,9 @@ def log(msg: str):
 def run_pipeline(
     inputs_dir: Path,
     provider: str,
-    governance_profile: str
+    governance_profile: str,
+    auto_approve: bool,
+    model: str
 ) -> Path:
     """Executes a single pipeline run and returns the run directory."""
     
@@ -61,8 +63,10 @@ def run_pipeline(
         "--inputs-dir", str(inputs_dir.resolve().relative_to(PROJECT_ROOT.resolve())),
         "--governance_profile", governance_profile,
         "--yes", # Skip cost confirmation
-        "--auto_approve", # Skip phase gates
     ]
+    if auto_approve:
+        cmd.append("--auto_approve")
+
     
     if provider == "dry_run":
         cmd.append("--dry_run")
@@ -72,6 +76,8 @@ def run_pipeline(
     # Environment variables
     env = os.environ.copy()
     env["PROVIDER"] = provider
+    if provider == "openai" and model:
+        env["OPENAI_MODEL"] = model
     
     # We need to capture the output to find the run_id directory
     # run_pipeline prints "Run ID: <timestamp>" or similar, but
@@ -133,12 +139,11 @@ def collect_artifacts(run_dir: Path, dest_dir: Path):
 
 def analyze_structure(run_data: Dict[str, Any]) -> Dict[str, Any]:
     """Analyzes a single run directory for structural metrics."""
-    # This involves reading the copied JSON files in run_data['path']
     base_path = run_data['path']
     metrics = {
         "modules_count": 0,
-        "objectives_count": 0,
-        "assessment_items_count": 0,
+        "module_ids": [],
+        "per_module_counts": {},
         "schema_validity": {}
     }
     
@@ -150,36 +155,21 @@ def analyze_structure(run_data: Dict[str, Any]) -> Dict[str, Any]:
                 data = json.load(f)
                 updated_state = data.get("updated_state", {})
                 curriculum = updated_state.get("curriculum", {})
-                outline = curriculum.get("outline", [])
-                metrics["modules_count"] = len(outline)
-                metrics["objectives_count"] = sum(len(m.get("objectives", [])) for m in outline)
+                modules = curriculum.get("modules", curriculum.get("outline", []))
+                
+                metrics["modules_count"] = len(modules)
+                for idx, m in enumerate(modules):
+                    m_id = m.get("module_id", f"M{idx+1}")
+                    metrics["module_ids"].append(m_id)
+                    metrics["per_module_counts"][m_id] = {
+                        "title": m.get("title", ""),
+                        "checks": len(m.get("checks", [])),
+                        "activities": len(m.get("activities", [])),
+                        "key_concepts": len(m.get("key_concepts", []))
+                    }
                 metrics["schema_validity"]["learning_architect"] = True
         except json.JSONDecodeError:
             metrics["schema_validity"]["learning_architect"] = False
-
-    # 2. Instructional Designer (Assessment Items often defined here or in next step)
-    # Actually, Assessment Designer is 05.
-    ad_path = base_path / "05_assessment_designer_agent_state.json"
-    if ad_path.exists():
-        try:
-            with open(ad_path) as f:
-                data = json.load(f)
-                # Assessment structure varies, but let's check for 'assessment_items' or similar
-                # Usually updated_state.assessment or similar.
-                # Inspecting prompt for Assessment Designer would confirm, but let's look for known keys.
-                # If structure unknown, we count raw items if list, or key count.
-                # Assuming generic "assessment" key
-                updated_state = data.get("updated_state", {})
-                assessment = updated_state.get("assessment", {})
-                if assessment:
-                   if isinstance(assessment, list):
-                       metrics["assessment_items_count"] = len(assessment)
-                   elif isinstance(assessment, dict):
-                        # heuristics
-                        metrics["assessment_items_count"] = len(assessment.get("questions", []) or assessment.get("items", []))
-                metrics["schema_validity"]["assessment_designer"] = True
-        except:
-            metrics["schema_validity"]["assessment_designer"] = False
 
     return metrics
 
@@ -275,31 +265,41 @@ def calculate_quality_rubric(run_path: Path) -> Dict[str, Any]:
     return scores
 
 def calculate_stability_score(reports: List[Dict[str, Any]]) -> int:
-    """Calculates a 0-100 stability score based on variance."""
+    """Calculates a 0-100 Structure Stability Score based on learning architect invariants."""
     if not reports: return 0
     
-    # Metrics to track variance
-    module_counts = [r["structure"]["modules_count"] for r in reports]
-    objective_counts = [r["structure"]["objectives_count"] for r in reports]
-    
-    # Variance penalty
     score = 100
+    module_counts = [r["structure"]["modules_count"] for r in reports]
     
-    # If module counts differ, heavy penalty
-    if len(set(module_counts)) > 1:
-        score -= 20
+    # Subtract 50 if module_count differs from 6 in ANY run
+    if any(c != 6 for c in module_counts):
+        score -= 50
         
-    # If objective counts differ significantly (more than 10%)
-    avg_obj = sum(objective_counts) / len(objective_counts) if objective_counts else 0
-    if avg_obj > 0:
-        max_diff = max(abs(x - avg_obj) for x in objective_counts)
-        pct_diff = max_diff / avg_obj
-        if pct_diff > 0.1:
-            score -= 10
-        if pct_diff > 0.2:
-            score -= 20
+    first_ids = reports[0]["structure"].get("module_ids", [])
+    for r in reports[1:]:
+        if r["structure"].get("module_ids", []) != first_ids:
+            score -= 30
+            break
+            
+    if first_ids:
+        for m_id in first_ids:
+            penalty_applied = False
+            for key in ["checks", "activities", "key_concepts"]:
+                counts = [r["structure"].get("per_module_counts", {}).get(m_id, {}).get(key, 0) for r in reports]
+                if len(set(counts)) > 1:
+                    score -= 5
+                    penalty_applied = True
+                    break
+                    
+            if not penalty_applied:
+                for r in reports:
+                    m_data = r["structure"].get("per_module_counts", {}).get(m_id, {})
+                    kc, act, chk = m_data.get("key_concepts", 0), m_data.get("activities", 0), m_data.get("checks", 0)
+                    if not (4 <= kc <= 8) or not (2 <= act <= 4) or not (2 <= chk <= 3):
+                        score -= 5
+                        break
 
-    return max(0, score)
+    return max(0, min(100, score))
 
 def main():
     parser = argparse.ArgumentParser(description="Content Consistency Harness")
@@ -307,6 +307,8 @@ def main():
     parser.add_argument("--provider", default="openai")
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--governance_profile", default="content_only")
+    parser.add_argument("--model", default="gpt-4o", help="Model to use if provider is openai")
+    parser.add_argument("--auto-approve", action="store_true", help="Auto-approve phase gates")
     
     args = parser.parse_args()
     
@@ -333,7 +335,13 @@ def main():
     for i in range(args.runs):
         log(f"Starting Run {i+1}/{args.runs}...")
         try:
-            run_dir = run_pipeline(args.inputs_dir, args.provider, args.governance_profile)
+            run_dir = run_pipeline(
+                args.inputs_dir, 
+                args.provider, 
+                args.governance_profile,
+                args.auto_approve,
+                args.model
+            )
             
             # Destination for this run's artifacts
             run_dest = TEMP_DIR / f"run_{i+1}_{run_dir.name}"
@@ -383,10 +391,30 @@ def main():
     stability_score = calculate_stability_score(successful_reports)
     
     # Check for structural deltas
-    structure_deltas = {
-        "modules_variance": len(set(r["structure"]["modules_count"] for r in successful_reports)) > 1 if successful_reports else False,
-        "objectives_variance": len(set(r["structure"]["objectives_count"] for r in successful_reports)) > 1 if successful_reports else False
-    }
+    diffs_summary = []
+    if any(r["structure"]["modules_count"] != 6 for r in successful_reports):
+         diffs_summary.append("Module count drifted from exactly 6.")
+         
+    first_ids = successful_reports[0]["structure"].get("module_ids", []) if successful_reports else []
+    if any(r["structure"].get("module_ids", []) != first_ids for r in successful_reports[1:]):
+         diffs_summary.append("Module sequence (IDs) drifted across runs.")
+         
+    for m_id in first_ids:
+         for r in successful_reports:
+              m_data = r["structure"].get("per_module_counts", {}).get(m_id)
+              if m_data:
+                   kc, act, chk = m_data.get("key_concepts", 0), m_data.get("activities", 0), m_data.get("checks", 0)
+                   if not (4 <= kc <= 8): diffs_summary.append(f"{m_id} key_concepts out of range (4-8): {kc}")
+                   if not (2 <= act <= 4): diffs_summary.append(f"{m_id} activities out of range (2-4): {act}")
+                   if not (2 <= chk <= 3): diffs_summary.append(f"{m_id} checks out of range (2-3): {chk}")
+         
+         for key in ["key_concepts", "activities", "checks"]:
+             counts = [r["structure"].get("per_module_counts", {}).get(m_id, {}).get(key, 0) for r in successful_reports]
+             if len(set(counts)) > 1:
+                 diffs_summary.append(f"{m_id} {key} counts drifted across runs: {counts}")
+
+    # Remove duplicates but keep order
+    diffs_summary = list(dict.fromkeys(diffs_summary))
 
     final_report = {
         "timestamp": datetime.now().isoformat(),
@@ -396,8 +424,9 @@ def main():
             "runs": args.runs,
             "profile": args.governance_profile
         },
-        "overall_stability_score": stability_score,
-        "structure_deltas": structure_deltas,
+        "structure_stability_score": stability_score,
+        "structure_invariants_by_run": [r["structure"] for r in successful_reports],
+        "structure_diffs_summary": diffs_summary,
         "runs": run_reports
     }
     
@@ -422,16 +451,28 @@ def main():
         
         # Create Diff Overview Markdown
         diff_md = "# Content Consistency Diff Overview\n\n"
-        diff_md += f"**Stability Score**: {stability_score}/100\n\n"
+        diff_md += f"**Structure Stability Score**: {stability_score}/100\n\n"
         diff_md += "## Structural Comparison\n"
         
-        # Table header
-        diff_md += "| Run ID | Modules | Objectives | Alignment |\n"
-        diff_md += "|---|---|---|---|\n"
+        diff_md += "| Run ID | Modules | Alignment |\n"
+        diff_md += "|---|---|---|\n"
         for r in successful_reports:
-            diff_md += f"| {r['run_id']} | {r['structure']['modules_count']} | {r['structure']['objectives_count']} | {r['quality_rubric']['alignment_score']} |\n"
+            diff_md += f"| {r['run_id']} | {r['structure']['modules_count']} | {r['quality_rubric']['alignment_score']} |\n"
             
         zf.writestr("diff_overview.md", diff_md)
+        
+        # Create Structure Overview Markdown
+        struct_md = "# Structure Overview\n\n"
+        for r in successful_reports:
+            struct_md += f"## Run: {r['run_id']}\n"
+            for m_id, m_data in r["structure"].get("per_module_counts", {}).items():
+                title = m_data.get("title", "Untitled")
+                kc = m_data.get("key_concepts", 0)
+                act = m_data.get("activities", 0)
+                chk = m_data.get("checks", 0)
+                struct_md += f"- **{m_id}**: {title} (Concepts: {kc}, Activities: {act}, Checks: {chk})\n"
+            struct_md += "\n"
+        zf.writestr("structure_overview.md", struct_md)
 
     log(f"Pack generated: {zip_path}")
     
