@@ -447,7 +447,7 @@ The --dry_run flag is a shortcut for --mode dry_run.
             "risk_gate_escalation": {
                 "enabled": True,
                 "open_questions_threshold": 5,
-                "auto_override": False,
+                "auto_override": True,
                 "weighted_severities": ["CRITICAL", "BLOCKER", "MAJOR"]
             }
         }
