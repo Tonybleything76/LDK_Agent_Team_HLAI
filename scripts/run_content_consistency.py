@@ -61,6 +61,7 @@ def run_pipeline(
         "--inputs-dir", str(inputs_dir.resolve().relative_to(PROJECT_ROOT.resolve())),
         "--governance_profile", governance_profile,
         "--yes", # Skip cost confirmation
+        "--auto_approve", # Skip phase gates
     ]
     
     if provider == "dry_run":
