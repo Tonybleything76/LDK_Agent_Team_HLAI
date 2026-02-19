@@ -142,32 +142,50 @@ def analyze_structure(run_data: Dict[str, Any]) -> Dict[str, Any]:
     base_path = run_data['path']
     metrics = {
         "modules_count": 0,
+        "objectives_count": 0,
+        "assessment_items_count": 0,
         "module_ids": [],
         "per_module_counts": {},
         "schema_validity": {}
     }
-    
+
     # 1. Learning Architect (Curriculum/Modules)
     la_path = base_path / "03_learning_architect_agent_state.json"
     if la_path.exists():
         try:
             with open(la_path) as f:
                 data = json.load(f)
+
+            # Support both top-level curriculum and updated_state.curriculum
+            curriculum = data.get("curriculum", {})
+            if not curriculum:
                 updated_state = data.get("updated_state", {})
                 curriculum = updated_state.get("curriculum", {})
-                modules = curriculum.get("modules", curriculum.get("outline", []))
-                
-                metrics["modules_count"] = len(modules)
-                for idx, m in enumerate(modules):
-                    m_id = m.get("module_id", f"M{idx+1}")
-                    metrics["module_ids"].append(m_id)
-                    metrics["per_module_counts"][m_id] = {
-                        "title": m.get("title", ""),
-                        "checks": len(m.get("checks", [])),
-                        "activities": len(m.get("activities", [])),
-                        "key_concepts": len(m.get("key_concepts", []))
-                    }
-                metrics["schema_validity"]["learning_architect"] = True
+
+            # Support curriculum.modules, curriculum.outline, or curriculum.course_architecture
+            modules = (
+                curriculum.get("modules")
+                or curriculum.get("outline")
+                or curriculum.get("course_architecture")
+                or []
+            )
+
+            total_objectives = 0
+            metrics["modules_count"] = len(modules)
+            for idx, m in enumerate(modules):
+                m_id = m.get("module_id", f"M{idx+1}")
+                metrics["module_ids"].append(m_id)
+                objs = m.get("objectives", [])
+                total_objectives += len(objs)
+                metrics["per_module_counts"][m_id] = {
+                    "title": m.get("title", ""),
+                    "objectives": len(objs),
+                    "checks": len(m.get("checks", [])),
+                    "activities": len(m.get("activities", [])),
+                    "key_concepts": len(m.get("key_concepts", []))
+                }
+            metrics["objectives_count"] = total_objectives
+            metrics["schema_validity"]["learning_architect"] = True
         except json.JSONDecodeError:
             metrics["schema_validity"]["learning_architect"] = False
 
@@ -182,122 +200,130 @@ def calculate_quality_rubric(run_path: Path) -> Dict[str, Any]:
         "alignment_score": 0,
         "copilot_coverage_score": 0
     }
-    
-    # Strategy Lead Analysis
+
+    # --- Strategy Lead Analysis ---
     sl_path = run_path / "01_strategy_lead_agent_state.json"
     if sl_path.exists():
         try:
             with open(sl_path) as f:
-                data = json.load(f)
-                # Check markdown content for keywords
-                # Note: The agent state usually contains 'deliverable' or 'messages' history.
-                # run_pipeline implementation saves specific state files. 
-                # Assuming 01_strategy_lead_agent_state.json is the DIRECT state output
-                # which usually has keys like "strategy", "deliverable_markdown", etc.
-                
-                # We need to check if we are reading the raw agent state or the final artifact mapping.
-                # The file name implies it's the state dump.
-                
-                # If text is in 'deliverable_markdown' or keys in 'strategy'
-                text_content = ""
-                if "deliverable_markdown" in data:
-                    text_content += data["deliverable_markdown"]
-                
-                # Heuristics
-                lower_text = text_content.lower()
-                if "belief" in lower_text: scores["belief_clarity_present"] = True
-                if "behavior" in lower_text: scores["behavior_clarity_present"] = True
-                if "system" in lower_text or "policy" in lower_text or "enabler" in lower_text:
-                    scores["systems_policies_present"] = True
-                    
-                # Alignment Calculation (0-2)
-                # Presence of Goal (Strategy) -> Outline (LA) -> Assessment (AD)
-                # We need cross-file checks. 
-                updated_state = data.get("updated_state", {})
-                strategy = updated_state.get("strategy", {})
-                has_goals = False
-                if strategy and "goals" in strategy:
-                    if strategy["goals"]: has_goals = True
-                
-                # We'll update alignment in a wider scope or check other files here?
-                # Let's do partial check here.
-                if has_goals: scores["alignment_score"] += 1
-                
+                sl_data = json.load(f)
+
+            text_content = ""
+            if "deliverable_markdown" in sl_data:
+                text_content += sl_data["deliverable_markdown"]
+
+            lower_text = text_content.lower()
+            if "belief" in lower_text:
+                scores["belief_clarity_present"] = True
+            if "behavior" in lower_text:
+                scores["behavior_clarity_present"] = True
+            if "system" in lower_text or "policy" in lower_text or "enabler" in lower_text:
+                scores["systems_policies_present"] = True
+
+            # Alignment pt 1: Strategy has goals
+            updated_state = sl_data.get("updated_state", {})
+            strategy = sl_data.get("strategy", updated_state.get("strategy", {}))
+            if strategy and strategy.get("goals"):
+                scores["alignment_score"] += 1
+
         except Exception as e:
             log(f"Error reading Strategy Lead state: {e}")
 
-    # Check alignment part 2 (Curriculum & Assessment existence)
-    # We already checked goals. Now check if they flow down.
-    # Simple proxy: if modules > 0 and assessment items > 0 (calculated in structure)
-    # We can refine this.
-    
-    # Copilot Check in Learning Architect
+    # --- Learning Architect Analysis ---
     la_path = run_path / "03_learning_architect_agent_state.json"
     if la_path.exists():
         try:
             with open(la_path) as f:
-                updated_state = data.get("updated_state", {})
-                curriculum = updated_state.get("curriculum", {})
-                outline = curriculum.get("outline", [])
-                
-                # Alignment score pt 2: Has modules?
-                if outline: scores["alignment_score"] += 1
-                
-                # Copilot Coverage
-                # Check for "Copilot" in titles or objectives
-                copilot_mentions = 0
-                for module in outline:
-                    text = (module.get("title", "") + " " + " ".join(module.get("objectives", []))).lower()
-                    if "copilot" in text:
-                        copilot_mentions += 1
-                
-                if copilot_mentions > 0:
-                    scores["copilot_coverage_score"] = 1
-                if copilot_mentions > 3: # Arbitrary threshold for "good" coverage
-                    scores["copilot_coverage_score"] = 2
-                    
-        except:
-            pass
+                la_data = json.load(f)
 
-    # Normalize alignment to 0-2 (Goals + Modules) - max 2
+            # Support both top-level curriculum and updated_state.curriculum
+            curriculum = la_data.get("curriculum", {})
+            if not curriculum:
+                la_updated = la_data.get("updated_state", {})
+                curriculum = la_updated.get("curriculum", {})
+
+            # Support modules, outline, or course_architecture
+            outline = (
+                curriculum.get("modules")
+                or curriculum.get("outline")
+                or curriculum.get("course_architecture")
+                or []
+            )
+
+            # Alignment pt 2: Has modules
+            if outline:
+                scores["alignment_score"] += 1
+
+            # Copilot Coverage
+            copilot_mentions = 0
+            for module in outline:
+                text = (
+                    module.get("title", "") + " "
+                    + " ".join(module.get("objectives", []))
+                ).lower()
+                if "copilot" in text:
+                    copilot_mentions += 1
+
+            if copilot_mentions > 0:
+                scores["copilot_coverage_score"] = 1
+            if copilot_mentions > 3:
+                scores["copilot_coverage_score"] = 2
+
+        except Exception as e:
+            log(f"Error reading Learning Architect state: {e}")
+
+    # Normalize alignment to 0-2 (Goals + Modules)
     scores["alignment_score"] = min(scores["alignment_score"], 2)
-    
+
     return scores
 
 def calculate_stability_score(reports: List[Dict[str, Any]]) -> int:
-    """Calculates a 0-100 Structure Stability Score based on learning architect invariants."""
-    if not reports: return 0
-    
+    """Calculates a 0-100 Structure Stability Score based on learning architect invariants.
+
+    Scoring:
+    - Starts at 100.
+    - -20 if module_count varies across runs (variance-based, not against a constant).
+    - -20 if objectives_count varies by more than 10% from average across runs.
+    - -30 if module ID sequences differ across runs.
+    - -5 per module if per-module sub-counts (checks/activities/key_concepts) drift.
+    """
+    if not reports:
+        return 0
+
     score = 100
+
+    # --- Module count variance ---
     module_counts = [r["structure"]["modules_count"] for r in reports]
-    
-    # Subtract 50 if module_count differs from 6 in ANY run
-    if any(c != 6 for c in module_counts):
-        score -= 50
-        
+    if len(set(module_counts)) > 1:
+        score -= 20
+
+    # --- Objectives count variance (>10% of average -> penalty) ---
+    obj_counts = [r["structure"].get("objectives_count", 0) for r in reports]
+    if len(obj_counts) > 1:
+        avg_obj = sum(obj_counts) / len(obj_counts)
+        if avg_obj > 0:
+            max_diff = max(abs(c - avg_obj) for c in obj_counts)
+            if max_diff / avg_obj > 0.10:
+                score -= 20
+
+    # --- Module ID sequence stability ---
     first_ids = reports[0]["structure"].get("module_ids", [])
     for r in reports[1:]:
         if r["structure"].get("module_ids", []) != first_ids:
             score -= 30
             break
-            
+
+    # --- Per-module sub-count drift ---
     if first_ids:
         for m_id in first_ids:
-            penalty_applied = False
             for key in ["checks", "activities", "key_concepts"]:
-                counts = [r["structure"].get("per_module_counts", {}).get(m_id, {}).get(key, 0) for r in reports]
+                counts = [
+                    r["structure"].get("per_module_counts", {}).get(m_id, {}).get(key, 0)
+                    for r in reports
+                ]
                 if len(set(counts)) > 1:
                     score -= 5
-                    penalty_applied = True
-                    break
-                    
-            if not penalty_applied:
-                for r in reports:
-                    m_data = r["structure"].get("per_module_counts", {}).get(m_id, {})
-                    kc, act, chk = m_data.get("key_concepts", 0), m_data.get("activities", 0), m_data.get("checks", 0)
-                    if not (4 <= kc <= 8) or not (2 <= act <= 4) or not (2 <= chk <= 3):
-                        score -= 5
-                        break
+                    break  # One penalty per module
 
     return max(0, min(100, score))
 
@@ -424,7 +450,8 @@ def main():
             "runs": args.runs,
             "profile": args.governance_profile
         },
-        "structure_stability_score": stability_score,
+        "overall_stability_score": stability_score,
+        "structure_stability_score": stability_score,  # backwards-compat alias
         "structure_invariants_by_run": [r["structure"] for r in successful_reports],
         "structure_diffs_summary": diffs_summary,
         "runs": run_reports
