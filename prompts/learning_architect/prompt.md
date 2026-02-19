@@ -82,16 +82,21 @@ You must return a **SINGLE JSON OBJECT**.
           "checks": [
             {{
               "type": "mcq",
-              "prompt": "Question text...",
+              "prompt": "Question text for check 1...",
               "success_criteria": ["Correct answer is A", "Explanation covers X"]
+            }},
+            {{
+              "type": "scenario",
+              "prompt": "Question text for check 2...",
+              "success_criteria": ["Learner selects correct response", "Rationale references module outcome"]
             }}
           ]
         }},
-        {{ "module_id": "M2", "title": "...", "outcome": "...", "key_concepts": [], "activities": [], "checks": [] }},
-        {{ "module_id": "M3", "title": "...", "outcome": "...", "key_concepts": [], "activities": [], "checks": [] }},
-        {{ "module_id": "M4", "title": "...", "outcome": "...", "key_concepts": [], "activities": [], "checks": [] }},
-        {{ "module_id": "M5", "title": "...", "outcome": "...", "key_concepts": [], "activities": [], "checks": [] }},
-        {{ "module_id": "M6", "title": "Capstone Workflow + Accountability", "outcome": "...", "key_concepts": [], "activities": [], "checks": [] }}
+        {{ "module_id": "M2", "title": "...", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
+        {{ "module_id": "M3", "title": "...", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
+        {{ "module_id": "M4", "title": "...", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
+        {{ "module_id": "M5", "title": "...", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
+        {{ "module_id": "M6", "title": "Capstone Workflow + Accountability", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }}
       ]
     }},
     "constraints": {{
