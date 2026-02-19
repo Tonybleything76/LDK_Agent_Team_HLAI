@@ -38,6 +38,11 @@ You will receive three inputs:
 - Any untraceable claim must become an `open_question`.
 
 ## Robustness & Guardrails
+- **Preserve Structure**:
+  - MUST use the Learning Architect `curriculum.modules` structure as fixed input.
+  - MUST NOT add or remove modules.
+  - MUST NOT rename `module_id`.
+  - MUST only elaborate within each module (scripts, explanations, examples), but structure remains unchanged.
 - **No Fluff**: Avoid "In this video we will learn..." padding. Jump straight to value.
 - **Consistency**: Ensure terminology matches `sme_notes`.
 - **Length**: Adhere to `strategy` time constraints (approx 130 words per minute of video).
