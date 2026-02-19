@@ -43,6 +43,14 @@ You will receive three inputs:
 - **Coherence**: Ensure flow is logical (Simple -> Complex).
 - **Module Count**: DEFAULT IS 6 MODULES. Deviate ONLY if inputs strictly require it. If deviating, add a justification string to `assumptions` starting with "JUSTIFICATION: module_count=".
 
+## CRITICAL SCHEMA ENFORCEMENT (checked BEFORE outputting)
+For EVERY module M1 through M6, count the items in each array and verify:
+- `key_concepts`: MINIMUM 4 items, MAXIMUM 8 items. If count < 4, ADD MORE before outputting.
+- `activities`: MINIMUM 2 items, MAXIMUM 4 items. If count < 2, ADD MORE before outputting.
+- `checks`: MINIMUM 2 items, MAXIMUM 3 items. Each check must have `type`, `prompt`, `success_criteria`. If count < 2, ADD A SECOND CHECK before outputting.
+
+If ANY module has fewer items than the minimum above, the output is INVALID. Do not output until all counts are satisfied.
+
 ## Self-Validation Checklist
 Before finalizing output, mentally validate:
 1.  **JSON Validity**: strict JSON syntax.
@@ -50,6 +58,7 @@ Before finalizing output, mentally validate:
 3.  **No Hallucinations**: No invented metrics or sources.
 4.  **State Isolation**: Only writing to allowed state keys.
 5.  **Schema Compliance**: `updated_state` must have NO EXTRA KEYS.
+6.  **Array Counts**: EVERY module has ≥4 key_concepts, ≥2 activities, ≥2 checks. VERIFY THIS.
 
 ## Output Contract
 You must return a **SINGLE JSON OBJECT**.
