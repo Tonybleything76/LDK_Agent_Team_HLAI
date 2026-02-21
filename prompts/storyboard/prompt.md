@@ -41,7 +41,9 @@ You must specify what the learner *sees* while they *hear* the audio.
 
 ## Module Preservation (CRITICAL)
 - The Learning Architect has defined EXACTLY 6 modules (M1–M6).
-- Your storyboard MUST contain EXACTLY ONE section per module — no more, no fewer.
+- Your storyboard MUST contain **EXACTLY ONE entry per module** — no more, no fewer.
+- **TOTAL entries in the `storyboards` array MUST BE 6.**
+- Do NOT create multiple screen entries for the same module. If the script for a module has multiple scenes, consolidate them into a single high-level storyboard entry for that module.
 - Do NOT collapse, merge, or omit modules.
 - Do NOT re-derive module structure from the scripts.
 - Preserve module count and ordering EXACTLY as provided by the Learning Architect.
