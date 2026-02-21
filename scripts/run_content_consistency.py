@@ -189,6 +189,18 @@ def analyze_structure(run_data: Dict[str, Any]) -> Dict[str, Any]:
         except json.JSONDecodeError:
             metrics["schema_validity"]["learning_architect"] = False
 
+    # 2. Storyboard
+    sb_path = base_path / "06_storyboard_agent_state.json"
+    if sb_path.exists():
+        try:
+            with open(sb_path) as f:
+                sb_data = json.load(f)
+            updated_state = sb_data.get("updated_state", {})
+            storyboards = updated_state.get("storyboards", [])
+            metrics["storyboard_modules_count"] = len(storyboards)
+        except (json.JSONDecodeError, Exception):
+            metrics["storyboard_modules_count"] = 0
+
     return metrics
 
 def calculate_quality_rubric(run_path: Path) -> Dict[str, Any]:
@@ -452,6 +464,9 @@ def main():
         },
         "overall_stability_score": stability_score,
         "structure_stability_score": stability_score,  # backwards-compat alias
+        "modules_per_run": [r["structure"]["modules_count"] for r in successful_reports],
+        "objectives_per_run": [r["structure"]["objectives_count"] for r in successful_reports],
+        "storyboard_per_run": [r["structure"].get("storyboard_modules_count", 0) for r in successful_reports],
         "structure_invariants_by_run": [r["structure"] for r in successful_reports],
         "structure_diffs_summary": diffs_summary,
         "runs": run_reports
