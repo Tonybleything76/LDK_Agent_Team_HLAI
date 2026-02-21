@@ -45,11 +45,12 @@ You will receive three inputs:
 
 ## CRITICAL SCHEMA ENFORCEMENT (checked BEFORE outputting)
 For EVERY module M1 through M6, count the items in each array and verify:
+- `objectives`: EXACTLY 2 items. Each must start with a Bloom's Taxonomy action verb (e.g., Identify, Analyze, Create, Demonstrate, Evaluate). If count ≠ 2, FIX before outputting.
 - `key_concepts`: MINIMUM 4 items, MAXIMUM 8 items. If count < 4, ADD MORE before outputting.
 - `activities`: MINIMUM 2 items, MAXIMUM 4 items. If count < 2, ADD MORE before outputting.
 - `checks`: MINIMUM 2 items, MAXIMUM 3 items. Each check must have `type`, `prompt`, `success_criteria`. If count < 2, ADD A SECOND CHECK before outputting.
 
-If ANY module has fewer items than the minimum above, the output is INVALID. Do not output until all counts are satisfied.
+If ANY module has fewer items than the minimum above, OR if any module is missing `objectives`, the output is INVALID. Do not output until all counts are satisfied.
 
 ## Self-Validation Checklist
 Before finalizing output, mentally validate:
@@ -58,7 +59,7 @@ Before finalizing output, mentally validate:
 3.  **No Hallucinations**: No invented metrics or sources.
 4.  **State Isolation**: Only writing to allowed state keys.
 5.  **Schema Compliance**: `updated_state` must have NO EXTRA KEYS.
-6.  **Array Counts**: EVERY module has ≥4 key_concepts, ≥2 activities, ≥2 checks. VERIFY THIS.
+6.  **Array Counts**: EVERY module has exactly 2 objectives, ≥4 key_concepts, ≥2 activities, ≥2 checks. VERIFY THIS.
 
 ## Output Contract
 You must return a **SINGLE JSON OBJECT**.
@@ -86,6 +87,10 @@ You must return a **SINGLE JSON OBJECT**.
           "module_id": "M1",
           "title": "Foundations & Mental Models",
           "outcome": "Measurable outcome...",
+          "objectives": [
+            "Identify the core mental models that underpin effective practice",
+            "Apply foundational concepts to realistic workplace scenarios"
+          ],
           "key_concepts": ["Concept 1", "Concept 2", "Concept 3", "Concept 4"],
           "activities": ["Activity 1", "Activity 2"],
           "checks": [
@@ -101,11 +106,11 @@ You must return a **SINGLE JSON OBJECT**.
             }}
           ]
         }},
-        {{ "module_id": "M2", "title": "...", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
-        {{ "module_id": "M3", "title": "...", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
-        {{ "module_id": "M4", "title": "...", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
-        {{ "module_id": "M5", "title": "...", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
-        {{ "module_id": "M6", "title": "Capstone Workflow + Accountability", "outcome": "...", "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }}
+        {{ "module_id": "M2", "title": "...", "outcome": "...", "objectives": ["Verb phrase objective 1", "Verb phrase objective 2"], "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
+        {{ "module_id": "M3", "title": "...", "outcome": "...", "objectives": ["Verb phrase objective 1", "Verb phrase objective 2"], "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
+        {{ "module_id": "M4", "title": "...", "outcome": "...", "objectives": ["Verb phrase objective 1", "Verb phrase objective 2"], "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
+        {{ "module_id": "M5", "title": "...", "outcome": "...", "objectives": ["Verb phrase objective 1", "Verb phrase objective 2"], "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }},
+        {{ "module_id": "M6", "title": "Capstone Workflow + Accountability", "outcome": "...", "objectives": ["Verb phrase objective 1", "Verb phrase objective 2"], "key_concepts": ["C1","C2","C3","C4"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"scenario","prompt":"Q2","success_criteria":["B"]}}] }}
       ]
     }},
     "constraints": {{
@@ -123,4 +128,4 @@ You must return a **SINGLE JSON OBJECT**.
 - **ONLY** write to `updated_state` keys listed above.
 - **DO NOT** overwrite `strategy` or `learner_profile`.
 - **Modules**: Must be M1-M6 by default.
-- **Module Fields**: Each module MUST have `outcome`, `key_concepts` (4-8), `activities` (2-4), `checks` (2-3).
+- **Module Fields**: Each module MUST have `outcome`, `objectives` (exactly 2), `key_concepts` (4-8), `activities` (2-4), `checks` (2-3).
