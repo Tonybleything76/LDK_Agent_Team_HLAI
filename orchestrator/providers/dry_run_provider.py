@@ -136,6 +136,10 @@ class DryRunProvider(BaseProvider):
                 "module_id": mid,
                 "title": title,
                 "outcome": outcome,
+                "objectives": [
+                    f"{mid} Objective 1: Identify and apply core principles from this module",
+                    f"{mid} Objective 2: Analyze and evaluate outcomes in realistic scenarios",
+                ],
                 "key_concepts": [
                     f"{mid} Concept A",
                     f"{mid} Concept B",
