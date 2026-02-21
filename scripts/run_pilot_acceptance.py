@@ -106,6 +106,8 @@ def evaluate_gates(
     course_slug: str,
     min_structure_stability: int,
     require_quality: bool,
+    min_objectives: int,
+    expected_modules: int,
 ) -> tuple[bool, list[str], list[str]]:
     """
     Evaluates pass/fail gates against the report.
@@ -115,13 +117,17 @@ def evaluate_gates(
     warnings = []
 
     # Gate 1: report must have required keys
-    if "overall_stability_score" not in report:
-        failures.append("Report missing 'overall_stability_score'.")
-    if "structure_stability_score" not in report:
-        failures.append("Report missing 'structure_stability_score'.")
-
-    if failures:
-        return False, failures, warnings
+    required_keys = [
+        "overall_stability_score",
+        "structure_stability_score",
+        "objectives_per_run",
+        "modules_per_run",
+        "storyboard_per_run"
+    ]
+    for key in required_keys:
+        if key not in report:
+            print(f"ERROR: Report missing required key: '{key}'")
+            sys.exit(1)
 
     # Gate 2: structure stability threshold
     struct_score = report.get("structure_stability_score", report.get("overall_stability_score", 0))
@@ -130,7 +136,35 @@ def evaluate_gates(
             f"structure_stability_score {struct_score} < required {min_structure_stability}."
         )
 
-    # Gate 3: quality rubric (when required)
+    # Gate 3: Objectives Count (>= min_objectives for ALL runs)
+    obj_counts = report["objectives_per_run"]
+    if any(c < min_objectives for c in obj_counts):
+        failures.append(
+            f"objectives_count failed: {obj_counts} (min required: {min_objectives})."
+        )
+
+    # Gate 4: Module Count (== expected_modules for ALL runs)
+    mod_counts = report["modules_per_run"]
+    if any(c != expected_modules for c in mod_counts):
+        failures.append(
+            f"modules_count failed: {mod_counts} (expected: {expected_modules})."
+        )
+
+    # Gate 5: Storyboard Module Count (== expected_modules for ALL runs)
+    sb_counts = report["storyboard_per_run"]
+    if any(c != expected_modules for c in sb_counts):
+        failures.append(
+            f"storyboard_module_count failed: {sb_counts} (expected: {expected_modules})."
+        )
+
+    # Gate 6: Structure Diffs Summary must be empty
+    diffs = report.get("structure_diffs_summary", [])
+    if diffs:
+        failures.append(f"structure_diffs detected: {len(diffs)} items.")
+        for d in diffs:
+            warnings.append(f"Structure drift: {d}")
+
+    # Gate 7: quality rubric (when required)
     if require_quality:
         # Check if "copilot" appears in course slug or brief content (heuristic)
         slug_lower = course_slug.lower()
@@ -198,9 +232,12 @@ def build_summary_markdown(
         "",
         "## Gate Results",
         "",
-        f"| Gate | Required | Actual | Result |",
+        "| Gate | Required | Actual | Result |",
         f"|---|---|---|---|",
         f"| Structure Stability | ≥ {min_structure_stability} | {struct_score} | {'✅' if isinstance(struct_score, (int, float)) and struct_score >= min_structure_stability else '❌'} |",
+        f"| Objectives (ALL runs) | ≥ {report.get('min_objectives', 12)} | {report.get('objectives_per_run', [])} | {'✅' if all(c >= report.get('min_objectives', 12) for c in report.get('objectives_per_run', [])) else '❌'} |",
+        f"| Modules (ALL runs) | == {report.get('expected_modules', 6)} | {report.get('modules_per_run', [])} | {'✅' if all(c == report.get('expected_modules', 6) for c in report.get('modules_per_run', [])) else '❌'} |",
+        f"| Storyboards (ALL runs) | == {report.get('expected_modules', 6)} | {report.get('storyboard_per_run', [])} | {'✅' if all(c == report.get('expected_modules', 6) for c in report.get('storyboard_per_run', [])) else '❌'} |",
         f"| Overall Status | PASS | — | {status_emoji} |",
         "",
         "## Run IDs",
@@ -258,6 +295,10 @@ def main():
                         help="Auto-approve phase gates (no interactive prompts)")
     parser.add_argument("--min-structure-stability", type=int, default=80,
                         help="Minimum structure_stability_score to pass (0-100)")
+    parser.add_argument("--min-objectives", type=int, default=12,
+                        help="Minimum objectives_count per run")
+    parser.add_argument("--expected-modules", type=int, default=6,
+                        help="Expected module count per run (curriculum and storyboard)")
     parser.add_argument("--require-quality", dest="require_quality", action="store_true", default=False,
                         help="Fail if strategy rubric flags are missing (opt-in; off by default)")
     parser.add_argument("--no-require-quality", dest="require_quality", action="store_false",
@@ -313,6 +354,9 @@ def main():
     # Step 3: Load and evaluate report
     try:
         report = load_report()
+        # Inject thresholds for summary generation
+        report["min_objectives"] = args.min_objectives
+        report["expected_modules"] = args.expected_modules
     except FileNotFoundError as e:
         log(f"ERROR: {e}")
         sys.exit(1)
@@ -322,6 +366,8 @@ def main():
         course_slug=args.course_slug,
         min_structure_stability=args.min_structure_stability,
         require_quality=args.require_quality,
+        min_objectives=args.min_objectives,
+        expected_modules=args.expected_modules,
     )
 
     # Step 4: Build summary and package evidence
