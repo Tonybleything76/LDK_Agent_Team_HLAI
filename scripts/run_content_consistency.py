@@ -431,28 +431,35 @@ def main():
     # Check for structural deltas
     diffs_summary = []
     if any(r["structure"]["modules_count"] != 6 for r in successful_reports):
-         diffs_summary.append("Module count drifted from exactly 6.")
+         diffs_summary.append({"field": "modules_count", "message": "Module count drifted from exactly 6."})
          
     first_ids = successful_reports[0]["structure"].get("module_ids", []) if successful_reports else []
     if any(r["structure"].get("module_ids", []) != first_ids for r in successful_reports[1:]):
-         diffs_summary.append("Module sequence (IDs) drifted across runs.")
+         diffs_summary.append({"field": "module_ids", "message": "Module sequence (IDs) drifted across runs."})
          
     for m_id in first_ids:
          for r in successful_reports:
               m_data = r["structure"].get("per_module_counts", {}).get(m_id)
               if m_data:
                    kc, act, chk = m_data.get("key_concepts", 0), m_data.get("activities", 0), m_data.get("checks", 0)
-                   if not (4 <= kc <= 8): diffs_summary.append(f"{m_id} key_concepts out of range (4-8): {kc}")
-                   if not (2 <= act <= 4): diffs_summary.append(f"{m_id} activities out of range (2-4): {act}")
-                   if not (2 <= chk <= 3): diffs_summary.append(f"{m_id} checks out of range (2-3): {chk}")
+                   if not (4 <= kc <= 8): diffs_summary.append({"field": "key_concepts_count", "module_id": m_id, "message": f"{m_id} key_concepts out of range (4-8): {kc}"})
+                   if not (2 <= act <= 4): diffs_summary.append({"field": "activities_count", "module_id": m_id, "message": f"{m_id} activities out of range (2-4): {act}"})
+                   if not (2 <= chk <= 3): diffs_summary.append({"field": "checks_count", "module_id": m_id, "message": f"{m_id} checks out of range (2-3): {chk}"})
          
          for key in ["key_concepts", "activities", "checks"]:
              counts = [r["structure"].get("per_module_counts", {}).get(m_id, {}).get(key, 0) for r in successful_reports]
              if len(set(counts)) > 1:
-                 diffs_summary.append(f"{m_id} {key} counts drifted across runs: {counts}")
+                 diffs_summary.append({"field": f"{key}_count", "module_id": m_id, "runs": counts, "message": f"{m_id} {key} counts drifted across runs: {counts}"})
 
     # Remove duplicates but keep order
-    diffs_summary = list(dict.fromkeys(diffs_summary))
+    unique_diffs = []
+    seen = set()
+    for d in diffs_summary:
+        s = json.dumps(d, sort_keys=True)
+        if s not in seen:
+            seen.add(s)
+            unique_diffs.append(d)
+    diffs_summary = unique_diffs
 
     final_report = {
         "timestamp": datetime.now().isoformat(),
