@@ -348,6 +348,22 @@ def main():
     # Resolve inputs directory
     inputs_dir = args.inputs_dir or (PROJECT_ROOT / f"_inputs_{args.course_slug}")
 
+    # Determine expected modules and min objectives from business brief, overriding args defaults if present
+    expected_modules = args.expected_modules
+    min_objectives = args.min_objectives
+    brief_path = inputs_dir / "business_brief.md"
+    if brief_path.exists():
+        with open(brief_path, 'r') as f:
+            for line in f:
+                if "MODULE_COUNT_TARGET:" in line:
+                    try:
+                        val = line.split(":")[-1].strip()
+                        expected_modules = int(val)
+                        min_objectives = expected_modules * 2
+                        break
+                    except ValueError:
+                        pass
+
     print("=" * 60)
     print("PILOT ACCEPTANCE HARNESS")
     print(f"  Course slug : {args.course_slug}")
@@ -394,8 +410,8 @@ def main():
     try:
         report = load_report()
         # Inject thresholds for summary generation
-        report["min_objectives"] = args.min_objectives
-        report["expected_modules"] = args.expected_modules
+        report["min_objectives"] = min_objectives
+        report["expected_modules"] = expected_modules
     except FileNotFoundError as e:
         log(f"ERROR: {e}")
         sys.exit(1)
@@ -405,8 +421,8 @@ def main():
         course_slug=args.course_slug,
         min_structure_stability=args.min_structure_stability,
         require_quality=args.require_quality,
-        min_objectives=args.min_objectives,
-        expected_modules=args.expected_modules,
+        min_objectives=min_objectives,
+        expected_modules=expected_modules,
         require_empty_diffs=args.require_empty_diffs,
     )
 

@@ -430,8 +430,9 @@ def main():
     
     # Check for structural deltas
     diffs_summary = []
-    if any(r["structure"]["modules_count"] != 6 for r in successful_reports):
-         diffs_summary.append({"field": "modules_count", "message": "Module count drifted from exactly 6."})
+    first_modules_count = successful_reports[0]["structure"]["modules_count"] if successful_reports else 0
+    if any(r["structure"]["modules_count"] != first_modules_count for r in successful_reports[1:]):
+         diffs_summary.append({"field": "modules_count", "message": "Module count drifted across runs."})
          
     first_ids = successful_reports[0]["structure"].get("module_ids", []) if successful_reports else []
     if any(r["structure"].get("module_ids", []) != first_ids for r in successful_reports[1:]):
@@ -442,9 +443,9 @@ def main():
               m_data = r["structure"].get("per_module_counts", {}).get(m_id)
               if m_data:
                    kc, act, chk = m_data.get("key_concepts", 0), m_data.get("activities", 0), m_data.get("checks", 0)
-                   if not (4 <= kc <= 8): diffs_summary.append({"field": "key_concepts_count", "module_id": m_id, "message": f"{m_id} key_concepts out of range (4-8): {kc}"})
-                   if not (2 <= act <= 4): diffs_summary.append({"field": "activities_count", "module_id": m_id, "message": f"{m_id} activities out of range (2-4): {act}"})
-                   if not (2 <= chk <= 3): diffs_summary.append({"field": "checks_count", "module_id": m_id, "message": f"{m_id} checks out of range (2-3): {chk}"})
+                   if not (3 <= kc <= 5): diffs_summary.append({"field": "key_concepts_count", "module_id": m_id, "message": f"{m_id} key_concepts out of range (3-5): {kc}"})
+                   if act != 2: diffs_summary.append({"field": "activities_count", "module_id": m_id, "message": f"{m_id} activities not exactly 2: {act}"})
+                   if chk != 2: diffs_summary.append({"field": "checks_count", "module_id": m_id, "message": f"{m_id} checks not exactly 2: {chk}"})
          
          for key in ["key_concepts", "activities", "checks"]:
              counts = [r["structure"].get("per_module_counts", {}).get(m_id, {}).get(key, 0) for r in successful_reports]
