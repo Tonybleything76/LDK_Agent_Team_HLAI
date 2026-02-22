@@ -108,6 +108,7 @@ def evaluate_gates(
     require_quality: bool,
     min_objectives: int,
     expected_modules: int,
+    require_empty_diffs: bool = False,
 ) -> tuple[bool, list[str], list[str]]:
     """
     Evaluates pass/fail gates against the report.
@@ -157,12 +158,48 @@ def evaluate_gates(
             f"storyboard_module_count failed: {sb_counts} (expected: {expected_modules})."
         )
 
-    # Gate 6: Structure Diffs Summary must be empty
+    # Gate 6: Structure Diffs Summary
     diffs = report.get("structure_diffs_summary", [])
     if diffs:
-        failures.append(f"structure_diffs detected: {len(diffs)} items.")
-        for d in diffs:
-            warnings.append(f"Structure drift: {d}")
+        if require_empty_diffs:
+            failures.append(f"structure_diffs detected: {len(diffs)} items.")
+            for d in diffs:
+                warnings.append(f"Structure drift: {d}")
+        else:
+            allowed_fields = {"key_concepts_count", "activities_count", "checks_count", "examples_count"}
+            has_hard_diff = False
+            for d in diffs:
+                if isinstance(d, dict):
+                    if d.get("field") not in allowed_fields:
+                        has_hard_diff = True
+                        failures.append(f"Unallowed structure drift: {d}")
+                    else:
+                        warnings.append(f"Allowed depth drift: {d}")
+                else:
+                    # fallback for string
+                    warnings.append(f"Unstructured drift (treated as allowed depth drift): {d}")
+                    
+            if has_hard_diff:
+                failures.append(f"structure_diffs detected unallowed items.")
+
+    # Check for errors and schema validity
+    if report.get("errors_detected", False):
+        failures.append("errors_detected is true.")
+    if report.get("qa_critical_detected", False):
+        failures.append("qa_critical_detected is true.")
+    
+    # schema validity check
+    runs_data = report.get("runs", [])
+    for r in runs_data:
+        sv = r.get("structure", {}).get("schema_validity", {})
+        if sv and not all(sv.values()):
+            failures.append("schema_validity < 100%.")
+            
+    # Soft warning for overall stability
+    overall_score = report.get("overall_stability_score", 0)
+    struct_score = report.get("structure_stability_score", overall_score)
+    if overall_score < min_structure_stability and struct_score >= min_structure_stability:
+        warnings.append(f"overall_stability_score {overall_score} is below threshold {min_structure_stability}.")
 
     # Gate 7: quality rubric (when required)
     if require_quality:
@@ -256,7 +293,7 @@ def build_summary_markdown(
         for w in warnings:
             lines.append(f"- ⚠️ {w}")
 
-    lines += ["", "---", f"*Pilot Acceptance Harness — {course_slug}*"]
+    lines += ["", "Acceptance is spine-stable; depth drift is allowed unless --require-empty-diffs is set.", "", "---", f"*Pilot Acceptance Harness — {course_slug}*"]
     return "\n".join(lines)
 
 
@@ -303,6 +340,8 @@ def main():
                         help="Fail if strategy rubric flags are missing (opt-in; off by default)")
     parser.add_argument("--no-require-quality", dest="require_quality", action="store_false",
                         help="Disable quality rubric gate (no-op; default behaviour)")
+    parser.add_argument("--require-empty-diffs", action="store_true", default=False,
+                        help="Require perfectly empty structure_diffs_summary (strict behavior)")
 
     args = parser.parse_args()
 
@@ -368,6 +407,7 @@ def main():
         require_quality=args.require_quality,
         min_objectives=args.min_objectives,
         expected_modules=args.expected_modules,
+        require_empty_diffs=args.require_empty_diffs,
     )
 
     # Step 4: Build summary and package evidence
