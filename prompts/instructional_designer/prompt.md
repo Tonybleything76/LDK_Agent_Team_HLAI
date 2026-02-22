@@ -39,8 +39,7 @@ You will receive three inputs:
 
 ## Robustness & Guardrails
 - **Preserve Structure**:
-  - MUST use the Learning Architect `curriculum.modules` structure as fixed input.
-  - MUST NOT add or remove modules.
+  - Do NOT add/remove/reorder modules. Use the module list from the Learning Architect state as canonical.
   - MUST NOT rename `module_id`.
   - MUST only elaborate within each module (scripts, explanations, examples), but structure remains unchanged.
 - **No Fluff**: Avoid "In this video we will learn..." padding. Jump straight to value.

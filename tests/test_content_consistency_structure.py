@@ -59,7 +59,7 @@ def test_stability_score_perfect():
                 "modules_count": 6,
                 "module_ids": ["M1", "M2", "M3", "M4", "M5", "M6"],
                 "per_module_counts": {
-                    f"M{i}": {"key_concepts": 5, "activities": 3, "checks": 2} for i in range(1, 7)
+                    f"M{i}": {"key_concepts": 4, "activities": 2, "checks": 2} for i in range(1, 7)
                 }
             }
         }
@@ -76,7 +76,7 @@ def test_stability_score_module_count_drift():
                 "modules_count": 6,
                 "module_ids": ["M1", "M2", "M3", "M4", "M5", "M6"],
                 "per_module_counts": {
-                    f"M{i}": {"key_concepts": 5, "activities": 3, "checks": 2} for i in range(1, 7)
+                    f"M{i}": {"key_concepts": 4, "activities": 2, "checks": 2} for i in range(1, 7)
                 }
             }
         },
@@ -85,7 +85,7 @@ def test_stability_score_module_count_drift():
                 "modules_count": 5,
                 "module_ids": ["M1", "M2", "M3", "M4", "M5"],
                 "per_module_counts": {
-                    f"M{i}": {"key_concepts": 5, "activities": 3, "checks": 2} for i in range(1, 6)
+                    f"M{i}": {"key_concepts": 4, "activities": 2, "checks": 2} for i in range(1, 6)
                 }
             }
         }
@@ -102,7 +102,7 @@ def test_stability_score_id_order_drift():
                 "modules_count": 6,
                 "module_ids": ["M1", "M2", "M3", "M4", "M5", "M6"],
                 "per_module_counts": {
-                    f"M{i}": {"key_concepts": 5, "activities": 3, "checks": 2} for i in range(1, 7)
+                    f"M{i}": {"key_concepts": 4, "activities": 2, "checks": 2} for i in range(1, 7)
                 }
             }
         },
@@ -111,7 +111,7 @@ def test_stability_score_id_order_drift():
                 "modules_count": 6,
                 "module_ids": ["M6", "M5", "M4", "M3", "M2", "M1"],
                 "per_module_counts": {
-                    f"M{i}": {"key_concepts": 5, "activities": 3, "checks": 2} for i in range(1, 7)
+                    f"M{i}": {"key_concepts": 4, "activities": 2, "checks": 2} for i in range(1, 7)
                 }
             }
         }

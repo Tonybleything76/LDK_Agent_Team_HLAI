@@ -50,7 +50,7 @@ class DryRunProvider(BaseProvider):
         )
 
         if is_learning_architect:
-            return self._create_learning_architect_stub()
+            return self._create_learning_architect_stub(prompt)
 
         # Create deterministic valid JSON response
         deliverable = self._create_stub_deliverable(agent_name) + simulated_deliverable_suffix
@@ -96,7 +96,7 @@ class DryRunProvider(BaseProvider):
         
         return "Unknown Agent"
 
-    def _create_learning_architect_stub(self) -> str:
+    def _create_learning_architect_stub(self, prompt: str = "") -> str:
         """
         Return a deterministic, contract-compliant stub for learning_architect_agent.
 
@@ -164,20 +164,26 @@ class DryRunProvider(BaseProvider):
                 ],
             }
 
-        modules = [
-            make_module(1, "Foundations & Mental Models",
-                        "Identify and apply foundational concepts to realistic scenarios."),
-            make_module(2, "Core Skills Development",
-                        "Demonstrate proficiency in the core skills required for this role."),
-            make_module(3, "Applied Practice",
-                        "Execute key workflows by applying learned skills to structured tasks."),
-            make_module(4, "Advanced Techniques",
-                        "Analyze complex situations and adapt established techniques accordingly."),
-            make_module(5, "Integration & Synthesis",
-                        "Synthesize skills and concepts across multiple interconnected contexts."),
-            make_module(6, "Capstone & Accountability",
-                        "Design and defend an end-to-end solution that meets course objectives."),
+        target_modules = 6
+        import re
+        match = re.search(r"MODULE_COUNT_TARGET:\s*(\d+)", prompt)
+        if match:
+            target_modules = int(match.group(1))
+
+        titles = [
+            "Foundations & Mental Models",
+            "Core Skills Development",
+            "Applied Practice",
+            "Advanced Techniques",
+            "Integration & Synthesis",
+            "Capstone & Accountability",
         ]
+
+        modules = []
+        for i in range(1, target_modules + 1):
+            title = titles[i-1] if i <= len(titles) else f"Extra Module {i}"
+            outcome = "Demonstrate core concepts" if i > 1 else "Identify and apply foundational concepts to realistic scenarios."
+            modules.append(make_module(i, title, outcome))
 
         response = {
             "deliverable_markdown": deliverable,

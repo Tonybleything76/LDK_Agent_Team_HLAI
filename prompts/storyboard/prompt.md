@@ -40,9 +40,9 @@ Your goal is to parse the ID Script and define the **Visual Layer**.
 You must specify what the learner *sees* while they *hear* the audio.
 
 ## Module Preservation (CRITICAL)
-- The Learning Architect has defined EXACTLY 6 modules (M1–M6).
+- You MUST produce exactly one storyboard entry per module in `updated_state.curriculum.modules` from prior state.
 - Your storyboard MUST contain **EXACTLY ONE entry per module** — no more, no fewer.
-- **TOTAL entries in the `storyboards` array MUST BE 6.**
+- **TOTAL entries in the `storyboards` array MUST BE exactly the length of `curriculum.modules`.**
 - Do NOT create multiple screen entries for the same module. If the script for a module has multiple scenes, consolidate them into a single high-level storyboard entry for that module.
 - Do NOT collapse, merge, or omit modules.
 - Do NOT re-derive module structure from the scripts.
@@ -113,5 +113,5 @@ You must return a **SINGLE JSON OBJECT**.
 ### State Update Rules
 - **ONLY** write to `updated_state.storyboards`.
 - **DO NOT** overwrite `scripts`.
-- **storyboards** MUST have exactly 6 entries, one per module (M1–M6), in order.
-- Each entry MUST include `module_id` matching the Learning Architect's module IDs.
+- **storyboards** MUST have exactly one entry per module in `curriculum.modules`, in order.
+- Each entry MUST include `module_id` matching the Learning Architect's module IDs, and they must be unique.
