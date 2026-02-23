@@ -22,26 +22,20 @@ def test_storyboard_quality_bar_fields(provider):
     for i, module in enumerate(storyboards):
         assert module["module_id"] == f"M{i+1}"
         
-        # Check Transformational Trigger
-        trigger = module.get("transformational_trigger", {})
-        assert "assumption_to_challenge" in trigger
-        assert "disorienting_prompt" in trigger
-        assert "reframed_belief" in trigger
+        # Check Transformational Dilemma
+        assert "transformational_dilemma" in module
+        assert module["transformational_dilemma"].startswith("Transformational Dilemma:")
         
-        # Check Dialogue Density
-        dialogue = module.get("dialogue_prompts", {})
-        # Note: exactly 2 prompts required
-        assert len(dialogue.keys()) == 2
-        assert "reflection_prompt" in dialogue
-        assert "peer_or_manager_prompt" in dialogue
+        # Check Dialogue Prompts
+        dialogue = module.get("dialogue_prompts", [])
+        assert len(dialogue) == 2
+        assert dialogue[0].startswith("Dialogue Prompt 1:")
+        assert dialogue[1].startswith("Dialogue Prompt 2:")
         
         # Check Governance Anchor
-        anchor = module.get("governance_anchor", {})
-        assert "verification_step" in anchor
-        assert "policy_boundary_callout" in anchor
-        assert "human_accountability_line" in anchor
-        assert anchor["human_accountability_line"] == "You are the publisher/owner"
+        assert "governance_anchor" in module
+        assert module["governance_anchor"].startswith("Governance Anchor:")
         
         # Check Behavior Signal
-        assert "on_the_job_behavior" in module
-        assert "manager_observable_signal" in module
+        assert "level_3_behavior_signal" in module
+        assert module["level_3_behavior_signal"].startswith("Level 3 Behavior Signal:")
