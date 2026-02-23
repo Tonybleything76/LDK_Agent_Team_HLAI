@@ -59,7 +59,7 @@ Before finalizing output, mentally validate:
 3.  **No Hallucinations**: No invented metrics or sources.
 4.  **State Isolation**: Only writing to allowed state keys.
 5.  **Schema Compliance**: `updated_state` must have NO EXTRA KEYS.
-6.  **Module Count**: Verify the module count exactly matches the `MODULE_COUNT_TARGET` (or 6 by default).
+6.  **Module Count**: Verify the module count exactly matches the `MODULE_COUNT_TARGET` (or 6 by default). If not 6, you MUST include a justification in the `assumptions` array exactly formatted as "JUSTIFICATION: module_count=X" where X is the count.
 7.  **Module ID Sequence**: Verify the `module_id` sequence ranges from M1 to Mn.
 8.  **Objectives Count**: Verify EXACTLY 2 objectives per module.
 9.  **Checks Count**: Verify EXACTLY 2 checks per module.
