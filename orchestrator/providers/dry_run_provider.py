@@ -49,6 +49,41 @@ class DryRunProvider(BaseProvider):
             or "learning_architect_agent" in prompt
         )
 
+        is_quality_review = "Quality Review Agent" in prompt
+
+        if is_quality_review:
+            input_data = prompt.split("# Input Data")[-1] if "# Input Data" in prompt else prompt
+            has_gov = "governance" in input_data.lower() or "accountability" in input_data.lower()
+            has_refl = "reflection" in input_data.lower() or "dialogue" in input_data.lower()
+            
+            score = 10
+            gov_score = 2
+            refl_score = 2
+            
+            if not has_gov:
+                score -= 2
+                gov_score = 0
+            if not has_refl:
+                score -= 2
+                refl_score = 0
+                
+            premium = bool(score >= 9)
+            
+            report = {
+                "quality_score": score,
+                "premium_flag": premium,
+                "domain_scores": {
+                    "transformational_trigger": 2,
+                    "bloom_depth": 2,
+                    "dialogue_density": refl_score,
+                    "governance_anchor": gov_score,
+                    "level3_behavior": 2
+                },
+                "observations": ["Dry run realistic scoring applied."],
+                "improvement_recommendations": []
+            }
+            return json.dumps(report, indent=2)
+
         if is_learning_architect:
             return self._create_learning_architect_stub(prompt)
 
