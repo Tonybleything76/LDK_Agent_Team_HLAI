@@ -49,6 +49,35 @@ You must specify what the learner *sees* while they *hear* the audio.
 - Preserve module count and ordering EXACTLY as provided by the Learning Architect.
 - Each storyboard entry in `updated_state.storyboards` MUST include a `module_id` field ("M1"–"M6").
 
+## QUALITY BAR V1.0 ENFORCEMENT (CRITICAL)
+For EACH module (M1..Mn) in your storyboard, you MUST include the following fields to ensure deep emotional and cognitive engagement:
+
+1. **Transformational Trigger (`transformational_trigger`)**
+   - `assumption_to_challenge`: A plausible learner belief that is wrong or incomplete.
+   - `disorienting_prompt`: A short scenario or prompt that creates productive discomfort.
+   - `reframed_belief`: The corrected belief aligned to Conducted Intelligence.
+
+2. **Dialogue Density (`dialogue_prompts`)**
+   - Must contain exactly 2 prompts:
+     1. `reflection_prompt`: Individual reflection, self-assessment.
+     2. `peer_or_manager_prompt`: Discussion question suitable for Teams chat or live huddle.
+   - Prompts must be specific and job-anchored, not generic.
+
+3. **Governance & Accountability Anchor (`governance_anchor`)**
+   - `verification_step`: Explicit verification action (e.g., cross-check, cite source, confirm policy).
+   - `policy_boundary_callout`: What must not be done; must say "follow org policy" without inventing one.
+   - `human_accountability_line`: exactly this sentence: "You are the publisher/owner"
+
+4. **Level 3 Behavior Signal**
+   - `on_the_job_behavior`: A concrete behavior observable at work within 7 days.
+   - `manager_observable_signal`: What a manager would see.
+
+## SELF-CHECK
+Before responding, you MUST verify:
+- If any required field is missing, you MUST rewrite before responding.
+- If `governance_anchor` is empty, REWRITE.
+- If `transformational_trigger` is empty, REWRITE.
+
 ## Context & Inputs
 You will receive three inputs:
 1.  **{business_brief}**: Branding constraints (if any).
