@@ -298,22 +298,13 @@ class DryRunProvider(BaseProvider):
                 "media_asset_description": f"Visual for module M{i}",
                 "alt_text": f"Module M{i} slide illustration",
                 "dev_notes": "Auto-generated stub",
-                "transformational_trigger": {
-                    "assumption_to_challenge": "Wrong assumption here",
-                    "disorienting_prompt": "What if it fails?",
-                    "reframed_belief": "Correct belief here"
-                },
-                "dialogue_prompts": {
-                    "reflection_prompt": "How do you handle this?",
-                    "peer_or_manager_prompt": "Discuss with your peer."
-                },
-                "governance_anchor": {
-                    "verification_step": "Verify with manager",
-                    "policy_boundary_callout": "follow org policy for external data",
-                    "human_accountability_line": "You are the publisher/owner"
-                },
-                "on_the_job_behavior": "Apply within 7 days.",
-                "manager_observable_signal": "Manager observes correct application."
+                "transformational_dilemma": "Transformational Dilemma: This is a dilemma. Question: This is a question.",
+                "governance_anchor": "Governance Anchor: Follow this rule. Evidence Check: Verify this.",
+                "dialogue_prompts": [
+                    "Dialogue Prompt 1: First question?",
+                    "Dialogue Prompt 2: Second question?"
+                ],
+                "level_3_behavior_signal": "Level 3 Behavior Signal: Observable behavior."
             })
 
         response = {
