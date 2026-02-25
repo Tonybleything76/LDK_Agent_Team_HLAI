@@ -75,11 +75,11 @@ Learners confidently:
 
 By the end of this course, learners will be able to:
 
-1. **Explain core AI and LLM concepts** in practical business language  
-2. **Use Microsoft Copilot** to support writing, research, and presentation workflows  
-3. **Evaluate AI outputs critically** for accuracy, bias, and appropriateness  
-4. Apply **responsible and ethical AI practices** in PR contexts  
-5. Integrate AI into daily work while maintaining **human ownership and judgment**
+- **Explain core AI and LLM concepts** in practical business language  
+- **Use Microsoft Copilot** to support writing, research, and presentation workflows  
+- **Evaluate AI outputs critically** for accuracy, bias, and appropriateness  
+- Apply **responsible and ethical AI practices** in PR contexts  
+- Integrate AI into daily work while maintaining **human ownership and judgment**
 
 ---
 ## Success Metrics

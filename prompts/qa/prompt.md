@@ -77,10 +77,25 @@ You MUST perform a dedicated pass to identify "Fact Hallucinations."
 ## Evidence Discipline
 - All claims must be traceable to inputs: `BUSINESS_BRIEF`, `SME_NOTES`, or `CURRENT_STATE`.
 - Any untraceable claim must become an `open_question`.
-- **Severity Prefixes**: You MUST prefix `open_questions` entries with one of:
+- **Severity Prefixes & Reporting**: You MUST prefix `open_questions` entries with one of:
   - "CRITICAL: " -> Blocking error (wrong fact, missing requirement).
   - "MAJOR: " -> Important issue (ambiguity, weak alignment).
   - "MINOR: " -> Note or suggestion (style, nitpick).
+
+- **MANDATORY AUDIT BRIDGE**: If the final status is FAIL, you MUST add at least one entry to `open_questions` prefixed with "CRITICAL: QA FAILURE". This ensures the failure is captured in the run_ledger.
+
+## ALT-TEXT AUDIT STANDARD
+You MUST audit `alt_text` against these strict metrics. Do NOT guess the length; use these anchors for calibration:
+
+- **Length Calibration Anchors**:
+  - *120 chars (MIN)*: "A split-screen layout displaying a draft press release on the left and a Copilot chat window on the right; the visual highlights prompt iteration."
+  - *250 chars (MAX)*: "A high-resolution photograph of a diverse team of PR professionals brainstorming in a modern glass-walled conference room; the sunlight illuminates the whiteboards which contain clear, legible workflow diagrams for integrating AI into daily tasks."
+
+- **Audit Rules**:
+  - PASS if length is between 120 and 250 characters.
+  - FAIL if length < 120 or > 250 characters.
+  - FAIL if it lacks a Subject + Setting description.
+  - FAIL if it is generic filler like "Image of X".
 
 
 ## Robustness & Guardrails

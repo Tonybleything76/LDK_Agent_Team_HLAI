@@ -68,6 +68,18 @@ You MUST:
 - If you output fewer or more than TOTAL_OBJECTIVES questions, you MUST rewrite before returning output.
 - If the last module’s objectives are not represented (e.g., M6), you MUST rewrite before returning output.
 
+## KNOWLEDGE-RECALL BAN (EXECUTION BLOCKER)
+You MUST NOT generate questions that test "Surface-Level Knowledge" or "First Steps".
+- Prohibited stem patterns:
+  - "What is the first step..."
+  - "What are the components of..."
+  - "Which list represents the..."
+  - "What is the definition of..."
+- Required Behavior:
+  - The stem MUST present a "Decision Scenario" where the learner is in the middle of a task.
+  - The correct answer MUST be an Action that executes the objective's verb (e.g., if the objective is "Audit", the learner must identify the specific error in the scenario).
+  - Distractors MUST represent "Common Failure Modes" (e.g., missing a specific constraint mentions in the objective).
+
 ## SCENARIO-BASED ITEM RULE (EXECUTION BLOCKER)
 For EVERY objective, the question must test performance, not repeat the objective.
 Therefore:

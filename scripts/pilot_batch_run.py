@@ -66,9 +66,9 @@ def main():
             })
             continue
             
-        # Find the latest output dir
+        # Find the latest output dir (by modification time)
         outputs_dir = Path("outputs")
-        latest_run = sorted([d for d in outputs_dir.iterdir() if d.is_dir()])[-1]
+        latest_run = max([d for d in outputs_dir.iterdir() if d.is_dir()], key=os.path.getmtime)
         
         # Try to pull some metrics from audit_summary
         audit_path = latest_run / "audit_summary.json"

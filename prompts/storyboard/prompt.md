@@ -61,15 +61,19 @@ Before returning your final JSON, scan every string you produced (deliverable_ma
 Your goal is to parse the ID Script and define the Visual Layer.
 You must specify what the learner sees while they hear the audio.
 
-## Module Preservation (CRITICAL)
-- You MUST produce exactly one storyboard entry per module in updated_state.curriculum.modules from prior state.
-- Your storyboard MUST contain EXACTLY ONE entry per module — no more, no fewer.
-- TOTAL entries in the storyboards array MUST BE exactly the length of curriculum.modules.
+## MODULE PRESERVATION (CRITICAL)
+- You MUST produce exactly one storyboard entry per module in updated_state.curriculum.modules.
+- TOTAL entries in the updated_state.storyboards array MUST BE exactly the length of curriculum.modules.
+- If curriculum.modules has 6 items, updated_state.storyboards MUST have 6 entries.
 - Do NOT create multiple screen entries for the same module.
 - Do NOT collapse, merge, or omit modules.
-- Do NOT re-derive module structure from the scripts.
-- Preserve module count and ordering EXACTLY as provided by the Learning Architect.
+- Preserve module count and ordering EXACTLY.
 - Each storyboard entry MUST include a module_id field ("M1"–"M6").
+
+## VALIDATION GATE (EXECUTION BLOCKER)
+Before returning output, you MUST verify:
+- count(updated_state.storyboards) == count(curriculum.modules).
+- If they are not equal, REWRITE the entire output until they match.
 
 ## QUALITY ANCHORS (REQUIRED, DO NOT SKIP)
 
@@ -178,11 +182,15 @@ You will receive:
 
 Every alt_text field MUST be specific and descriptive.
 
+Hard Constraints:
+- LENGTH: Must be between 120 and 250 characters.
+- FORMULA: Must follow the pattern: [Subject/Visuals] + [Setting/Context] + [Interaction/Instructional Purpose].
+
 Prohibited patterns:
 - "Screenshot of the interface."
 - "Diagram of workflow."
 - "Image of a team."
-- Any alt_text shorter than 12 words (unless a single icon).
+- Any alt_text shorter than 120 characters or longer than 250 characters.
 
 Alt text MUST include at least TWO of:
 - What is shown (objects, UI elements, layout)
