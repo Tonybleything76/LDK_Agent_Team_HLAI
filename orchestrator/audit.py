@@ -13,6 +13,15 @@ def load_json_safe(path: str) -> Dict[str, Any]:
     except Exception:
         return {}
 
+def load_text_safe(path: str) -> str:
+    try:
+        if not os.path.exists(path):
+            return ""
+        with open(path, "r") as f:
+            return f.read()
+    except Exception:
+        return ""
+
 def utc_now():
     from datetime import datetime
     return datetime.utcnow().isoformat()

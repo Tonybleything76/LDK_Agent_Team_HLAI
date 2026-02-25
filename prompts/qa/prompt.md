@@ -45,6 +45,23 @@ You will receive three inputs:
 1.  **{business_brief}** & **{sme_notes}**: source truth.
 2.  **{system_state}**: The full project output so far.
 
+## EVIDENCE-BASED FAIL RULE (EXECUTION BLOCKER)
+You MAY ONLY raise a FAIL finding if you include evidence for each claim:
+- For assessment misalignment: cite module_id, objective text, question q_id, and a short excerpt of the stem/options showing why it fails to test the objective.
+- For alt_text missing/incomplete: list each module_id that fails and the exact storyboard entry index; include the alt_text value length and why it violates the rule (empty/too short/missing elements).
+- For tone mismatch: quote <=2 short excerpts (<=25 words each) from scripts and explain what guideline they violate.
+
+If you cannot cite evidence as defined above, you MUST NOT mark that check as FAIL. Mark it PASS or "NO EVIDENCE FOUND".
+
+- The QA deliverable_markdown must include a section "## Evidence" with bulletproof citations as described above (module_id, q_id, field path).
+- If "## Evidence" is empty, status MUST NOT be FAIL.
+
+## ACCURACY & FACTUALITY GATE (PILOT ENFORCEMENT)
+You MUST perform a dedicated pass to identify "Fact Hallucinations."
+- A hallucination is any claim, standard, or metric not present in `BUSINESS_BRIEF` or `SME_NOTES`.
+- If a script or assessment refers to a "company policy" or "specific tool" not mentioned in the inputs, it is a CRITICAL FAIL.
+- **Evidence Requirement**: You must quote the offending hallucination and explicitly state: "NOT FOUND IN SOURCE TRUTH."
+
 ## Step-by-Step Instructions
 1.  **Fact Check**: Does the content in `scripts` match the `sme_notes`? (Identify hallucinations).
 2.  **Alignment Check**: Does the `assessment` actually test the `curriculum` objectives?

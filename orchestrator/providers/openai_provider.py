@@ -2,6 +2,7 @@ import os
 import json
 import urllib.request
 import urllib.error
+import time
 from typing import Any, Dict
 from .base import BaseProvider
 
@@ -67,44 +68,63 @@ class OpenAIProvider(BaseProvider):
             "response_format": {"type": "json_object"}
         }
         
-        try:
-            return self._execute_request(payload)
-            
-        except urllib.error.HTTPError as e:
-            error_body = e.read().decode("utf-8")
-            
-            # Check if error is related to response_format (e.g. model doesn't support it)
-            if e.code == 400 and ("response_format" in error_body or "type" in error_body):
-                # Fallback: Retry without response_format but with stronger prompt
-                print(f"Warning: Model {self.model} rejected JSON mode. Retrying with strong system prompt.")
+        max_retries = 3
+        retry_delay = 5
+        
+        for attempt in range(max_retries):
+            try:
+                return self._execute_request(payload)
                 
-                # Remove response_format
-                retry_payload = payload.copy()
-                retry_payload.pop("response_format", None)
+            except urllib.error.HTTPError as e:
+                # Retry on rate limits (429) or transient server errors (5xx)
+                if e.code in [429, 500, 502, 503, 504]:
+                    if attempt < max_retries - 1:
+                        print(f"⚠️  OpenAI API error {e.code}. Retrying in {retry_delay}s... (Attempt {attempt+1}/{max_retries})")
+                        time.sleep(retry_delay)
+                        retry_delay *= 2
+                        continue
                 
-                # Strengthen system message
-                new_messages = [m.copy() for m in retry_payload["messages"]]
-                for m in new_messages:
-                    if m["role"] == "system":
-                        m["content"] += " JSON ONLY."
-                retry_payload["messages"] = new_messages
+                error_body = e.read().decode("utf-8")
                 
-                try:
-                    return self._execute_request(retry_payload)
+                # Check if error is related to response_format (e.g. model doesn't support it)
+                if e.code == 400 and ("response_format" in error_body or "type" in error_body):
+                    # Fallback: Retry without response_format but with stronger prompt
+                    print(f"Warning: Model {self.model} rejected JSON mode. Retrying with strong system prompt.")
                     
-                except urllib.error.HTTPError as retry_e:
-                    retry_error_body = retry_e.read().decode("utf-8")
+                    # Remove response_format
+                    retry_payload = payload.copy()
+                    retry_payload.pop("response_format", None)
+                    
+                    # Strengthen system message
+                    new_messages = [m.copy() for m in retry_payload["messages"]]
+                    for m in new_messages:
+                        if m["role"] == "system":
+                            m["content"] += " JSON ONLY."
+                    retry_payload["messages"] = new_messages
+                    
+                    try:
+                        return self._execute_request(retry_payload)
+                        
+                    except urllib.error.HTTPError as retry_e:
+                        retry_error_body = retry_e.read().decode("utf-8")
+                        raise Exception(
+                            f"OpenAI API retry failed with status {retry_e.code}: {retry_error_body}"
+                        )
+                else:
+                    # Re-raise other HTTP errors with body
                     raise Exception(
-                        f"OpenAI API retry failed with status {retry_e.code}: {retry_error_body}"
+                        f"OpenAI API request failed with status {e.code}: {error_body}"
                     )
-            else:
-                # Re-raise other HTTP errors with body
-                raise Exception(
-                    f"OpenAI API request failed with status {e.code}: {error_body}"
-                )
-                
-        except Exception as e:
-            raise Exception(f"OpenAI API request failed: {str(e)}")
+                    
+            except Exception as e:
+                # For network timeouts or other transient exceptions, retry as well
+                if "timed out" in str(e).lower() or "connection" in str(e).lower():
+                    if attempt < max_retries - 1:
+                        print(f"⚠️  OpenAI connection error: {str(e)}. Retrying in {retry_delay}s... (Attempt {attempt+1}/{max_retries})")
+                        time.sleep(retry_delay)
+                        retry_delay *= 2
+                        continue
+                raise Exception(f"OpenAI API request failed: {str(e)}")
 
     def _execute_request(self, payload: Dict[str, Any]) -> str:
         """Helper to execute the actual HTTP request"""
@@ -120,7 +140,7 @@ class OpenAIProvider(BaseProvider):
             method="POST"
         )
         
-        with urllib.request.urlopen(request, timeout=120) as response:
+        with urllib.request.urlopen(request, timeout=300) as response:
             response_data = json.loads(response.read().decode("utf-8"))
             
             if "choices" not in response_data or len(response_data["choices"]) == 0:
