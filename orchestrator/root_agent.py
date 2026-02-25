@@ -4,7 +4,8 @@ import os
 import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional, Callable
+import copy
 
 from orchestrator.providers import get_provider
 from orchestrator.validation import validate_agent_output, ValidationConfig
@@ -287,6 +288,37 @@ def approval_gate(
 # Main Orchestrator
 # ------------------------------------------------------------------------------
 
+def prune_system_state(state: dict, agent_name: str) -> dict:
+    """
+    Selectively prune the system state to keep prompts concise.
+    Focuses LLM attention on relevant context and avoids token bloat.
+    """
+    # Defensive copy to avoid mutating the master state
+    pruned = {
+        "inputs": copy.deepcopy(state.get("inputs", {})),
+        "strategy": copy.deepcopy(state.get("strategy", {})),
+        "research": copy.deepcopy(state.get("research", {})),
+        "curriculum": copy.deepcopy(state.get("curriculum", {})),
+    }
+
+    # Agent-specific inclusions
+    if agent_name == "instructional_designer_agent":
+        pruned["module_designs"] = copy.deepcopy(state.get("module_designs", []))
+    elif agent_name == "storyboard_agent":
+        pruned["module_designs"] = copy.deepcopy(state.get("module_designs", []))
+        pruned["storyboards"] = copy.deepcopy(state.get("storyboards", []))
+    elif agent_name == "media_producer_agent":
+        pruned["storyboards"] = copy.deepcopy(state.get("storyboards", []))
+    elif agent_name in ["qa_agent", "change_management_agent", "operations_librarian_agent"]:
+        # These agents are auditing/librarian roles and need broad context
+        # However, we still return a copy to be safe
+        return copy.deepcopy(state)
+
+    # For other agents (like learner_research, learning_architect), 
+    # the core keys are usually sufficient or they are starting fresh.
+    return pruned
+
+
 def run_pipeline(
     config_path: str = None,
     run_dir: str = None,
@@ -540,12 +572,35 @@ def run_pipeline(
 
             # Use simple string replacement instead of .format() to avoid conflicts
             # with JSON braces in prompt templates (which contain JSON examples)
-            system_state_json = json.dumps(system_state, indent=2)
+            # Prune and dump system state
+            pruned_state = prune_system_state(system_state, agent_name)
+            system_state_json = json.dumps(pruned_state, indent=2)
             
             prompt = prompt_template
             prompt = prompt.replace("{business_brief}", business_brief)
             prompt = prompt.replace("{sme_notes}", sme_notes)
             prompt = prompt.replace("{system_state}", system_state_json)
+
+            # For the assessment designer, inject a pre-computed flat objective list
+            # so the LLM cannot truncate or skip later modules.
+            if agent_name == "assessment_designer_agent":
+                modules = system_state.get("curriculum", {}).get("modules", [])
+                obj_rows = []
+                for mod in modules:
+                    mid = mod.get("module_id", "?")
+                    for obj in mod.get("objectives", []):
+                        obj_rows.append(f"| {len(obj_rows)+1} | {mid} | {obj} |")
+                obj_table = (
+                    "## PRE-COMPUTED OBJECTIVE LIST (AUTHORITATIVE — DO NOT DEVIATE)\n"
+                    f"Total objectives: {len(obj_rows)}\n"
+                    "| # | module_id | objective_text |\n"
+                    "|---|---|---|\n"
+                    + "\n".join(obj_rows)
+                    + f"\n\nYou MUST generate EXACTLY {len(obj_rows)} questions, one per row above, in order.\n"
+                    "Each question's objective_ref MUST exactly match the objective_text column.\n"
+                )
+                prompt = obj_table + "\n\n" + prompt
+
 
             response = provider.run(prompt)
 

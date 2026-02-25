@@ -22,6 +22,11 @@ This course is the **foundational enablement layer** of a broader AI transformat
 
 ---
 
+## Organizational Goals
+- Achieve ≥75% active Copilot usage among employees within 90 days.
+- Improve writing quality, analytical rigor, and presentation clarity using AI-assisted workflows.
+- Establish Human Loop AI as a trusted transformation partner through scalable AI literacy programs.
+
 ## 2. Organizational Goals
 
 ### Adoption & Behavior
@@ -77,6 +82,11 @@ By the end of this course, learners will be able to:
 5. Integrate AI into daily work while maintaining **human ownership and judgment**
 
 ---
+## Success Metrics
+
+- Within 90 days, ≥75% of employees use Copilot at least 3 times per week.
+- Within 60 days, reduce average first-draft creation time by 25%.
+- Within 90 days, 70% of AI-assisted deliverables pass peer review on first submission.
 
 ## 5. Success Metrics
 

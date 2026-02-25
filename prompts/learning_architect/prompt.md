@@ -23,8 +23,14 @@ You will receive three inputs:
 ## Step-by-Step Instructions
 1.  **Review Strategy & Persona**: Ensure the difficulty level matches the audience.
 2.  **Define Structure**: Look for an OPTIONAL field "**MODULE_COUNT_TARGET: <integer>**" in the Business Brief. If present, output EXACTLY that many modules. If absent, output EXACTLY 6 modules.
-3.  **Write Learning Objectives**:
-    - *Guardrail*: Use **Bloom's Taxonomy** verbs (Identify, Analyze, Create). Avoid fuzzy words like "Understand" or "Know".
+3.  **Write Learning Objectives (MOORE + VELLA PERFORMANCE STANDARD)**:
+    - *Guardrail*: ALL objectives must comply with the Moore + Vella performance criteria.
+      Each objective must contain ALL THREE elements:
+        1) Visible Action (e.g. draft, revise, apply, audit, verify, diagnose, construct, evaluate, defend, compare, implement, correct, prioritize, map, facilitate, coach, escalate). Prohibited verbs: understand, know, learn, be aware of, appreciate, recognize.
+        2) Workplace Context (e.g. "during a client call", "before external distribution", "using Microsoft Word", "in a simulated misuse scenario", "using the 4-step verification checklist", "during a live Teams meeting").
+        3) Criteria or Standard (e.g. "within X minutes", "with no policy violations", "achieving stakeholder-ready quality", "according to Microsoft 365 Acceptable Use Policy v2.1", "without including confidential data", "passing checklist verification").
+    - FORMAT REQUIREMENT: "<Observable Verb> <artifact or behavior> <in workplace context> <under defined condition or standard>."
+    - VALIDATION RULE: If ANY objective lacks an observable verb, a specific workplace context, OR a measurable/verifiable condition, it MUST be rewritten before returning output! Objectives must describe JOB PERFORMANCE, not learning intent.
 4.  **Map Content**: Briefly bullet-point what key concepts go into each module.
 
 ## Failure Handling
@@ -39,13 +45,13 @@ You will receive three inputs:
 
 ## Robustness & Guardrails
 - **Scope Control**: If the `strategy` said "Micro-learning (5 min)", do not design a 10-module course.
-- **Objective Formatting**: EVERY objective must start with a verb.
+- **Objective Formatting**: EVERY objective must strictly follow Moore + Vella: <Observable Verb> <artifact or behavior> <in workplace context> <condition/standard>.
 - **Coherence**: Ensure flow is logical (Simple -> Complex).
 - **Module Count**: DEFAULT IS 6 MODULES. If `MODULE_COUNT_TARGET` is present in the Business Brief, output exactly that number.
 
 ## CRITICAL SCHEMA ENFORCEMENT (checked BEFORE outputting)
 For EVERY module (from M1 to Mn, where n is your target count), count the items in each array and verify:
-- `objectives`: EXACTLY 2 items. Each must start with a Bloom's Taxonomy action verb (e.g., Identify, Analyze, Create, Demonstrate, Evaluate). If count ≠ 2, FIX before outputting.
+- `objectives`: EXACTLY 2 items. Each must strictly follow the Moore + Vella structure, having a visible action verb, a workplace context, and a criterion/standard. If count ≠ 2 or any objective lacks all 3 requirements, FIX before outputting.
 - `key_concepts`: 3-5 items. If outside this range, FIX before outputting.
 - `activities`: EXACTLY 2 items. If count ≠ 2, FIX before outputting.
 - `checks`: EXACTLY 2 items (mcq + short_answer). Each check must have `type`, `prompt`, `success_criteria`. If count ≠ 2, FIX before outputting.
@@ -92,8 +98,8 @@ You must return a **SINGLE JSON OBJECT**.
           "summary": "This module introduces...",
           "outcome": "Measurable outcome...",
           "objectives": [
-            "Identify the core mental models that underpin effective practice",
-            "Apply foundational concepts to realistic workplace scenarios"
+            "Identify and extract the core mental models using the provided framework to solve simulated client requests with no unhandled edge cases.",
+            "Apply foundational concepts during a realistic workplace scenario demonstrating stakeholder-ready quality."
           ],
           "key_concepts": ["Concept 1", "Concept 2", "Concept 3", "Concept 4"],
           "activities": ["Activity 1", "Activity 2"],
@@ -110,7 +116,7 @@ You must return a **SINGLE JSON OBJECT**.
             }}
           ]
         }},
-        {{ "module_id": "M...", "title": "...", "summary": "...", "outcome": "...", "objectives": ["Verb phrase objective 1", "Verb phrase objective 2"], "key_concepts": ["C1","C2","C3"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"short_answer","prompt":"Q2","success_criteria":["B"]}}] }}
+        {{ "module_id": "M...", "title": "...", "summary": "...", "outcome": "...", "objectives": ["Map the customer journey in a live Teams meeting identifying at least 3 critical touchpoints.", "Construct a project plan using the template achieving stakeholder-ready quality."], "key_concepts": ["C1","C2","C3"], "activities": ["A1","A2"], "checks": [{{"type":"mcq","prompt":"Q1","success_criteria":["A"]}},{{"type":"short_answer","prompt":"Q2","success_criteria":["B"]}}] }}
       ]
     }},
     "constraints": {{

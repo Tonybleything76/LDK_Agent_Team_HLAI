@@ -69,7 +69,7 @@ def enforce_preflight(
         return
 
     # Dirty files exist
-    if allow_dirty and profile == "dev":
+    if allow_dirty:
         # Allowed warning
         ledger_writer({
             "event_type": "preflight_passed",
@@ -77,7 +77,7 @@ def enforce_preflight(
             "profile": profile,
             "dirty_files": dirty_files,
             "allow_dirty": allow_dirty,
-            "warning": "Worktree dirty but allowed in dev profile"
+            "warning": f"Worktree dirty but allowed in {profile} profile"
         })
     else:
         # Failure
@@ -133,14 +133,14 @@ def enforce_postflight(
         })
         return
 
-    if allow_dirty and profile == "dev":
+    if allow_dirty:
         ledger_writer({
             "event_type": "postflight_passed",
             "run_id": run_id,
             "profile": profile,
             "dirty_files": dirty_files,
             "allow_dirty": allow_dirty,
-            "warning": "Worktree dirty post-run but allowed in dev profile"
+            "warning": f"Worktree dirty post-run but allowed in {profile} profile"
         })
     else:
         ledger_writer({

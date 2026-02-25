@@ -176,8 +176,8 @@ class DryRunProvider(BaseProvider):
                 "title": title,
                 "outcome": outcome,
                 "objectives": [
-                    f"{mid} Objective 1: Identify and apply core principles from this module",
-                    f"{mid} Objective 2: Analyze and evaluate outcomes in realistic scenarios",
+                    f"Evaluate and correct {mid} process outputs using the standard checklist to ensure zero policy violations.",
+                    f"Implement {mid} core principles during a realistic client interaction achieving stakeholder-ready quality.",
                 ],
                 "key_concepts": [
                     f"{mid} Concept A",
