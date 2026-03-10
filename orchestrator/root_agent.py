@@ -10,6 +10,12 @@ import copy
 from orchestrator.providers import get_provider
 from orchestrator.validation import validate_agent_output, ValidationConfig
 from orchestrator.json_tools import parse_json_object
+from orchestrator.approval_handler import (
+    ApprovalRejectedError,
+    approval_gate,
+    evaluate_risk_gate,
+    load_phase_gates,
+)
 from orchestrator.run_artifacts import (
     ensure_run_dirs,
     write_checkpoint,
@@ -35,8 +41,7 @@ INPUTS_DIR = "inputs"
 # Errors
 # ------------------------------------------------------------------------------
 
-class ApprovalRejectedError(Exception):
-    pass
+# ApprovalRejectedError is imported from orchestrator.approval_handler
 
 class ValidationError(Exception):
     pass
@@ -103,186 +108,8 @@ def load_config() -> Dict[str, Any]:
     
     return config
 
-# ------------------------------------------------------------------------------
-# Approval Gate
-# ------------------------------------------------------------------------------
-
-def approval_gate(
-    step_idx: int,
-    agent_name: str,
-    gate_strategy: str,
-    run_id: str,
-    run_dir: str,
-    approval_token: str = "APPROVE",
-    gate_type: str = "phase_gate",
-    gate_reason: str = "routine_check",
-    force_gate: bool = False,
-    risk_metadata: Dict[str, Any] = None,
-):
-    
-    # Log Risk Gate Event (Audit Requirement)
-    if gate_type == "risk_gate":
-        event = {
-            "timestamp_utc": utc_now(),
-            "event": "risk_gate_forced",
-            "step_idx": step_idx,
-            "agent": agent_name,
-            "agent_name": agent_name,
-            "gate_strategy": gate_strategy,
-            "gate_type": gate_type,
-            "gate_reason": gate_reason,
-            "run_id": run_id,
-            "run_dir": run_dir,
-        }
-        if risk_metadata:
-            event.update(risk_metadata)
-        write_ledger(event)
-
-    # Check for Auto-Approval
-    auto_approve_env = os.getenv("AUTO_APPROVE", "").lower()
-    is_auto_approve = auto_approve_env in ("1", "true", "yes", "on")
-    auto_approve_source = os.getenv("AUTO_APPROVE_SOURCE", "cli_flag")
-
-    # Risk Gate Override Logic
-    # If it's a risk gate and auto-approve is ON, we check strictness policy.
-    # Default: auto_override=True (Don't pause, just log override)
-    # Strict: auto_override=False (Force pause even if auto_approve is ON)
-    
-    if is_auto_approve:
-        should_pause = False
-        
-        # Determine approval reason based on source
-        if auto_approve_source == "profile":
-            profile_name = os.getenv("AUTO_APPROVE_PROFILE", "unknown")
-            approval_reason = f"Auto-approval enabled by governance profile: {profile_name}"
-        else:
-            approval_reason = "Auto-approval enabled via CLI flag"
-
-        if gate_type == "risk_gate":
-            # Check for risk gate specific override policy
-            # Default to True (safe default that preserves non-blocking behavior unless configured otherwise)
-            # The caller passes risk_auto_override.
-            risk_auto_override = risk_metadata.get("risk_auto_override", True) if risk_metadata else True
-            
-            if not risk_auto_override:
-                # STRICT MODE: Force pause
-                should_pause = True
-                print(f"\n🛑 RISK GATE (STRICT): Auto-approve disabled for risk gates.")
-            else:
-                # DEFAULT MODE: Override and log
-                approval_reason = "Auto-approve override after risk gate"
-                print(f"\n⚡ AUTO-APPROVED risk gate at step {step_idx} ({approval_reason})")
-        else:
-            print(f"\n⚡ AUTO-APPROVED gate at step {step_idx} ({agent_name}, {gate_strategy})")
-
-        if not should_pause:
-            write_ledger({
-                "timestamp_utc": utc_now(),
-                "event": "step_approved",
-                "approval_mode": "auto",
-                "approval_source": auto_approve_source,
-                "approval_reason": approval_reason,
-                "gate_strategy": gate_strategy,
-                "step_idx": step_idx,
-                "agent_name": agent_name,
-                "agent": agent_name, # Attribution compatibility
-                "run_id": run_id,
-                "run_dir": run_dir,
-                "gate_type": gate_type,
-                "gate_reason": gate_reason,
-            })
-            return
-
-    # If we are here, either auto-approve is OFF, OR it's a strict risk gate that forces pause.
-
-    # CI Harness Simulation: Deterministic Manual Approval for Risk Gates
-    # When running in CI with CI_SIMULATE_MANUAL_RISK_APPROVAL=true, we simulate
-    # manual approval for risk gates to avoid blocking, while preserving governance logging.
-    # This ONLY applies to risk gates and ONLY logs as manual approval with ci_harness source.
-    ci_simulate_manual = os.getenv("CI_SIMULATE_MANUAL_RISK_APPROVAL", "").lower() in ("1", "true", "yes", "on")
-    
-    if ci_simulate_manual and gate_type == "risk_gate":
-        # Simulate manual approval for CI harness
-        print(f"\n🤖 CI HARNESS: Simulating manual approval for risk gate at step {step_idx}")
-        print(f"   Gate Type: {gate_type}")
-        print(f"   Gate Reason: {gate_reason}")
-        print(f"   Agent: {agent_name}")
-        
-        write_ledger({
-            "timestamp_utc": utc_now(),
-            "event": "step_approved",
-            "approval_mode": "manual",
-            "approval_source": "ci_harness",
-            "approval_reason": "Simulated manual approval for CI",
-            "gate_strategy": gate_strategy,
-            "step_idx": step_idx,
-            "agent_name": agent_name,
-            "agent": agent_name,
-            "run_id": run_id,
-            "run_dir": run_dir,
-            "gate_type": gate_type,
-            "gate_reason": gate_reason,
-        })
-        return
-
-    # Update prompt for Risk Gates
-    if gate_type == "risk_gate":
-        print(f"\n⚠️  RISK GATE: {gate_reason}")
-        print(f"Triggered by agent: {agent_name} at step {step_idx}")
-        prompt = f"Type {approval_token} to OVERRIDE and continue, anything else to stop: "
-    else:
-        prompt = (
-            f"\n⛔ APPROVAL GATE\n"
-            f"Step {step_idx}: {agent_name}\n"
-            f"Type {approval_token} to continue, anything else to stop: "
-        )
-    user_input = input(prompt).strip()
-
-    if user_input.lower() != approval_token.lower():
-        write_ledger({
-            "timestamp_utc": utc_now(),
-            "event": "run_failed",
-            "reason": "approval_rejected",
-            "step_idx": step_idx,
-            "agent": agent_name,
-            "agent_name": agent_name, # Attribution compatibility
-            "gate_strategy": gate_strategy,
-            "gate_type": gate_type,
-            "gate_reason": gate_reason,
-            "run_id": run_id,
-            "run_dir": run_dir,
-        })
-        raise ApprovalRejectedError("Approval rejected by user")
-
-    # If risk gate, log specific risk_gate_approved event
-    if gate_type == "risk_gate":
-        write_ledger({
-            "timestamp_utc": utc_now(),
-            "event": "risk_gate_approved",
-            "run_id": run_id,
-            "run_dir": run_dir,
-            "step_idx": step_idx,
-            "agent": agent_name,
-            "gate_reason": gate_reason,
-            "approval_mode": "manual",
-            "approval_source": "stdin"
-        })
-
-    write_ledger({
-        "timestamp_utc": utc_now(),
-        "event": "step_approved",
-        "approval_mode": "manual",
-        "approval_source": "stdin",
-        "step_idx": step_idx,
-        "agent": agent_name,
-        "agent_name": agent_name, # Attribution compatibility
-        "gate_strategy": gate_strategy,
-        "gate_strategy": gate_strategy,
-        "gate_type": gate_type,
-        "gate_reason": gate_reason,
-        "run_id": run_id,
-        "run_dir": run_dir,
-    })
+# approval_gate(), evaluate_risk_gate(), and load_phase_gates() are
+# defined in orchestrator/approval_handler.py and imported above.
 
 # ------------------------------------------------------------------------------
 # Main Orchestrator
@@ -480,12 +307,7 @@ def run_pipeline(
         gate_strategy = (approval_cfg.get("gate_strategy", "per_phase") or "per_phase").strip().lower()
         approval_token = approval_cfg.get("require_approval_token", "APPROVE")
 
-        # Default phase gates: 3 / 6 / 9
-        phase_gates = approval_cfg.get("phase_gates", [3, 6, 9])
-        try:
-            phase_gates = [int(x) for x in phase_gates]
-        except Exception:
-            phase_gates = [3, 6, 9]
+        phase_gates = load_phase_gates(approval_cfg, gate_strategy)
 
         # Risk Escalation Configuration
         risk_cfg = approval_cfg.get("risk_gate_escalation", {})
@@ -769,95 +591,30 @@ def run_pipeline(
             elif gate_strategy == "per_agent":
                 should_gate = agent_cfg.get("gate", False)
 
-            # risk_gate_logic
             gate_type = "phase_gate"
             gate_reason = "routine_check"
             risk_metadata = {}
 
             if risk_enabled:
-                # Check 1: Open Questions Threshold
-                # Weighted counting: CRITICAL/BLOCKER/MAJOR count, MINOR usually does not.
-                # Controlled by weighted_severities AllowList.
-                
-                # Default: Count everything except MINOR (match previous hardcoded logic + unprefixed)
-                # Actually, previous logic was: count if NOT MINOR. 
-                # New Logic: Count if severity IN weighted_severities.
-                
-                weighted_severities = risk_cfg.get("weighted_severities", ["CRITICAL", "BLOCKER", "MAJOR", "UNPREFIXED"])
-                # Normalize to set for fast lookup
-                weighted_severities_set = {s.upper() for s in weighted_severities}
-
-                weighted_count = 0
-                for q in open_questions:
-                    q_upper = q.upper().strip()
-                    
-                    # Determine severity
-                    severity = "UNPREFIXED"
-                    if q_upper.startswith("CRITICAL:"):
-                        severity = "CRITICAL"
-                    elif q_upper.startswith("BLOCKER:"):
-                        severity = "BLOCKER"
-                    elif q_upper.startswith("MAJOR:"):
-                        severity = "MAJOR"
-                    elif q_upper.startswith("MINOR:"):
-                        severity = "MINOR"
-                    
-                    if severity in weighted_severities_set:
-                        weighted_count += 1
-                
-                total_count = len(open_questions)
-
-                if weighted_count >= risk_open_questions_threshold:
+                risk_triggered, gate_type, gate_reason, risk_metadata = evaluate_risk_gate(
+                    open_questions, deliverable, agent_name, risk_cfg
+                )
+                if risk_triggered:
                     should_gate = True
-                    gate_type = "risk_gate"
-                    gate_reason = "open_questions_threshold"
-                    risk_metadata = {
-                        "observed_open_questions_count_weighted": weighted_count,
-                        "observed_open_questions_count_total": total_count,
-                        "observed_open_questions_count": weighted_count, # Legacy compat
-                        "open_questions_threshold": risk_open_questions_threshold,
-                        "weighted_severities": list(weighted_severities_set)
-                    }
-                
-                # Check 2: QA Critical Errors
-                # Only applicable if this agent is the qa_agent
-                # Triggers if:
-                # A) open_questions has items starting with "CRITICAL:" or "BLOCKER:"
-                # B) deliverable_markdown line contains "Severity: Critical"
-                if risk_force_on_qa_critical and agent_name == "qa_agent":
-                    # Count critical open questions
-                    critical_questions = [
-                        q for q in open_questions 
-                        if q.upper().strip().startswith("CRITICAL:") or q.upper().strip().startswith("BLOCKER:")
-                    ]
-                    
-                    # Check markdown for Severity: Critical
-                    has_severity_critical = "Severity: Critical" in deliverable
-                    
-                    critical_count = len(critical_questions)
-                    if has_severity_critical:
-                        critical_count = max(critical_count, 1) # Ensure at least 1 count if severity line exists
-                        
-                    if critical_count > 0:
-                        should_gate = True
-                        gate_type = "risk_gate"
-                        gate_reason = "qa_critical"
-                        risk_metadata = {
-                            "qa_critical_error_count": critical_count
-                        }
 
             if should_gate:
-                # Add auto_override policy to risk metadata if it's a risk gate
                 if gate_type == "risk_gate":
                     risk_metadata["risk_auto_override"] = risk_cfg.get("auto_override", True)
 
                 approval_gate(
-                    step_idx, 
-                    agent_name, 
-                    gate_strategy, 
-                    run_id, 
-                    run_dir, 
-                    approval_token,
+                    step_idx=step_idx,
+                    agent_name=agent_name,
+                    gate_strategy=gate_strategy,
+                    run_id=run_id,
+                    run_dir=run_dir,
+                    write_ledger_fn=write_ledger,
+                    utc_now_fn=utc_now,
+                    approval_token=approval_token,
                     gate_type=gate_type,
                     gate_reason=gate_reason,
                     risk_metadata=risk_metadata,

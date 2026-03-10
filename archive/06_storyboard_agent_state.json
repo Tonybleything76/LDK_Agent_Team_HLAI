@@ -1,0 +1,98 @@
+{
+  "deliverable_markdown": "# Visual Storyboard\n\n| Screen | Module | Visual | Alt Text | Dev Notes |\n|---|---|---|---|---|\n| 1 | M1 | Title Slide with course title and engaging graphic | Title slide featuring the course title 'LLM & AI Fundamentals for PR Professionals' with a background image of AI concepts | Ensure the title is prominent and the graphic is relevant to AI and LLMs |\n| 2 | M1 | Diagram of LLMs | A simple diagram illustrating how LLMs work with key points highlighted | Use clear labels and colors to differentiate concepts |\n| 3 | M1 | Example of hallucinated output vs verified fact | Side-by-side comparison of a hallucinated AI output and a verified fact | Highlight the differences clearly to emphasize the importance of verification |\n| 4 | M1 | Prompt examples | Visual showing different prompts and their outcomes | Ensure examples are varied to illustrate prompt sensitivity |\n| 5 | M1 | Group discussion prompt | A prompt displayed for group discussion about AI implications in PR | Use engaging visuals to encourage participation |\n| 6 | M1 | Quiz instructions | Visual displaying instructions for the quiz on AI mental models | Make it clear and easy to follow |\n| 7 | M2 | Microsoft Copilot interface | Screenshot of the Microsoft Copilot interface | Ensure the interface is clear and recognizable |\n| 8 | M2 | Press release template | Template for drafting a press release using Copilot | Highlight key sections of the template for clarity |\n| 9 | M2 | Peer review checklist | Checklist for peer review of revised documents | Use bullet points for easy readability |\n| 10 | M2 | Multiple-choice options | Visual displaying multiple-choice options for a knowledge check | Ensure options are clear and distinct |\n| 11 | M3 | Research workflow diagram | Diagram illustrating the research workflow using AI tools | Use arrows and labels to show the flow of information |\n| 12 | M3 | Sample policy brief | Visual of a sample policy brief for summarization | Ensure the brief is clear and concise |\n| 13 | M3 | Collaborative workspace | Image of a group collaborating on research findings | Show diverse individuals working together |\n| 14 | M3 | Multiple-choice options | Visual displaying multiple-choice options for a knowledge check | Ensure options are clear and distinct |\n| 15 | M4 | Presentation slide template | Template for creating a presentation slide using Copilot | Highlight key sections of the template for clarity |\n| 16 | M4 | Copilot interface for slide generation | Screenshot of the Copilot interface for generating slides | Ensure the interface is clear and recognizable |\n| 17 | M4 | Tips for effective presentations | Visual displaying tips for presenting effectively | Use engaging visuals to encourage best practices |\n| 18 | M4 | Multiple-choice options | Visual displaying multiple-choice options for a knowledge check | Ensure options are clear and distinct |\n| 19 | M5 | Graphic on ethical AI usage | Visual graphic illustrating ethical considerations in AI usage | Ensure the graphic is informative and engaging |\n| 20 | M5 | Case study scenario | Visual displaying a case study scenario on AI ethics | Use clear labels and engaging visuals |\n| 21 | M5 | Discussion prompts | Visual displaying prompts for group discussion on ethical dilemmas | Use engaging visuals to encourage participation |\n| 22 | M5 | Multiple-choice options | Visual displaying multiple-choice options for a knowledge check | Ensure options are clear and distinct |\n| 23 | M6 | Workflow integration diagram | Diagram showing how to integrate AI tools into daily workflows | Use arrows and labels to show the flow of tasks |\n| 24 | M6 | Workflow mapping template | Template for mapping daily workflows incorporating AI tools | Highlight key sections of the template for clarity |\n| 25 | M6 | Action plan template | Visual displaying an action plan template for AI integration | Ensure the template is clear and easy to follow |\n| 26 | M6 | Multiple-choice options | Visual displaying multiple-choice options for a knowledge check | Ensure options are clear and distinct |",
+  "updated_state": {
+    "storyboards": [
+      {
+        "module_id": "M1",
+        "screen_id": 1,
+        "visual_layout": "Title Slide",
+        "media_asset_description": "Title slide featuring the course title 'LLM & AI Fundamentals for PR Professionals' with a background image of AI concepts.",
+        "alt_text": "Title slide featuring the course title 'LLM & AI Fundamentals for PR Professionals' with a background image of AI concepts.",
+        "dev_notes": "Ensure the title is prominent and the graphic is relevant to AI and LLMs.",
+        "transformational_dilemma": "Transformational Dilemma: How can you leverage AI to enhance your PR work while ensuring accuracy and ethical standards? Question: What trade-offs do you face between efficiency and responsibility in AI usage?",
+        "governance_anchor": "Governance Anchor: Always verify AI outputs against trusted sources. Evidence Check: Confirm that AI-generated content aligns with established facts and ethical guidelines.",
+        "dialogue_prompts": [
+          "Dialogue Prompt 1: How will you apply the mental models discussed in this module to your current PR projects?",
+          "Dialogue Prompt 2: What challenges do you anticipate in integrating AI into your workflows?"
+        ],
+        "level_3_behavior_signal": "Level 3 Behavior Signal: Demonstrate the ability to critically evaluate AI outputs in your PR tasks."
+      },
+      {
+        "module_id": "M2",
+        "screen_id": 1,
+        "visual_layout": "Microsoft Copilot Interface",
+        "media_asset_description": "Screenshot of the Microsoft Copilot interface.",
+        "alt_text": "Screenshot of the Microsoft Copilot interface.",
+        "dev_notes": "Ensure the interface is clear and recognizable.",
+        "transformational_dilemma": "Transformational Dilemma: How do you balance the speed of drafting with the need for quality and tone in your writing? Question: When is it appropriate to rely on AI for drafting versus manual revision?",
+        "governance_anchor": "Governance Anchor: Ensure all AI-generated documents are reviewed for compliance with company standards. Evidence Check: Conduct a peer review to confirm adherence to tone and policy.",
+        "dialogue_prompts": [
+          "Dialogue Prompt 1: How do you plan to use Microsoft Copilot to enhance your writing tasks?",
+          "Dialogue Prompt 2: What strategies will you employ to ensure the quality of AI-assisted documents?"
+        ],
+        "level_3_behavior_signal": "Level 3 Behavior Signal: Effectively draft and revise documents using Microsoft Copilot."
+      },
+      {
+        "module_id": "M3",
+        "screen_id": 1,
+        "visual_layout": "Research Workflow Diagram",
+        "media_asset_description": "Diagram illustrating the research workflow using AI tools.",
+        "alt_text": "Diagram illustrating the research workflow using AI tools.",
+        "dev_notes": "Use arrows and labels to show the flow of information.",
+        "transformational_dilemma": "Transformational Dilemma: How can you ensure the accuracy of insights extracted from AI while maintaining efficiency in research? Question: What steps will you take to verify AI-generated insights?",
+        "governance_anchor": "Governance Anchor: Always cross-check AI-generated insights with reliable sources. Evidence Check: Document the verification process for transparency.",
+        "dialogue_prompts": [
+          "Dialogue Prompt 1: How will you verify the accuracy of AI-generated insights in your research?",
+          "Dialogue Prompt 2: What challenges do you foresee in using AI for research tasks?"
+        ],
+        "level_3_behavior_signal": "Level 3 Behavior Signal: Summarize and synthesize information using AI tools to support decision-making."
+      },
+      {
+        "module_id": "M4",
+        "screen_id": 1,
+        "visual_layout": "Presentation Slide Template",
+        "media_asset_description": "Template for creating a presentation slide using Copilot.",
+        "alt_text": "Template for creating a presentation slide using Copilot.",
+        "dev_notes": "Highlight key sections of the template for clarity.",
+        "transformational_dilemma": "Transformational Dilemma: How do you ensure that AI-generated presentations are engaging and aligned with your messaging goals? Question: When should you intervene in AI-generated content to maintain your voice?",
+        "governance_anchor": "Governance Anchor: Review all AI-generated presentations for alignment with brand messaging. Evidence Check: Conduct a final review before client presentations.",
+        "dialogue_prompts": [
+          "Dialogue Prompt 1: How will you use AI to enhance your presentation development process?",
+          "Dialogue Prompt 2: What criteria will you use to evaluate the effectiveness of AI-generated slides?"
+        ],
+        "level_3_behavior_signal": "Level 3 Behavior Signal: Generate slide outlines and refine messaging using Microsoft Copilot."
+      },
+      {
+        "module_id": "M5",
+        "screen_id": 1,
+        "visual_layout": "Graphic on Ethical AI Usage",
+        "media_asset_description": "Visual graphic illustrating ethical considerations in AI usage.",
+        "alt_text": "Visual graphic illustrating ethical considerations in AI usage.",
+        "dev_notes": "Ensure the graphic is informative and engaging.",
+        "transformational_dilemma": "Transformational Dilemma: How do you navigate ethical dilemmas when using AI in PR? Question: What actions will you take to ensure ethical standards are upheld?",
+        "governance_anchor": "Governance Anchor: Evaluate AI outputs for bias and appropriateness before distribution. Evidence Check: Document any ethical considerations addressed in AI-generated content.",
+        "dialogue_prompts": [
+          "Dialogue Prompt 1: What ethical considerations do you need to keep in mind when using AI in your work?",
+          "Dialogue Prompt 2: How will you address potential biases in AI-generated content?"
+        ],
+        "level_3_behavior_signal": "Level 3 Behavior Signal: Apply ethical practices in AI usage during PR tasks."
+      },
+      {
+        "module_id": "M6",
+        "screen_id": 1,
+        "visual_layout": "Workflow Integration Diagram",
+        "media_asset_description": "Diagram showing how to integrate AI tools into daily workflows.",
+        "alt_text": "Diagram showing how to integrate AI tools into daily workflows.",
+        "dev_notes": "Use arrows and labels to show the flow of tasks.",
+        "transformational_dilemma": "Transformational Dilemma: How can you effectively integrate AI into your daily workflows while maintaining accountability? Question: What strategies will you implement to ensure responsible AI usage?",
+        "governance_anchor": "Governance Anchor: Maintain human oversight in all AI-assisted tasks. Evidence Check: Regularly review workflows for compliance with governance policies.",
+        "dialogue_prompts": [
+          "Dialogue Prompt 1: How will you map your daily workflows to incorporate AI tools?",
+          "Dialogue Prompt 2: What steps will you take to ensure accountability in your AI usage?"
+        ],
+        "level_3_behavior_signal": "Level 3 Behavior Signal: Develop strategies for normalizing AI usage in daily workflows while maintaining accountability."
+      }
+    ]
+  },
+  "open_questions": []
+}

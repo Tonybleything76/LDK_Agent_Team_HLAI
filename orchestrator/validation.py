@@ -1,4 +1,5 @@
 import json
+import warnings
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -8,6 +9,12 @@ from typing import Any, Dict, List
 # -----------------------------
 
 from dataclasses import dataclass, field
+
+# Recognised severity prefixes for open_questions entries.
+# Questions lacking one of these are treated as UNPREFIXED by the risk gate,
+# which counts toward the escalation threshold.  The validator surfaces them
+# as warnings so authors can fix prompt templates proactively.
+SEVERITY_PREFIXES = ("CRITICAL:", "BLOCKER:", "MAJOR:", "MINOR:")
 
 # -----------------------------
 # Validation / Guardrails
@@ -26,6 +33,32 @@ def safe_json_loads(text: str) -> Dict[str, Any]:
         return json.loads(text)
     except json.JSONDecodeError as e:
         raise ValueError(f"Failed to parse JSON: {e}\nContent snippet: {text[:200]}...")
+
+
+def check_open_questions_format(agent_name: str, questions: List[str]) -> List[str]:
+    """
+    Return warning strings for open_questions entries that lack a severity prefix.
+
+    Questions without a recognised prefix (CRITICAL:/BLOCKER:/MAJOR:/MINOR:) are
+    counted as UNPREFIXED by the risk gate, which may trigger unexpected escalations.
+    This check is non-blocking — callers decide whether to print or raise.
+
+    Args:
+        agent_name: Name of the agent that produced the questions.
+        questions:  List of open_questions strings from the agent output.
+
+    Returns:
+        List of warning message strings (empty if all questions are correctly prefixed).
+    """
+    msgs = []
+    for i, q in enumerate(questions):
+        stripped = q.strip()
+        if stripped and not any(stripped.upper().startswith(p) for p in SEVERITY_PREFIXES):
+            msgs.append(
+                f"{agent_name}: open_questions[{i}] missing severity prefix "
+                f"(expected one of CRITICAL:/BLOCKER:/MAJOR:/MINOR:): {stripped[:80]!r}"
+            )
+    return msgs
 
 
 def validate_agent_output(agent_name: str, result: Dict[str, Any], vcfg: ValidationConfig) -> None:
@@ -65,6 +98,11 @@ def validate_agent_output(agent_name: str, result: Dict[str, Any], vcfg: Validat
             f"{agent_name}: deliverable_markdown is too short ({len(deliverable)} chars). "
             f"Expected at least {vcfg.min_deliverable_chars}."
         )
+
+    # Severity prefix warnings (non-blocking)
+    prefix_warnings = check_open_questions_format(agent_name, result["open_questions"])
+    for w in prefix_warnings:
+        print(f"⚠️  {w}")
 
     # Agent-specific contracts
     if agent_name == "learning_architect_agent":
