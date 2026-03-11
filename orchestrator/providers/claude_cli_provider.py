@@ -29,7 +29,6 @@ class ClaudeCliProvider(BaseProvider):
     def _run_subprocess(self, prompt: str) -> str:
         cmd = self._build_cmd()
 
-
         # Reinforce JSON-only output to reduce risk of extra text.
         wrapped_prompt = (
             "Please provide a response in valid JSON format. \n"
@@ -37,12 +36,17 @@ class ClaudeCliProvider(BaseProvider):
             + prompt
         )
 
+        # Strip CLAUDECODE so the claude CLI can run inside an existing session.
+        # Without this the CLI refuses with "Cannot be launched inside another Claude Code session."
+        env = {k: v for k, v in __import__("os").environ.items() if k != "CLAUDECODE"}
+
         proc = subprocess.run(
             cmd,
             input=wrapped_prompt,
             text=True,
             capture_output=True,
             timeout=self.timeout_seconds,
+            env=env,
         )
 
         if proc.returncode != 0:

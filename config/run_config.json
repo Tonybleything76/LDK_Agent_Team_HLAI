@@ -1,6 +1,6 @@
 {
     "mode": "cli",
-    "provider": "openai",
+    "provider": "claude_cli",
     "approval": {
         "gate_strategy": "per_phase",
         "phase_gates": [
@@ -37,8 +37,7 @@
         {
             "name": "learner_research_agent",
             "prompt_path": "prompts/learner_research/prompt.md",
-            "gate": false,
-            "provider": "perplexity"
+            "gate": false
         },
         {
             "name": "learning_architect_agent",

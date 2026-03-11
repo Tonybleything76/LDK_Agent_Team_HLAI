@@ -82,6 +82,50 @@ def load_text(path: str) -> str:
     with open(path, "r") as f:
         return f.read()
 
+
+def load_skill_context(agent_name: str) -> str:
+    """
+    Load skill reference files for an agent from the project skills/ directory.
+
+    Lookup order:
+      1. skills/shared.md          — injected for every agent
+      2. skills/<agent_key>.md     — agent-specific (strips _agent suffix)
+
+    Returns a formatted block to prepend to the agent's prompt, or "" if no
+    skill files are found.
+    """
+    skills_dir = Path("skills")
+    parts: list[str] = []
+
+    # 1. Shared skills — all agents receive this
+    shared_path = skills_dir / "shared.md"
+    if shared_path.exists():
+        parts.append(
+            "## SHARED SKILL REFERENCE\n"
+            + shared_path.read_text().strip()
+        )
+
+    # 2. Agent-specific skill — strip trailing _agent for filename lookup
+    agent_key = agent_name.removesuffix("_agent")
+    specific_path = skills_dir / f"{agent_key}.md"
+    if specific_path.exists():
+        parts.append(
+            f"## AGENT SKILL REFERENCE ({agent_name})\n"
+            + specific_path.read_text().strip()
+        )
+
+    if not parts:
+        return ""
+
+    return (
+        "# SKILL CONTEXT\n"
+        "Consult the reference material below before completing your task. "
+        "Apply these standards, patterns, and quality criteria to your output.\n\n"
+        + "\n\n---\n\n".join(parts)
+        + "\n\n---\n\n"
+    )
+
+
 def load_config() -> Dict[str, Any]:
     """Load and validate run configuration."""
     if not CONFIG_PATH.exists():
@@ -397,11 +441,17 @@ def run_pipeline(
             # Prune and dump system state
             pruned_state = prune_system_state(system_state, agent_name)
             system_state_json = json.dumps(pruned_state, indent=2)
-            
+
             prompt = prompt_template
             prompt = prompt.replace("{business_brief}", business_brief)
             prompt = prompt.replace("{sme_notes}", sme_notes)
             prompt = prompt.replace("{system_state}", system_state_json)
+
+            # Prepend skill context (shared + agent-specific) if skill files exist
+            skill_context = load_skill_context(agent_name)
+            if skill_context:
+                print(f"   📚 Skill context loaded for {agent_name}")
+                prompt = skill_context + prompt
 
             # For the assessment designer, inject a pre-computed flat objective list
             # so the LLM cannot truncate or skip later modules.
@@ -435,10 +485,13 @@ def run_pipeline(
             parse_error = None
             
             try:
-                parsed = parse_json_object(response)
+                if isinstance(response, dict):
+                    parsed = response
+                else:
+                    parsed = parse_json_object(response)
             except Exception as e:
                 parse_error = e
-                
+
                 # Retry logic: only for parse errors, only once
                 if retry_once_on_parse_error and "PARSE_ERROR" in str(e):
                     print(f"⚠️  Parse failed, retrying {agent_name} once...")
@@ -449,12 +502,15 @@ def run_pipeline(
                         "agent": agent_name,
                         "error": str(e)[:200],
                     })
-                    
+
                     # Retry the provider call
                     response = provider.run(prompt)
-                    
+
                     try:
-                        parsed = parse_json_object(response)
+                        if isinstance(response, dict):
+                            parsed = response
+                        else:
+                            parsed = parse_json_object(response)
                         parse_error = None  # Success on retry
                         print(f"✅ Retry successful for {agent_name}")
                     except Exception as retry_error:
@@ -463,8 +519,9 @@ def run_pipeline(
             # If parsing still failed, stop immediately
             if parse_error:
                 error_category = "PARSE_ERROR" if "PARSE_ERROR" in str(parse_error) else "VALIDATION_ERROR"
-                error_snippet = response[:300] if len(response) > 300 else response
-                
+                _resp_str = json.dumps(response) if isinstance(response, dict) else str(response)
+                error_snippet = _resp_str[:300] if len(_resp_str) > 300 else _resp_str
+
                 # Write error file
                 error_file = os.path.join(run_dir, f"{step_idx:02d}_{agent_name}_error.txt")
                 with open(error_file, "w") as f:
@@ -473,7 +530,7 @@ def run_pipeline(
                     f.write(f"Agent: {agent_name}\n")
                     f.write(f"Provider: {provider_name}\n")
                     f.write(f"\nError Message:\n{str(parse_error)}\n")
-                    f.write(f"\nRaw Response (first 1000 chars):\n{response[:1000]}\n")
+                    f.write(f"\nRaw Response (first 1000 chars):\n{json.dumps(response)[:1000] if isinstance(response, dict) else str(response)[:1000]}\n")
                 
                 # Console error
                 print(f"\n❌ PIPELINE FAILURE")

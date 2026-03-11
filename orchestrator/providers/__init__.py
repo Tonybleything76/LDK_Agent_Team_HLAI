@@ -40,7 +40,7 @@ def get_provider(provider_name: str = None) -> BaseProvider:
     if provider_name == "manual":
         return ManualProvider()
     elif provider_name in ("claude_cli", "claude"):
-        return ClaudeCliProvider()
+        return ClaudeCliProvider(timeout_seconds=1800)
     elif provider_name in ("openai", "openai_api"):
         return OpenAIProvider()
     elif provider_name == "perplexity":
