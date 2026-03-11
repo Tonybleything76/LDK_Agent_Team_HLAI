@@ -21,9 +21,9 @@
         "placeholder_markers": [
             "[Missing",
             "[Pending",
-            "TBD",
-            "TODO",
-            "PLACEHOLDER",
+            "[TBD]",
+            "[TODO]",
+            "[PLACEHOLDER]",
             "[TEMPLATE]"
         ],
         "retry_once_on_parse_error": false

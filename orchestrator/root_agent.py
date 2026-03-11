@@ -169,33 +169,68 @@ def load_config() -> Dict[str, Any]:
 
 def prune_system_state(state: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
     """
-    Selectively prune the system state to keep prompts concise.
-    Focuses LLM attention on relevant context and avoids token bloat.
+    Return a minimal, agent-specific view of the structured system state.
+
+    Large narrative content (module_designs, storyboards, deliverable text) is
+    intentionally excluded — agents load prior deliverables from files via
+    ``build_prior_deliverables_block()`` rather than having them pre-embedded
+    in the context window.  This keeps prompts lean and lets each agent pull
+    exactly the context it needs.
+
+    Only small, high-signal structured fields are included here.
     """
-    # Defensive copy to avoid mutating the master state
-    pruned = {
+    # Core structured fields: always included, small, high-signal
+    pruned: Dict[str, Any] = {
         "inputs": copy.deepcopy(state.get("inputs", {})),
         "strategy": copy.deepcopy(state.get("strategy", {})),
         "research": copy.deepcopy(state.get("research", {})),
         "curriculum": copy.deepcopy(state.get("curriculum", {})),
     }
 
-    # Agent-specific inclusions
-    if agent_name == "instructional_designer_agent":
-        pruned["module_designs"] = copy.deepcopy(state.get("module_designs", []))
-    elif agent_name == "storyboard_agent":
-        pruned["module_designs"] = copy.deepcopy(state.get("module_designs", []))
-        pruned["storyboards"] = copy.deepcopy(state.get("storyboards", []))
-    elif agent_name == "media_producer_agent":
-        pruned["storyboards"] = copy.deepcopy(state.get("storyboards", []))
-    elif agent_name in ["qa_agent", "change_management_agent", "operations_librarian_agent"]:
-        # These agents are auditing/librarian roles and need broad context
-        # However, we still return a copy to be safe
-        return copy.deepcopy(state)
+    # Late-stage agents also need structured quality/assessment/plan summaries
+    if agent_name in ("qa_agent", "change_management_agent", "operations_librarian_agent"):
+        for key in ("quality_review", "assessments", "media_specs", "change_plan"):
+            if key in state:
+                pruned[key] = copy.deepcopy(state[key])
 
-    # For other agents (like learner_research, learning_architect), 
-    # the core keys are usually sufficient or they are starting fresh.
+    # Intentionally excluded for ALL agents:
+    #   module_designs, storyboards — large narrative text; agents read files instead.
     return pruned
+
+
+def build_prior_deliverables_block(
+    run_dir: str, step_idx: int, agents: List[Dict[str, Any]]
+) -> str:
+    """
+    Build a block listing absolute paths to prior agent deliverable files.
+
+    When using the claude_cli provider, the subprocess is a full Claude Code
+    session that can read files natively.  Passing paths instead of inlining
+    content avoids embedding large markdown scripts in every agent's context.
+
+    Returns an empty string if no prior steps have completed deliverables.
+    """
+    lines = []
+    for i in range(1, step_idx):
+        if i - 1 >= len(agents):
+            break
+        prior_agent = agents[i - 1]["name"]
+        md_path = os.path.join(run_dir, f"{i:02d}_{prior_agent}.md")
+        if os.path.exists(md_path):
+            abs_path = os.path.abspath(md_path)
+            label = prior_agent.replace("_agent", "").replace("_", " ").title()
+            lines.append(f"  - {abs_path}  [{label}]")
+
+    if not lines:
+        return ""
+
+    return (
+        "## PRIOR AGENT DELIVERABLES\n"
+        "The following files contain the full outputs from earlier pipeline steps.\n"
+        "Read only the files relevant to your task — do NOT guess their contents.\n\n"
+        + "\n".join(lines)
+        + "\n"
+    )
 
 
 def run_pipeline(
@@ -447,16 +482,31 @@ def run_pipeline(
 
             prompt_template = load_text(prompt_path)
 
-            # Use simple string replacement instead of .format() to avoid conflicts
-            # with JSON braces in prompt templates (which contain JSON examples)
-            # Prune and dump system state
+            # Build compact structured state (large narrative fields excluded)
             pruned_state = prune_system_state(system_state, agent_name)
             system_state_json = json.dumps(pruned_state, indent=2)
+
+            # Build file-path index of prior deliverables.
+            # claude_cli agents read these files natively rather than having
+            # content pre-embedded — keeps the context window lean.
+            prior_deliverables = build_prior_deliverables_block(
+                run_dir, step_idx, config["agents"]
+            )
+
+            # Combine: prior deliverable paths + compact structured state
+            if prior_deliverables:
+                state_block = (
+                    prior_deliverables
+                    + "\n## CURRENT STRUCTURED STATE\n"
+                    "```json\n" + system_state_json + "\n```"
+                )
+            else:
+                state_block = system_state_json
 
             prompt = prompt_template
             prompt = prompt.replace("{business_brief}", business_brief)
             prompt = prompt.replace("{sme_notes}", sme_notes)
-            prompt = prompt.replace("{system_state}", system_state_json)
+            prompt = prompt.replace("{system_state}", state_block)
 
             # Prepend skill context (shared + agent-specific) if skill files exist
             skill_context = load_skill_context(agent_name)
