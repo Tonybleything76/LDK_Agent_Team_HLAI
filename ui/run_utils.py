@@ -3,7 +3,6 @@ Shared utilities for interacting with the pipeline and run output directories.
 """
 
 import json
-import os
 import subprocess
 import sys
 from datetime import datetime
@@ -84,17 +83,19 @@ def start_pipeline(business_brief: str, sme_notes: str) -> subprocess.Popen:
     (INPUTS_DIR / "business_brief.md").write_text(business_brief)
     (INPUTS_DIR / "sme_notes.md").write_text(sme_notes)
 
-    env = os.environ.copy()
-    env["AUTO_APPROVE"] = "1"
-    env["AUTO_APPROVE_SOURCE"] = "ui"
-
     proc = subprocess.Popen(
-        [sys.executable, "-m", "cli.main"],
+        [
+            sys.executable,
+            "scripts/run_pipeline.py",
+            "--auto_approve",
+            "--yes",
+            "--skip_preflight",
+            "--skip-input-quality-check",
+        ],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
         bufsize=1,
-        env=env,
         cwd=str(Path.cwd()),
     )
     return proc
