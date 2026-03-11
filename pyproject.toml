@@ -1,2 +1,86 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ld-course-factory-adk"
+version = "1.0.0"
+description = "Multi-agent learning design course factory pipeline"
+requires-python = ">=3.11"
+dependencies = [
+    "openai>=1.0.0,<2.0.0",
+    "jsonschema>=4.0.0,<5.0.0",
+    "streamlit>=1.32.0",
+    "watchdog>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.4.0",
+    "black>=24.0.0",
+    "mypy>=1.8.0",
+    "types-jsonschema>=4.0.0",
+]
+
+# ── Pytest ────────────────────────────────────────────────────────────────────
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "--tb=short -q"
+
+# ── Ruff (linting) ────────────────────────────────────────────────────────────
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+exclude = ["archive", "scripts/archive", ".venv", "exports", "outputs"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long — handled by black
+    "B008",  # function calls in default args
+    "SIM108", # ternary operator suggestion (often less readable)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["orchestrator", "ui", "cli", "services", "utils", "governance", "schemas", "adk"]
+
+# ── Black (formatting) ────────────────────────────────────────────────────────
+[tool.black]
+target-version = ["py311"]
+line-length = 100
+exclude = '''
+/(
+    archive
+  | \.venv
+  | outputs
+  | exports
+)/
+'''
+
+# ── Mypy (type checking) ──────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = ["archive/", "scripts/archive/", "outputs/", "exports/", "tests/"]
+
+# ── Coverage ──────────────────────────────────────────────────────────────────
+[tool.coverage.run]
+source = ["orchestrator", "ui", "cli", "services", "utils", "governance"]
+omit = ["*/archive/*", "*/tests/*", "scripts/archive/*"]
+
+[tool.coverage.report]
+fail_under = 40
+show_missing = true

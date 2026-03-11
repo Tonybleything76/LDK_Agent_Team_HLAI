@@ -2,35 +2,70 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master, "feature/**"]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
-  build:
+  # ── Lint ─────────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint (ruff)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11' 
-        # Fallback will effectively be if 3.11 fails, user would need to adjust, 
-        # but 3.11 is a safe modern default as requested.
-        # "setup python (use repo’s supported version, e.g., 3.11 if present; otherwise 3.10)"
-        # Since I don't see a runtime.txt or similar, I'll stick to 3.11 but I could use a matrix if I wanted to be fancy.
-        # Requirement said: "use repo’s supported version, e.g., 3.11 if present". 
-        # I checked python version locally it was 3.9, but most new code should be 3.10+. 
-        # I'll stick to 3.11 as primary as per prompt suggestion.
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+          cache: "pip"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
 
-    - name: Preflight Check
-      run: python3 scripts/preflight_check.py
+      - name: Run ruff
+        run: ruff check orchestrator/ ui/ cli/ services/ utils/ governance/ schemas/ adk/
 
-    - name: Run Golden Run Verification
-      run: python3 scripts/verify_golden_run.py
+  # ── Type check ────────────────────────────────────────────────────────────────
+  typecheck:
+    name: Type check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+          cache: "pip"
+
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run mypy
+        run: mypy orchestrator/ utils/ governance/ services/
+
+  # ── Tests ─────────────────────────────────────────────────────────────────────
+  test:
+    name: Tests (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+          cache: "pip"
+
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run preflight check
+        run: python3 scripts/preflight_check.py
+
+      - name: Run test suite
+        run: pytest tests/ --tb=short -q
+
+      - name: Run golden run gate (dry_run)
+        env:
+          PROVIDER: dry_run
+          AUTO_APPROVE: "1"
+        run: python3 scripts/verify_golden_run.py

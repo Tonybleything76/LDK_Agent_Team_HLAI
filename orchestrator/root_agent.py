@@ -1,11 +1,16 @@
 import json
+import logging
 import sys
 import os
 import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Callable
+from typing import Any, Callable, Dict, List, Optional
 import copy
+
+from orchestrator.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 from orchestrator.providers import get_provider
 from orchestrator.validation import validate_agent_output, ValidationConfig
@@ -50,15 +55,17 @@ class ValidationError(Exception):
 # Utilities
 # ------------------------------------------------------------------------------
 
-def utc_now():
+def utc_now() -> str:
     return datetime.utcnow().isoformat()
 
-def write_ledger(event: Dict[str, Any]):
+
+def write_ledger(event: Dict[str, Any]) -> None:
     os.makedirs(os.path.dirname(LEDGER_PATH), exist_ok=True)
     with open(LEDGER_PATH, "a") as f:
         f.write(json.dumps(event) + "\n")
 
-def deep_merge(a: Dict, b: Dict) -> Dict:
+
+def deep_merge(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
     result = dict(a)
     for k, v in b.items():
         if isinstance(v, dict) and isinstance(result.get(k), dict):
@@ -67,23 +74,24 @@ def deep_merge(a: Dict, b: Dict) -> Dict:
             result[k] = v
     return result
 
+
 def get_system_version() -> str:
     """Read system version from VERSION file or return 'unknown'."""
     try:
         if os.path.exists("VERSION"):
             with open("VERSION", "r") as f:
                 return f.read().strip()
-        # Fallback if needed, but strict constraint says VERSION or pyproject.toml
         return "unknown"
     except Exception:
         return "unknown"
+
 
 def load_text(path: str) -> str:
     with open(path, "r") as f:
         return f.read()
 
 
-def load_skill_context(agent_name: str) -> str:
+def load_skill_context(agent_name: str) -> str:  # noqa: C901
     """
     Load skill reference files for an agent from the project skills/ directory.
 
@@ -159,7 +167,7 @@ def load_config() -> Dict[str, Any]:
 # Main Orchestrator
 # ------------------------------------------------------------------------------
 
-def prune_system_state(state: dict, agent_name: str) -> dict:
+def prune_system_state(state: Dict[str, Any], agent_name: str) -> Dict[str, Any]:
     """
     Selectively prune the system state to keep prompts concise.
     Focuses LLM attention on relevant context and avoids token bloat.
@@ -423,8 +431,11 @@ def run_pipeline(
                 )
             
             provider = get_provider(provider_name)
-            
-            # Diagnostic logging
+
+            logger.debug(
+                "provider_selected step=%d agent=%s provider=%s",
+                step_idx, agent_name, provider_name,
+            )
             print(f"[Provider] step={step_idx} agent={agent_name} provider={provider_name}")
             print(f"\n▶ Running Step {step_idx}: {agent_name}")
 

@@ -7,28 +7,23 @@ on:
 
 jobs:
   golden_run_verification:
+    name: Golden Run (dry_run)
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version-file: ".python-version"
+          cache: "pip"
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-      - name: Install dependencies (optional)
-        run: |
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
-
-      - name: Execute Golden Run Verification
+      - name: Execute golden run verification
         env:
           PROVIDER: dry_run
+          AUTO_APPROVE: "1"
         run: python3 scripts/verify_golden_run.py
